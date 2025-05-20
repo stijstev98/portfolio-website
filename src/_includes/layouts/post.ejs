@@ -1,0 +1,44 @@
+---
+layout: layouts/base.ejs
+---
+
+<!-- Post header section with fullwidth image and overlay -->
+<section class="post-header-section">
+  <div class="post-header-image-container">
+    <% if (post.data.headerImage) { %>
+      <img src="<%= post.data.headerImage %>" alt="<%= post.data.title %>" class="post-header-image">
+      <div class="post-header-gradient-overlay"></div>
+    <% } %>
+    
+    <div class="post-header-content">
+      <div class="post-header-container">
+        <h1 class="post-title">
+          <%= post.data.title %>
+        </h1>
+        
+        <% if (post.data.description) { %>
+          <p class="post-short-description">
+            <%= post.data.description %>
+          </p>
+        <% } %>
+        
+        <%- include('../components/breadcrumb') %>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Post content -->
+<section class="post-content-section">
+  <div class="container">
+    <div class="post-body">
+      <% if (post.data.body) { %>
+        <% try { %>
+          <%- post.data.body %>
+        <% } catch(e) { %>
+          <%= post.data.body %>
+        <% } %>
+      <% } %>
+    </div>
+  </div>
+</section>

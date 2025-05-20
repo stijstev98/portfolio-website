@@ -1,0 +1,185 @@
+/* Masonry Gallery Styles */
+.masonry-gallery {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1.5rem; /* Increased gap to prevent overlap issues */
+  grid-auto-flow: dense;
+  margin: 0;
+  padding: 1rem;
+  width: 100%;
+}
+
+.masonry-item {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  /* Ensure we have space between items */
+  margin-bottom: 0.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Added margin transitions */
+}
+
+/* Grid placement based on aspect ratio */
+.masonry-item.default-aspect {
+  grid-row: span 1;
+}
+
+.masonry-item.wide-aspect {
+  grid-column: span 2;
+}
+
+.masonry-item.tall-aspect {
+  grid-row: span 2;
+}
+
+/* For very tall images */
+.masonry-item.tall-aspect.wide-aspect {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.masonry-item-image {
+  width: 100%;
+  height: 100%;
+}
+
+.masonry-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.masonry-item-link {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+/* Prevent color change on hover */
+.masonry-item-link:hover, 
+.masonry-item-link:focus {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.masonry-item-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1.5rem 1rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.masonry-item-title {
+  margin: 0;
+  font-size: 0.7em !important;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  opacity: 0.7;
+  text-transform: unset;
+  font-weight: 400 !important;
+}
+
+.masonry-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .masonry-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0.5rem;
+    grid-gap: 0.5rem;
+  }
+  
+  .masonry-item.wide-aspect {
+    grid-column: auto; /* Prevent wide aspect items from spanning multiple columns */
+  }
+  
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Force 2 columns on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .masonry-grid {
+    grid-template-columns: repeat(2, 1fr); /* Keep 2 columns even on small screens */
+    padding: 0.25rem;
+    grid-gap: 0.25rem;
+  }
+  
+  .masonry-item.tall-aspect {
+    grid-row: span 1 !important; /* Force tall items to be normal height on mobile */
+  }
+  
+  .masonry-item.wide-aspect {
+    grid-column: span 1 !important; /* Ensure wide items don't span on smallest screens */
+  }
+  
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* Force 2 columns on smallest screens */
+  }
+}
+
+/* Front page gallery special styling */
+.front-page-gallery {
+  margin-bottom: 3rem;
+}
+
+.front-page-gallery .masonry-grid {
+  grid-gap: 1rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (min-width: 992px) {
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Ensure wide screens still have only 4 columns max */
+@media (min-width: 1600px) {
+  .masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+    max-width: none; /* Remove max-width to allow full stretching */
+  }
+  
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Ensure all mobile devices have 2 columns regardless of orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .masonry-grid,
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}

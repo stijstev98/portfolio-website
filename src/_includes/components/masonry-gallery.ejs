@@ -1,0 +1,273 @@
+<!-- Masonry Gallery Component -->
+<div class="masonry-gallery <%= locals.className ? className : '' %> <%= locals.variedColumns ? 'masonry-varied' : '' %>"
+     data-offset-min="<%= locals.offsetMin || 0 %>"
+     data-offset-max="<%= locals.offsetMax || 50 %>">
+  <div class="masonry-grid">
+    <% if (locals.posts && posts.length > 0) { %>
+      <% posts.forEach(post => { %>
+        <% 
+          let aspectRatio = 'default-aspect';
+          // Use header image dimensions for aspect ratio calculation
+          if (post.data.headerImageWidth && post.data.headerImageHeight) {
+            const ratio = post.data.headerImageHeight / post.data.headerImageWidth;
+            if (ratio < 0.8) aspectRatio = 'wide-aspect';
+            else if (ratio > 1.2) aspectRatio = 'tall-aspect';
+            if (ratio > 2) aspectRatio += ' very-tall-aspect';
+            else if (ratio < 0.5) aspectRatio += ' very-wide-aspect';
+          }
+        %>
+        <div class="masonry-item <%= aspectRatio %>" data-post-id="<%= post.id %>" data-scroll-animation="fade-up">
+          <a href="<%= post.url %>" class="masonry-item-link">
+            <% if (post.data.previewImage) { %>
+              <div class="masonry-item-image">
+                <img src="<%= post.data.previewImage || post.data.previewImageMedium %>" alt="<%= post.data.title %>" loading="lazy"/>
+              </div>
+            <% } else if (post.data.headerImage) { %>
+              <div class="masonry-item-image">
+                <img src="<%= post.data.headerImage || post.data.headerImageMedium %>" alt="<%= post.data.title %>" loading="lazy"/>
+              </div>
+            <% } else if (post.data.images && post.data.images.length > 0 && (post.data.images[0].url || post.data.images[0].medium) ) { %>
+              <!-- Fallback to first gallery image if no preview/header -->
+              <div class="masonry-item-image">
+                <img src="<%= post.data.images[0].url || post.data.images[0].medium %>" alt="<%= post.data.title %>" loading="lazy"/>
+              </div>
+            <% } %>
+            <div class="masonry-item-overlay">
+              <h3 class="masonry-item-title"><%= post.data.title %></h3>
+            </div>
+          </a>
+          <div class="masonry-item-data" style="display: none;">
+            <div class="post-image"><%= post.data.previewImage || post.data.headerImage || ((post.data.images && post.data.images.length > 0) ? (post.data.images[0].url || post.data.images[0].medium) : '') %></div>
+            <div class="post-title"><%= post.data.title %></div>
+            <div class="post-description"><%= post.data.description || '' %></div>
+            <div class="post-url"><%= post.url %></div>
+            <div class="post-all-images" data-images='<%= JSON.stringify((post.data.images || []).map(img => img.url || img.medium).filter(Boolean)) %>'></div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="masonry-empty">No posts available to display</div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Render the hover infobox once outside the loop -->
+<%- include('./hover_infobox', { 
+  image: '',
+  title: '',
+  description: '',
+  url: '#'
+}) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const infobox = document.getElementById('hover-infobox');
+  if (!infobox) return; 
+
+  const infoboxImage = infobox.querySelector('.infobox-image img');
+  const infoboxTitle = infobox.querySelector('.infobox-title');
+  const infoboxDescription = infobox.querySelector('.infobox-description');
+  const infoboxButton = infobox.querySelector('.infobox-go-button');
+  const masonryGallery = document.querySelector('.masonry-gallery');
+  
+  if (!infoboxImage || !infoboxTitle || !infoboxDescription || !infoboxButton || !masonryGallery) {
+    console.error('One or more critical infobox or gallery elements not found');
+    return;
+  }
+  
+  infobox.style.display = 'none';
+  
+  let currentImageIndex = 0;
+  let allPostImages = []; 
+  let imageInterval = null;
+  const cycleDelay = 900; // reduced from 750ms
+
+  function startImageCycling() {
+    if (imageInterval) {
+      clearInterval(imageInterval);
+      imageInterval = null;
+    }
+    
+    if (allPostImages && allPostImages.length > 0) {
+      currentImageIndex = 0;
+      if (infoboxImage && allPostImages[currentImageIndex]) {
+         infoboxImage.src = allPostImages[currentImageIndex];
+      } else if (infoboxImage) {
+         infoboxImage.src = ''; // Clear if image URL is bad or missing
+      }
+
+      if (allPostImages.length > 1) { 
+        imageInterval = setInterval(() => {
+          currentImageIndex = (currentImageIndex + 1) % allPostImages.length;
+          if (infoboxImage && allPostImages[currentImageIndex]) {
+            infoboxImage.src = allPostImages[currentImageIndex];
+          } else if (infoboxImage) {
+            infoboxImage.src = ''; 
+          }
+        }, cycleDelay);
+      }
+    }
+  }
+  
+  function stopImageCycling() {
+    if (imageInterval) {
+      clearInterval(imageInterval);
+      imageInterval = null;
+    }
+  }
+
+  document.addEventListener('mousemove', function(e) {
+    if (infobox.style.display !== 'none') {
+      // Position the infobox so the content box appears at the cursor
+      // Find the content element to calculate its position relative to infobox
+      const infoboxContent = infobox.querySelector('.infobox-content');
+      if (infoboxContent) {
+        // Calculate the offset from top-left of infobox to top-left of content box
+        const contentRect = infoboxContent.getBoundingClientRect();
+        const infoboxRect = infobox.getBoundingClientRect();
+        
+        // The offset is the difference in position between the infobox and its content
+        const offsetX = contentRect.left - infoboxRect.left;
+        const offsetY = contentRect.top - infoboxRect.top;
+        
+        // Position the infobox so content appears at cursor
+        infobox.style.left = (e.clientX - offsetX) + 'px';
+        infobox.style.top = (e.clientY - offsetY) + 'px';
+      } else {
+        // Fallback to standard positioning
+        infobox.style.left = (e.clientX + 15) + 'px';
+        infobox.style.top = (e.clientY + 15) + 'px';
+      }
+    }
+  });
+
+  const masonryItems = document.querySelectorAll('.masonry-item');
+  masonryItems.forEach(item => {
+    item.addEventListener('mouseenter', function(e) {
+      const dataDiv = this.querySelector('.masonry-item-data');
+      if (!dataDiv) return;
+      
+      const fallbackImageDiv = dataDiv.querySelector('.post-image');
+      const titleDiv = dataDiv.querySelector('.post-title');
+      const descriptionDiv = dataDiv.querySelector('.post-description');
+      const urlDiv = dataDiv.querySelector('.post-url');
+      const allImagesDiv = dataDiv.querySelector('.post-all-images');
+      
+      if (!titleDiv || !descriptionDiv || !urlDiv) return;
+      
+      const title = titleDiv.textContent;
+      const description = descriptionDiv.textContent;
+      const url = urlDiv.textContent;
+      const fallbackImage = fallbackImageDiv ? fallbackImageDiv.textContent : '';
+
+      // Start with header/preview image as first in cycle
+      allPostImages = []; 
+      if (fallbackImage) {
+        allPostImages.push(fallbackImage);
+      }
+
+      // Then add all gallery images
+      if (allImagesDiv && allImagesDiv.dataset.images) {
+        try {
+          const imagesData = JSON.parse(allImagesDiv.dataset.images);
+          const galleryImages = imagesData.filter(imgUrl => imgUrl && typeof imgUrl === 'string');
+          allPostImages = [...allPostImages, ...galleryImages];
+        } catch (parseError) {
+          console.warn('Failed to parse post_images for cycling:', parseError);
+        }
+      }
+      
+      if (allPostImages.length > 0 && infoboxImage) {
+        infoboxImage.src = allPostImages[0];
+      } else if (infoboxImage) {
+        infoboxImage.src = ''; 
+      }
+      
+      infoboxTitle.textContent = title || '';
+      infoboxDescription.textContent = description || '';
+      infoboxButton.href = url || '#';
+      
+      // Initial positioning - calculate the offset for content box
+      const infoboxContent = infobox.querySelector('.infobox-content');
+      if (infoboxContent) {
+        // Show the infobox first to get its dimensions
+        infobox.style.visibility = 'hidden';
+        infobox.style.display = 'block';
+        
+        // Once displayed, we can measure dimensions
+        setTimeout(() => {
+          const contentRect = infoboxContent.getBoundingClientRect();
+          const infoboxRect = infobox.getBoundingClientRect();
+          
+          // Calculate offsets from infobox edge to content edge
+          const offsetX = contentRect.left - infoboxRect.left;
+          const offsetY = contentRect.top - infoboxRect.top;
+          
+          // Adjust position so content appears at cursor
+          infobox.style.left = (e.clientX - offsetX) + 'px';
+          infobox.style.top = (e.clientY - offsetY) + 'px';
+          
+          // Make visible after positioning
+          infobox.style.visibility = 'visible';
+        }, 0);
+      } else {
+        // Fallback positioning
+        infobox.style.left = (e.clientX + 15) + 'px';
+        infobox.style.top = (e.clientY + 15) + 'px';
+        infobox.style.display = 'block';
+      }
+      
+      infobox.style.display = 'block';
+      
+      startImageCycling(); 
+      
+      this.classList.add('is-hovered');
+      if (masonryGallery) masonryGallery.classList.add('has-hovered-item');
+    });
+
+    item.addEventListener('mouseleave', function() {
+      stopImageCycling();
+      if (infobox) infobox.style.display = 'none';
+      this.classList.remove('is-hovered');
+      if (masonryGallery && document.querySelectorAll('.masonry-item.is-hovered').length === 0) {
+        masonryGallery.classList.remove('has-hovered-item');
+      }
+    });
+  });
+  
+  if (masonryGallery) {
+    masonryGallery.addEventListener('mouseleave', function(e) {
+      // Check if the mouse is leaving the gallery and not entering a child or the infobox itself
+      if (e.relatedTarget && !e.relatedTarget.closest('.masonry-item') && e.relatedTarget !== infobox && !infobox.contains(e.relatedTarget)) {
+        stopImageCycling();
+        if (infobox) infobox.style.display = 'none';
+        document.querySelectorAll('.masonry-item.is-hovered').forEach(item => item.classList.remove('is-hovered'));
+        masonryGallery.classList.remove('has-hovered-item');
+      }
+    });
+  }
+  
+  if (masonryGallery && masonryGallery.classList.contains('masonry-varied')) {
+    const grid = masonryGallery.querySelector('.masonry-grid');
+    if (grid) { 
+        const cols = getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+        const min = +masonryGallery.dataset.offsetMin || 0; 
+        const max = +masonryGallery.dataset.offsetMax || 50;
+        
+        const minOffset = Math.max(0, min); 
+        const maxOffset = Math.max(minOffset, max); 
+        
+        const offsets = Array.from({length: cols}, () =>
+          Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset
+        );
+
+        offsets.forEach((off, i) => {
+          const selector = `.masonry-item:nth-child(${cols}n+${i+1})`;
+          grid.querySelectorAll(selector).forEach(item => {
+            item.style.marginTop = `${off}px`; // Corrected template literal
+          });
+        });
+    }
+  }
+});
+</script>

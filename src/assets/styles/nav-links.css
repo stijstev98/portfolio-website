@@ -1,0 +1,124 @@
+/* Navigation Container */
+.nav-container {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* Desktop Navigation */
+.header-nav {
+  margin-left: auto;
+  display: flex;
+  padding-top: 1rem;
+  font-family: var(--title-font);
+  font-size: 0.9rem;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  justify-content: flex-end; /* Align nav links to the right */
+  gap: 2rem; /* Add spacing between navigation items */
+  display: flex; /* Ensure flex layout for alignment */
+  align-items: center; /* Align items vertically */
+}
+
+.header-nav a {
+  color: var(--text-color);
+  position: relative;
+  text-decoration: none;
+  padding: 0.5em 0; /* Consistent padding for all links */
+  text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65); /* Subtle drop shadow for better legibility */
+}
+
+.header-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.header-nav a:hover::after {
+  width: 100%;
+}
+
+.header-nav a:hover {
+  color: var(--text-color); /* Or a different hover color if desired */
+  text-decoration: none;
+}
+
+/* Styling for the emphasized button in desktop navigation */
+.header-nav a.btn-outline {
+  padding: 0.4em 1em; /* Adjusted padding for better appearance */
+  border: 2px solid var(--primary-color); /* Clear border definition */
+  color: var(--text-color); /* Text color for the button */
+  border-radius: 4px; /* Optional: adds rounded corners */
+  text-transform: uppercase; /* Consistent with other nav items */
+  font-weight: 500; /* Slightly bolder */
+  transition: all 0.2s ease-in-out;
+}
+
+.header-nav a.btn-outline:hover {
+  background-color: var(--primary-color);
+  color: #fff; /* Assuming white text on hover, adjust if a variable exists */
+  text-decoration: none;
+  text-shadow: none; /* Remove text shadow on hover for cleaner appearance against colored background */
+}
+
+.header-nav a.btn-outline::after {
+  display: none; /* Remove the underline hover effect for buttons */
+}
+
+/* Sticky navigation behavior */
+.header-nav.sticky {
+  position: fixed;
+  top: 0;
+  right: 0;
+  padding: 1rem 2rem;
+  background-color: var(--bg-color);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+/* Navigation animation in hero section */
+.nav-animation {
+  transition: transform 0.5s ease-out;
+  position: relative;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: floatIn 0.6s ease forwards;
+  animation-delay: 0.85s;
+  animation-play-state: paused;
+}
+
+@keyframes floatIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body.scrolled .nav-animation {
+  transform: translateY(-40rem);
+}
+
+/* Mobile menu styles */
+.hamburger-menu,
+.menu-overlay,
+.mobile-menu,
+.mobile-menu-close {
+  display: none; /* Hide mobile elements on desktop by default */
+}
+
+/* Mobile menu styles are now in mobile-menu.css */
+@media (max-width: 768px) {
+  /* Simplify transitions for mobile */
+  body.scrolled .nav-animation {
+    transform: translateY(-10rem);
+  }
+  
+  .nav-animation {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}

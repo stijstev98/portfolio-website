@@ -1,0 +1,20 @@
+---
+pagination:
+  data: posts
+  size: 5
+  alias: list
+  reverse: true
+permalink: '<% if (pagination.pageNumber > 0) { %><%= `page${pagination.pageNumber + 1}/index.html` %><% } else { %>index.html<% } %>'
+eleventyComputed:
+  title: '<% if (pagination.pageNumber > 0) { %><%= `Page ${pagination.pageNumber + 1} | ${site.title}` %><% } else { %><%= site.title %><% } %>'
+---
+
+<div id="masonry-gallery">
+  <%- include('./_includes/components/masonry-gallery', { 
+    posts: posts, 
+    className: 'front-page-gallery',
+    variedColumns: true 
+  }) %>
+</div>
+
+<%- include('./_includes/components/about-me') %>

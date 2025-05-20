@@ -1,0 +1,18 @@
+<!-- 
+Button Component
+Usage examples:
+1. Standard button: include('button', { url: '/contact', text: 'Contact', variant: 'primary' })
+2. Border button: include('button', { url: '/contact', text: 'LET\'S TALK', style: 'border-button' })
+3. With icon: include('button', { url: '/projects', text: 'View All', style: 'border-button', iconAfter: '<i class="fas fa-arrow-right"></i>' })
+-->
+<a href="<%= url %>" class="<%= locals.style ? style : 'btn' %> <%= locals.variant && !locals.style ? 'btn-' + variant : '' %> <%= locals.className ? className : '' %>">
+  <% if (locals.iconBefore) { %>
+  <span class="btn-icon btn-icon-before"><%- iconBefore %></span>
+  <% } %>
+  
+  <%= text %>
+  
+  <% if (locals.iconAfter) { %>
+  <span class="btn-icon btn-icon-after"><%- iconAfter %></span>
+  <% } %>
+</a>

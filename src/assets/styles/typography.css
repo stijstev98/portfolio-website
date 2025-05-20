@@ -1,0 +1,148 @@
+/* Base typography */
+body {
+    font-family: var(--body-font);
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: 1.6;
+    font-size: 1rem;
+    font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--title-font);
+    margin-top: 0;
+    line-height: 1.2;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.jumbo-title {
+    font-size: var(--title-jumbo-size);
+    color: var(--text-color);
+    font-size: 5rem;
+    font-family: var(--title-font-narrow);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    text-align: left;
+    letter-spacing: 0.05em;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+.body-text {
+    font-size: var(--body-text-size);
+    line-height: var(--body-text-line-height);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+/* Content-specific typography */
+.content {
+  letter-spacing: 0.05em;
+  line-height: 2;
+  font-size: var(--body-text-size);
+}
+
+.content ul,
+.content ol,
+.content p {
+  overflow: auto;
+}
+
+.content > div > ul,
+.content > div > ol {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.content ul,
+.content ol {
+  padding-left: 2rem;
+}
+
+.content ul {
+  list-style-position: outside;
+  list-style-type: disc;
+}
+
+.content ol {
+  list-style-position: outside;
+  list-style-type: decimal;
+}
+
+.content pre[class*='language-'] {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.content table {
+  white-space: nowrap;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  border-collapse: collapse;
+  display: block;
+  overflow: auto;
+}
+
+.content th,
+.content td {
+  border: 1px solid #dee2e6;
+  padding: 1rem 2rem;
+}
+
+.content th {
+  background-color: #f8f9fa;
+}
+
+/* Rich text content typography */
+.post-content img {
+  max-width: 100%;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.post-content blockquote {
+  padding-left: 1rem;
+  font-style: italic;
+  border-left: 4px solid #dee2e6;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.post-content code:not([class*="language-"]) {
+  background-color: #f8f9fa;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.featured-image img {
+  width: 100%;
+  height: 16rem;
+  object-fit: cover;
+  margin-bottom: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.post-meta {
+  color: #6c757d;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #e9ecef;
+  padding-bottom: 1rem;
+}

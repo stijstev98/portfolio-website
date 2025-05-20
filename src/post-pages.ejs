@@ -1,0 +1,34 @@
+---
+pagination:
+  data: posts
+  size: 1
+  alias: post
+permalink: "/posts/<%= post.slug %>/"
+layout: layouts/post.ejs
+eleventyComputed:
+  title: "<%= post.data.title %>"
+  description: "<%= post.data.description %>"
+  date: "<%= post.data.date %>"
+---
+
+<h1><%= post.data.title %></h1>
+
+<% if (post.data.headerImage) { %>
+<div class="featured-image">
+  <img src="<%= post.data.headerImage %>" alt="<%= post.data.title %>">
+</div>
+<% } %>
+
+<div class="post-meta">
+  <p class="date"><%= new Date(post.data.date).toLocaleDateString() %></p>
+</div>
+
+<div class="post-content">
+  <% if (Array.isArray(post.data.body)) { %>
+    <%- this.renderRichText(post.data.body) %>
+  <% } else if (typeof post.data.body === 'string') { %>
+    <%- this.renderRichText(post.data.body) %>
+  <% } else { %>
+    <p>No content available.</p>
+  <% } %>
+</div>

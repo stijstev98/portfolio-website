@@ -1,0 +1,151 @@
+/* Button Component Styles */
+/* Base button */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: var(--small-radius);
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background-color: var(--accent-color);
+    text-decoration: none;
+}
+
+/* Primary button style */
+.btn-primary {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    border: var(--default-border);
+    color: var(--text-color);
+    font-family: var(--title-font);
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all var(--anim-duration-fast) ease;
+    letter-spacing: 1px;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+/* Button variants */
+.btn-secondary {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+}
+
+.btn-accent {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+}
+
+.btn-outline-accent {
+    background-color: transparent;
+    color: var(--accent-color);
+    border: 2px solid var(--accent-color);
+}
+
+.btn-outline-accent:hover {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+/* Button sizes */
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+.btn-lg {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+}
+
+/* Button with icons */
+.btn-icon {
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 1;
+}
+
+.btn-icon-before {
+    margin-right: 0.5rem;
+}
+
+.btn-icon-after {
+    margin-left: 0.5rem;
+}
+
+/* Full width button */
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+/* Border Button - "Let's talk" style - matches nav-links styling */
+.border-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4em 1em;
+    font-family: var(--title-font);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-color);
+    background-color: transparent;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    transition: all 0.2s ease-in-out; /* Match btn-outline transition */
+    text-decoration: none;
+    position: relative;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65); /* Match navigation text shadow */
+}
+
+.border-button:hover {
+    background-color: var(--primary-color);
+    color: #fff; /* Match the nav button's white hover color */
+    text-decoration: none;
+    text-shadow: none; /* Remove text shadow on hover, consistent with nav button */
+}
+
+.border-button:hover .btn-icon-after {
+    transform: translateX(3px);
+}
+
+.border-button .btn-icon-after,
+.border-button .btn-icon-before {
+    transition: transform var(--anim-duration-fast) ease;
+}
+
+.border-button:active {
+    transform: translateY(1px);
+}
+
+/* Remove underline effect for border-button */
+.border-button::after {
+    display: none;
+}

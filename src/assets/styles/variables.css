@@ -1,0 +1,37 @@
+/* Global CSS Variables */
+:root {
+    /* Colors */
+    --primary-color: #316d7b;
+    --secondary-color: #121212;
+    --accent-color: #FF6B6B;
+    --bg-color: #121212;
+    --text-color: #FFFFFF;
+    --text-light: #B2B2B2;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --default-border: 3px solid var(--primary-color);
+    
+    /* Status colors */
+    --success-color: #4CAF50;
+    --error-color: #F44336;
+    
+    /* Spacing and borders */
+    --border-radius: 12px;
+    --small-radius: 6px;
+    
+    /* Fonts */
+    --title-font: 'pressio-condensed', sans-serif;
+    --title-font-narrow: 'pressio-compressed', sans-serif;
+    --body-font: 'Sans Soucis 2.7.5', sans-serif;
+
+    /* Typography styles */
+    --title-jumbo-size: 70rem;
+    --title-large-size: 5rem;
+    --body-text-size: 1.1rem;
+    --body-text-line-height: 1.7;
+    
+    /* Animation */
+    --anim-duration-slow: 0.8s;
+    --anim-duration-medium: 0.5s;
+    --anim-duration-fast: 0.3s;
+    --anim-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}

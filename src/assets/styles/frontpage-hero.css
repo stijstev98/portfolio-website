@@ -1,0 +1,381 @@
+/* Scroll trigger positioning */
+.scroll-trigger {
+  position: absolute;
+  top: 100px; /* Our threshold for animation */
+  height: 1px;
+  width: 100%;
+  pointer-events: none;
+}
+
+/* Pronunciation styles */
+.pronunciation-container {
+  position: relative;
+  display: inline-block;
+}
+
+.pronunciation-wrapper {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  display: flex;
+  align-items: center; /* This centers items vertically */
+  justify-content: flex-end;
+  /* Add vertical alignment */
+  line-height: 1;
+  height: 1.5rem; /* Set a fixed height */
+}
+
+.pronunciation {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--body-font);
+  font-weight: 400;
+  text-transform: lowercase;
+  position: relative;
+  margin-right: 0.2rem;
+  /* Remove any vertical positioning that might interfere */
+  top: auto;
+  vertical-align: middle; /* Align text vertically */
+  display: inline-flex;
+  align-items: center;
+}
+
+.pronunciation-btn {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  padding: 4px;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* Remove any vertical positioning that might interfere */
+  top: auto;
+  vertical-align: middle; /* Align button vertically */
+}
+
+.pronunciation-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.pronunciation-btn.clicked {
+  animation: pulse 0.5s ease;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* make the header sticky at top */
+.custom-header {
+  position: sticky;
+  top: 0;
+  background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
+  z-index: 100;
+}
+
+/* flex-row inside your normal container */
+.header-row {
+  display: flex;
+  align-items: center;
+  height: 30vh;  /* initial height */
+  transition: height 0.3s ease-out;
+}
+
+/* When scrolled, shrink the header */
+body.scrolled .header-row {
+  height: 10vh; /* minimum height */
+}
+
+/* the blue bar, aligned to .container's left edge */
+.logo-bar {
+  flex: 0 0 50px;      /* fixed width */
+  height: calc(100% + 30px);
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: flex-end; /* Align items to bottom */
+  justify-content: center;
+  padding-bottom: 2rem; /* Add 2rem padding to bottom */
+}
+
+/* your SVG/PNG inside */
+.logo-bar img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: -1rem !important;
+}
+
+/* nav links flush right */
+.header-nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center; /* Added for vertical alignment */
+  padding-top: 1rem;
+  font-family: var(--title-font);
+  font-size: 0.9rem;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  justify-content: flex-end; /* Align nav links to the right */
+}
+
+.header-nav a {
+  color: var(--text-color); /* Ensure this is appropriate for hero */
+  position: relative;
+  text-decoration: none;
+  padding: 0.5em 0; /* Added for consistency */
+  margin: 0 0.5rem; /* Added for spacing */
+}
+
+.header-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+}
+
+.header-nav a:hover::after {
+  width: 100%;
+}
+
+.header-nav a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.header-nav .btn-outline {
+  padding: 0.4em 1em; /* Consistent padding */
+  border: 2px solid var(--primary-color); /* Ensure border is visible */
+  color: var(--text-color); /* Or var(--primary-color) if preferred for hero */
+  border-radius: 4px; /* Optional */
+  background-color: transparent; /* Ensure no conflicting background */
+  transition: all 0.2s ease-in-out;
+}
+
+.header-nav .btn-outline:hover {
+  background-color: var(--primary-color);
+  color: #fff; /* Assuming white text on hover */
+}
+
+.header-nav .btn-outline::after {
+    display: none; /* No underline for buttons */
+}
+
+/* Hero section styles */
+.hero-section {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; 
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* Hero visibility transitions */
+.hero {
+  padding-top: 5rem;
+  transition: opacity 0.4s ease-out, max-height 0.5s ease-out, padding 0.5s ease-out;
+  opacity: 1;
+  max-height: 300px; /* Set a reasonable maximum height */
+  overflow: hidden;
+  transform-origin: top;
+}
+
+body.scrolled .hero {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Right-aligned text in the hero section */
+.hero__inner {
+  text-align: right; /* Right align the hero text */
+}
+
+.hero__inner h1 {
+  font-family: "pressio-compressed", sans-serif !important;
+  font-size: 5rem !important;
+  font-weight: 900 !important;
+  line-height: 0.9 !important;
+  text-align: right; /* Ensure hero title is right-aligned */
+}
+
+.hero__tag {
+  color: var(--primary-color);
+  border: var(--default-border);
+  font-size: 3rem;
+  color: var(--text-color);
+  padding: 0 0.5rem;
+  font-family: var(--title-font), sans-serif !important;
+  display: inline-block;
+  vertical-align: middle; /* Align vertically in the middle */
+  line-height: 1; /* Tighter line height to help with alignment */
+  position: relative;
+  top: -0.15em; /* Fine-tune the vertical position */
+  transition: opacity 0.25s ease; /* Add smooth transition for text changes */
+}
+.creation__tag {
+  color: var(--primary-color);
+}
+
+/* Hero entry animation */
+.hero__inner .word,
+.nav-animation {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: floatIn 0.6s ease forwards;
+}
+.hero__inner .word:nth-child(1) { animation-delay: 0.25s; }
+.hero__inner .word:nth-child(2) { animation-delay: 0.35s; }
+.hero__inner .word:nth-child(3) { animation-delay: 0.45s; }
+.hero__inner .word:nth-child(4) { animation-delay: 0.55s; }
+.hero__inner .word:nth-child(5) { animation-delay: 0.65s; }
+.hero__inner .word:nth-child(6) { animation-delay: 0.75s; }
+.nav-animation             { animation-delay: 0.85s; }
+
+@keyframes floatIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Nav animation when hero is hidden */
+.nav-animation {
+  transition: transform 0.5s ease-out;
+  position: relative;
+}
+
+body.scrolled .nav-animation {
+  transform: translateY(-40rem); /* Move nav up further */
+}
+
+/* Mobile menu styles now come from mobile-menu.css */
+
+/* Media Queries */
+@media (max-width: 992px) {
+  .hero__inner h1 {
+    font-size: 4rem !important;
+  }
+
+  .hero__tag {
+    font-size: 2.5rem;
+  }
+  
+  .pronunciation {
+    font-size: 0.75rem;
+  }
+  
+  .pronunciation-btn {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .pronunciation-wrapper {
+    height: 1.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Adjust header height */
+  .header-row {
+    height: 25vh;
+  }
+
+  body.scrolled .header-row {
+    height: 8vh;
+  }
+
+  /* Disable some animations */
+  .hero__inner .word {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  .nav-animation {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+
+  /* Adjust hero text size */
+  .hero__inner h1 {
+    font-size: 3rem !important;
+  }
+
+  .hero__tag {
+    font-size: 2rem;
+    top: -0.1em;
+  }
+  
+  /* Simplify transitions */
+  body.scrolled .nav-animation {
+    transform: translateY(-10rem);
+  }
+  
+  .pronunciation {
+    font-size: 0.7rem;
+  }
+  
+  .pronunciation-btn {
+    width: 22px;
+    height: 22px;
+    padding: 3px;
+    padding-top: 0.15rem;
+  }
+  
+  .pronunciation-wrapper {
+    height: 1.3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Make header and hero compact */
+  .header-row {
+    height: 20vh;
+  }
+  
+  .logo-bar {
+    flex: 0 0 40px;
+    padding-bottom: 1rem;
+  }
+
+  .hero {
+    padding-top: 2.5rem;
+  }
+
+  .hero__inner h1 {
+    font-size: 2.5rem !important;
+  }
+
+  .hero__tag {
+    font-size: 1.8rem;
+  }
+  
+  .pronunciation {
+    font-size: 0.65rem;
+  }
+  
+  .pronunciation-btn {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    padding-top: 0.1rem;
+  }
+  
+  .pronunciation-wrapper {
+    height: 1.2rem;
+  }
+}

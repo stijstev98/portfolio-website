@@ -1,0 +1,104 @@
+<!-- Mobile Menu Overlay -->
+<div class="menu-overlay"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu">
+  <button class="mobile-menu-close">
+    <span class="close-icon">×</span>
+  </button>
+  <nav class="mobile-nav">
+    <% try { %>
+      <% if (navigation && navigation.main) { %>
+        <% navigation.main.forEach(item => { %>
+          <a href="<%= item.url %>" <% if(item.emphasis) { %>class="btn-outline"<% } %>><%= item.text %></a>
+        <% }); %>
+      <% } else { %>
+        <!-- Fallback navigation if navigation data is not available -->
+        <a href="/works">Works</a>
+        <a href="/photography">Photography</a>
+        <a href="/development">Development</a>
+        <a href="/lets-talk" class="btn-outline">Let's Talk</a>
+      <% } %>
+    <% } catch(e) { %>
+      <!-- Error fallback -->
+      <a href="/works">Works</a>
+      <a href="/photography">Photography</a>
+      <a href="/development">Development</a>
+      <a href="/lets-talk" class="btn-outline">Let's Talk</a>
+    <% } %>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    const closeButton = document.querySelector('.mobile-menu-close');
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav a');
+    const isHeroSection = !!document.querySelector('.hero-section');
+    
+    // Check if elements exist to prevent errors
+    if (!mobileMenu || !menuOverlay || !closeButton) {
+      console.warn('Mobile menu elements not found');
+      return;
+    }
+    
+    // Function to open mobile menu
+    function openMenu() {
+      mobileMenu.classList.add('active');
+      menuOverlay.classList.add('active');
+      document.body.classList.add('menu-open');
+      
+      if (isHeroSection) {
+        document.body.classList.add('hero-menu-open');
+      }
+      
+      // Ensure the close button is visible
+      closeButton.style.visibility = 'visible';
+      closeButton.style.opacity = '1';
+      
+      // Force repaint to ensure animations work correctly
+      window.getComputedStyle(mobileMenu).transform;
+    }
+    
+    // Function to close mobile menu
+    function closeMenu() {
+      mobileMenu.classList.remove('active');
+      menuOverlay.classList.remove('active');
+      document.body.classList.remove('menu-open', 'hero-menu-open');
+      
+      setTimeout(() => {
+        closeButton.style.visibility = 'hidden';
+        closeButton.style.opacity = '0';
+      }, 300);
+      
+      // Dispatch event to notify other components
+      document.dispatchEvent(new CustomEvent('mobilemenuclose'));
+    }
+    
+    // Listen for toggle events from hamburger button
+    document.addEventListener('toggleMobileMenu', () => {
+      if (mobileMenu.classList.contains('active')) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+    
+    // Set up event listeners for mobile menu closing
+    closeButton.addEventListener('click', closeMenu);
+    menuOverlay.addEventListener('click', closeMenu);
+    
+    // Close menu when navigation link is clicked
+    mobileNavLinks.forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+    
+    // Close menu on resize to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+        closeMenu();
+      }
+    });
+  });
+</script>

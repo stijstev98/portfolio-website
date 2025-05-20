@@ -1,0 +1,35 @@
+.breadcrumb-container {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  font-family: var(--title-font);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.8); /* Slightly darker than white as shown in screenshot */
+}
+
+.breadcrumb-link {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.breadcrumb-current {
+  color: var(--primary-color);
+}
+
+.breadcrumb-separator {
+  margin: 0 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
+}

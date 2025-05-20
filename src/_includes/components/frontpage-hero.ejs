@@ -1,0 +1,155 @@
+<header class="custom-header">
+  <div class="container header-row">
+    <div class="logo-bar">
+      <a href="/" aria-label="Home">
+        <img src="/assets/images/logo_white.png" alt="Stijn Stevens Logo">
+      </a>
+    </div>
+    <section class="hero-section">
+      <div class="hero">
+        <div class="hero__inner">
+          <h1 class="hero__title">
+            <span class="word">Hi,</span>
+            <span class="word">I'm</span>
+            <span class="word pronunciation-container">
+              <span class="pronunciation-wrapper">
+                <sup class="pronunciation">"stayn"</sup>
+                <button class="pronunciation-btn" aria-label="Hear pronunciation">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.536 14.01A8.473 8.473 0 0 0 14.026 8a8.473 8.473 0 0 0-2.49-6.01l-.708.707A7.476 7.476 0 0 1 13.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+                    <path d="M10.121 12.596A6.48 6.48 0 0 0 12.025 8a6.48 6.48 0 0 0-1.904-4.596l-.707.707A5.483 5.483 0 0 1 11.025 8a5.483 5.483 0 0 1-1.61 3.89l.706.706z"/>
+                    <path d="M8.707 11.182A4.486 4.486 0 0 0 10.025 8a4.486 4.486 0 0 0-1.318-3.182L8 5.525A3.489 3.489 0 0 1 9.025 8 3.49 3.49 0 0 1 8 10.475l.707.707zM6.717 3.55A.5.5 0 0 1 7 4v8a.5.5 0 0 1-.812.39L3.825 10.5H1.5A.5.5 0 0 1 1 10V6a.5.5 0 0 1 .5-.5h2.325l2.363-1.89a.5.5 0 0 1 .529-.06z"/>
+                  </svg>
+                </button>
+              </span>
+              Stijn.
+            </span><br>
+            <span class="word">I</span>
+            <span class="word creation__tag">CREATE</span>
+            <span class="word hero__tag">PHOTOGRAPHY</span>
+          </h1>
+        </div>
+      </div>
+      <div class="nav-animation">
+        <%- include('./nav-links') %>
+      </div>
+    </section>
+  </div>
+</header>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Ensure the mobile menu works properly on the hero section
+  const heroSection = document.querySelector('.hero-section');
+  if (heroSection) {
+    // Add mobile menu positioning helpers
+    heroSection.classList.add('has-mobile-menu');
+  }
+
+  // Word rotation for hero tag
+  const heroTag = document.querySelector('.hero__tag');
+  const words = ["GRAPHIC DESIGN", "PHOTOGRAPHY", "WEB PROJECTS", "ANIMATION"];
+  let currentIndex = 0;
+  
+  // Initialize with first word
+  heroTag.textContent = words[currentIndex];
+  
+  // Set up interval for word rotation
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % words.length;
+    
+    // Fade out effect
+    heroTag.style.opacity = '0';
+    
+    setTimeout(() => {
+      // Change text and fade back in
+      heroTag.textContent = words[currentIndex];
+      heroTag.style.opacity = '1';
+    }, 250);
+    
+  }, 1000);
+
+  // Pronunciation button functionality
+  const pronunciationBtn = document.querySelector('.pronunciation-btn');
+  
+  pronunciationBtn.addEventListener('click', () => {
+    // Create speech synthesis for Dutch pronunciation
+    const utterance = new SpeechSynthesisUtterance('Stijn');
+    utterance.lang = 'nl-NL'; // Dutch language
+    utterance.rate = 0.8; // Slightly slower for clarity
+    
+    // Visual feedback for button click
+    pronunciationBtn.classList.add('clicked');
+    setTimeout(() => {
+      pronunciationBtn.classList.remove('clicked');
+    }, 500);
+    
+    // Speak the name
+    window.speechSynthesis.speak(utterance);
+  });
+
+  // 1) staggered entrance
+  setTimeout(() => {
+    document.querySelector('.hero-section').style.opacity = '1';
+    
+    // Only run animations if not mobile
+    if (window.innerWidth > 768) {
+      document.querySelectorAll('.word, .nav-animation').forEach(el =>
+        el.style.animationPlayState = 'running'
+      );
+    } else {
+      // Make sure elements are visible on mobile
+      document.querySelectorAll('.word, .nav-animation').forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      });
+    }
+  }, 500);
+
+  // 2) observe when to trigger scroll effect
+  const hero = document.querySelector('.hero');
+  const headerRow = document.querySelector('.header-row');
+  
+  // Create a trigger element 100px down
+  const scrollTrigger = document.createElement('div');
+  scrollTrigger.className = 'scroll-trigger';
+  document.body.appendChild(scrollTrigger);
+  
+  // Set up observer for the trigger point with smooth transition
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) {
+        document.body.classList.add('scrolled');
+      } else {
+        document.body.classList.remove('scrolled');
+      }
+    });
+  }, { threshold: 0.1 });
+  
+  observer.observe(scrollTrigger);
+  
+  // 3) Dirty-scroll-hack: modified to prevent conflicts with navigation scrolling
+  let jumped = false;
+  let navScrollActive = false; // Flag to track if navigation scroll is active
+  
+  // Listen for custom event from nav links
+  document.addEventListener('navScrollStarted', () => {
+    navScrollActive = true;
+    // Reset after navigation scroll should be complete
+    setTimeout(() => {
+      navScrollActive = false;
+    }, 1500); // 1.5 seconds is enough time for most scrolls to complete
+  });
+  
+  window.addEventListener('scroll', () => {
+    // Only trigger the hack if navigation scroll isn't active
+    if (!navScrollActive && !jumped && window.scrollY > 50) {
+      jumped = true;
+      window.scrollBy({ top: 150, behavior: 'smooth' });
+      setTimeout(() => {}, 50);
+    } else if (jumped && window.scrollY < 50) {
+      jumped = false;
+    }
+  });
+});
+</script>
