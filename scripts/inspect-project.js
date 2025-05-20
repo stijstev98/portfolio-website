@@ -22,56 +22,49 @@ async function inspectProjectPage() {
     const imgTags = html.match(/<img[^>]+src=["']([^"']+)["']/g);
     console.log('\nFound image tags:', imgTags?.length || 0);
     if (imgTags && imgTags.length > 0) {
-      imgTags.forEach((tag) => {
-        const srcMatch = tag.match(/src=["']([^"']+)["']/);
-        if (srcMatch && srcMatch[1]) {
-          console.log(`- ${srcMatch[1]}`);
-        }
-      });    
-    }
-
-    // Look for background images
-    const bgStyles = html.match(/background(?:-image)?:\s*url\(['"]?([^'")]+)['"]?\)/g);
-    console.log('\nFound background styles:', bgStyles?.length || 0);
-    if (bgStyles && bgStyles.length > 0) {
-      bgStyles.forEach((style) => {
-        const urlMatch = style.match(/url\(['"]?([^'")]+)['"]?\)/);
-        if (urlMatch && urlMatch[1]) {
-          console.log(`- ${urlMatch[1]}`);    
-        }
+      imgTags.forEach(tag => {
+        const src = tag.match(/src=["']([^"']+)["']/)[1];
+        console.log(`- ${src}`);
       });
     }
-
+    
+    // Look for background images
+    const bgStyles = html.match(/background(-image)?:\s*url\(['"]?([^'")]+)['"]?\)/g);
+    console.log('\nFound background styles:', bgStyles?.length || 0);
+    if (bgStyles && bgStyles.length > 0) {
+      bgStyles.forEach(style => {
+        const url = style.match(/url\(['"]?([^'")]+)['"]?\)/)[1];
+        console.log(`- ${url}`);
+      });
+    }
+    
     // Check for lazy loading or other image techniques
     if (html.includes('data-src')) {
       console.log('\nDetected lazy loading (data-src attributes)');
       const dataSrc = html.match(/data-src=["']([^"']+)["']/g);
       if (dataSrc && dataSrc.length > 0) {
-        dataSrc.forEach((tag) => {
-          const srcMatch = tag.match(/data-src=["']([^"']+)["']/);
-          if (srcMatch && srcMatch[1]) {    
-            console.log(`- ${srcMatch[1]}`);
-          }
+        dataSrc.forEach(tag => {
+          const src = tag.match(/data-src=["']([^"']+)["']/)[1];
+          console.log(`- ${src}`);
         });
       }
     }
-
+    
     // Check for JavaScript-loaded images
     if (html.includes('srcset')) {
       console.log('\nDetected srcset attributes (responsive images)');
       const srcsets = html.match(/srcset=["']([^"']+)["']/g);
       if (srcsets && srcsets.length > 0) {
-        srcsets.forEach((tag) => {
+        srcsets.forEach(tag => {
           const srcset = tag.match(/srcset=["']([^"']+)["']/)[1];
-          console.log(`- ${srcset}`); console.error('Error:', error.message);
-        }); }
-      }}
+          console.log(`- ${srcset}`);
+        });
+      }
     }
-  } catch (error) {inspectProjectPage();
+    
+  } catch (error) {
+    console.error('Error:', error.message);
+  }
+}
 
-
-
-
-
-
-inspectProjectPage();}  }    console.error('Error:', error.message);
+inspectProjectPage();
