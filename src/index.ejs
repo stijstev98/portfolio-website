@@ -9,6 +9,7 @@ eleventyComputed:
   title: '<% if (pagination.pageNumber > 0) { %><%= `Page ${pagination.pageNumber + 1} | ${site.title}` %><% } else { %><%= site.title %><% } %>'
 ---
 
+<% if (posts && posts.length > 0) { %>
 <div id="masonry-gallery">
   <%- include('./_includes/components/masonry-gallery', { 
     posts: posts, 
@@ -16,5 +17,11 @@ eleventyComputed:
     variedColumns: true 
   }) %>
 </div>
+<% } else { %>
+<div class="empty-state">
+  <h2>Welcome to the site!</h2>
+  <p>No posts are available at the moment. Check back later for updates.</p>
+</div>
+<% } %>
 
 <%- include('./_includes/components/about-me') %>
