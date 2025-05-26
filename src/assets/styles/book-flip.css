@@ -1,0 +1,237 @@
+* { box-sizing: border-box; }
+
+/* FlipBook */
+
+.book-flip-container {
+  /* or any other parent wrapper */
+  margin: 2rem auto;
+  padding: 2rem 1rem;
+  display: flex;
+  perspective: 1500px; /* Increased perspective for flatter appearance */
+  font: 1em/1.4 "Poppins", sans-serif;
+  color: hsl(180 68% 5%);
+  max-width: 100%;
+  max-height: 80vh;
+  container-type: inline-size;
+  /* Removed min-height and background-image for natural sizing and transparency */
+}
+
+.book {
+  position: relative;
+  display: flex;
+  margin: auto;
+  width: min(40cqmin, 80vw, 600px);
+  /* Remove fixed max-height, let aspect ratio control it */
+  /*1* let pointer event go trough pages of lower Z than .book */
+  pointer-events: none;
+  transform-style: preserve-3d;
+  transition: translate 1s;
+  translate: calc(min(var(--c), 1) * 50%) 0%;
+  /* Modified rotation for flatter page opening */
+  rotate: 1 0 0 32deg; /* Adjusted for a slightly flatter view */
+  --aspect-ratio: 0.75; /* Default 3:4 ratio, will be overridden by inline style */
+  /* Calculate height based on width and aspect ratio */
+  aspect-ratio: var(--aspect-ratio);
+}
+
+.page {
+  /* PS: Don't go below thickness 0.5 or the pages might transpare */
+  --thickness: 1.5;
+  /* CSS variables for curl effect, to be controlled by JS */
+  --curl-angle: 0deg;
+  --curl-translate-x: 0px;
+  --curl-translate-y: 0px;
+  --curl-shadow-opacity: 0;
+
+  flex: none;
+  display: flex;
+  width: 100%;
+  font-size: 2cqmin;
+  /*1* allow pointer events on pages */
+  pointer-events: all;
+  user-select: none;
+  transform-style: preserve-3d;
+  /* Ensure transform origin is exactly at the left edge (spine) */
+  transform-origin: 0% 50%;
+  transition:
+    transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1),
+    rotate 0.7s cubic-bezier(0.25, 0.1, 0.25, 1) calc((min(var(--i), var(--c)) - max(var(--i), var(--c))) * 40ms);
+  translate: calc(var(--i) * -100%) 0px 0px;
+  transform: 
+    translateZ( calc((var(--c) - var(--i) - 0.5) * calc(var(--thickness) * .23cqmin)))
+    /* Remove the X translation to keep spine attached */
+    translateY(var(--curl-translate-y));
+  /* Ensure rotation happens around the left edge */
+  rotate: 0 1 0 calc(clamp(0, var(--c) - var(--i), 1) * -180deg + var(--curl-angle));
+}
+
+/* Add a pseudo-element for the page edge/spine */
+.page::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 2px;
+  background-color: rgba(0,0,0,0.1);
+  transform-origin: left center;
+  z-index: 2;
+  /* This element stays fixed regardless of page curl */
+}
+
+.front,
+.back {
+  position: relative;
+  flex: none;
+  width: 100%;
+  aspect-ratio: var(--aspect-ratio); /* Use dynamic aspect ratio */
+  backface-visibility: hidden;
+  overflow: hidden; /* Changed to visible to allow curl shadow to peek */
+  background-color: #fff;
+  /* Fix backface visibility Firefox: */
+  translate: 0px;
+  /* Add a subtle perspective to the page faces for the curl */
+  perspective: 800px; 
+  transform-style: preserve-3d;
+}
+
+/* Pseudo-element for the curled corner shadow/highlight */
+.page .front::before, .page .back::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 60px; /* Size of the curl visual */
+  height: 60px;
+  background: linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 30%, transparent 60%);
+  border-radius: 0 0 100% 0; /* Makes it look like a curled corner */
+  opacity: var(--curl-shadow-opacity);
+  transform: translateZ(-1px); /* Push it slightly back */
+  transition: opacity 0.2s;
+  pointer-events: none;
+  z-index: -1; /* Ensure it's behind content but visible */
+}
+
+.page .back::before {
+  /* Adjust for the back page if needed, or use a different effect */
+  left: 0;
+  right: auto;
+  border-radius: 0 0 0 100%;
+  background: linear-gradient(225deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 30%, transparent 60%);
+}
+
+
+.back {
+  translate: -100% 0;
+  rotate: 0 1 0 180deg;
+}
+
+
+/* That's it. Your FlipBook customization styles: */
+
+.book {
+  counter-reset: page -1;
+  & a {
+    color: inherit;
+  }
+}
+
+.page {
+  box-shadow: 0em 0.3em 0.8em -0.15em rgba(0,0,0,0.15); /* Softened shadow */
+}
+
+.front,
+.back {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  padding: 2em;
+  border: 1px solid #0002;
+  
+  &:has(img) {
+    padding: 0;
+  }
+  
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  &::after {
+    position: absolute;
+    bottom: 1em;
+    counter-increment: page;
+    content: counter(page) ".";
+    font-size: 0.8em;
+  }
+}
+.cover {
+  &::after {
+    content: "";
+  }
+}
+.front {
+  &::after {
+    right: 1em;
+  }
+  background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
+  border-radius: .1em .5em .5em .1em;
+}
+.back {
+  &::after {
+    left: 1em;
+  }
+  background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
+  border-radius: .5em .1em .1em .5em;
+}
+
+.cover {
+  background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
+    hsl(231, 32%, 29%) url("https://picsum.photos/id/984/800/900") 50% / cover;
+  color: hsl(200 30% 98%);
+}
+
+/* Error message styling */
+.book-error {
+  padding: 2rem;
+  text-align: center;
+  color: #e74c3c;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  margin: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .book-flip-container {
+    padding: 1rem 0.5rem;
+    margin: 1rem auto;
+    max-height: 70vh; /* Increased for better viewing */
+  }
+  
+  .book {
+    width: min(50cqmin, 90vw, 400px);
+    /* Remove fixed max-height */
+    rotate: 1 0 0 20deg; /* Flatter angle on mobile */
+  }
+  
+  .page {
+    font-size: 1.5cqmin;
+  }
+}
+
+@media (max-width: 480px) {
+  .book-flip-container {
+    padding: 0.5rem;
+    margin: 0.5rem auto;
+    max-height: 80vh; /* Increased for better viewing */
+  }
+  
+  .book {
+    width: min(60cqmin, 95vw, 300px);
+    /* Remove fixed max-height */
+    rotate: 1 0 0 15deg; /* Even flatter on very small screens */
+  }
+}

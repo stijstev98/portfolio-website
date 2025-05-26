@@ -11,18 +11,6 @@ eleventyComputed:
   date: "<%= post.data.date %>"
 ---
 
-<h1><%= post.data.title %></h1>
-
-<% if (post.data.headerImage) { %>
-<div class="featured-image">
-  <img src="<%= post.data.headerImage %>" alt="<%= post.data.title %>">
-</div>
-<% } %>
-
-<div class="post-meta">
-  <p class="date"><%= new Date(post.data.date).toLocaleDateString() %></p>
-</div>
-
 <div class="post-content">
   <% if (Array.isArray(post.data.body)) { %>
     <%- this.renderRichText(post.data.body) %>
@@ -32,3 +20,47 @@ eleventyComputed:
     <p>No content available.</p>
   <% } %>
 </div>
+
+<% if (post.data.hasRichContent && post.data.richContent.length > 0) { %>
+<div class="rich-content">
+  <% post.data.richContent.forEach(function(component) { %>
+    <% if (component.type === 'rich-text') { %>
+      <div class="rich-text-component">
+        <%- component.content %>
+      </div>
+    <% } else if (component.type === 'video-embed') { %>
+      <div class="video-embed-component">
+        <% if (component.url) { %>
+          <iframe src="<%= component.url %>" title="<%= component.title || 'Video' %>" allowfullscreen></iframe>
+        <% } %>
+      </div>
+    <% } else if (component.type === 'media') { %>
+      <div class="media-component">
+        <% if (component.media && component.media.url) { %>
+          <img src="<%= component.media.url %>" alt="<%= component.media.name %>" 
+               width="<%= component.media.width %>" height="<%= component.media.height %>">
+          <% if (component.caption) { %>
+            <p class="media-caption"><%= component.caption %></p>
+          <% } %>
+        <% } %>
+      </div>
+    <% } else if (component.type === 'callout') { %>
+      <div class="callout-component callout-<%= component.calloutType %>">
+        <% if (component.title) { %>
+          <h4><%= component.title %></h4>
+        <% } %>
+        <div><%- component.content %></div>
+      </div>
+    <% } else if (component.type === 'shared.book-flip') { %>
+      <div class="book-component-container">
+        <%- include('./_includes/components/book-flip', { 
+          pages: component.pages,
+          aspectRatio: component.aspectRatio,
+          title: component.title,
+          uploadDate: component.uploadDate
+        }) %>
+      </div>
+    <% } %>
+  <% }); %>
+</div>
+<% } %>

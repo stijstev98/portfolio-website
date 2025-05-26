@@ -23,4 +23,5 @@
 @import 'nav-links.css';
 @import 'mobile-menu.css';
 @import 'about-me.css';
-@import 'background-loop.css'; /* Added background loop styles */
+@import 'background-loop.css';
+@import 'book-flip.css';

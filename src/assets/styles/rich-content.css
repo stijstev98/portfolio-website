@@ -1,0 +1,140 @@
+/* Styles for elements rendered from Strapi's dynamic zone (content_components) */
+
+/* General Rich Content Styling */
+.rich-content-block {
+  margin-bottom: 1.5rem;
+}
+
+/* Images within rich content */
+.rich-content-image {
+  margin: 2rem auto; /* Center images and add some vertical space */
+  max-width: 100%;
+  display: block; /* Ensure figure is block for centering */
+  text-align: center; /* Center the image within the figure */
+}
+
+.rich-content-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  display: inline-block; /* Allow centering if figure is text-align: center */
+}
+
+.rich-content-image figcaption {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+/* Video wrapper for responsive videos */
+.rich-content-video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000; /* Background for letterboxing if video aspect ratio differs */
+  margin: 2rem auto; /* Center video and add vertical space */
+  border-radius: var(--border-radius);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.rich-content-video-wrapper iframe,
+.rich-content-video-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.video-caption {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  padding: 0.5rem;
+  background-color: rgba(0,0,0,0.3);
+}
+
+/* Callout Blocks */
+.rich-content-callout {
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: var(--border-radius);
+  display: flex;
+  align-items: flex-start; /* Align icon and content to the top */
+  border-left-width: 5px;
+  border-left-style: solid;
+}
+
+.rich-content-callout .callout-icon {
+  margin-right: 1rem;
+  font-size: 1.5rem; /* Adjust icon size as needed */
+  line-height: 1.4; /* Align icon better with first line of text */
+}
+
+.rich-content-callout .callout-content {
+  flex-grow: 1;
+}
+
+.rich-content-callout .callout-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* Callout types - using Font Awesome icons as placeholders */
+.info-callout {
+  background-color: rgba(13, 202, 240, 0.1);
+  border-left-color: #0dcaf0;
+}
+.info-callout .callout-icon { color: #0dcaf0; }
+
+.warning-callout {
+  background-color: rgba(255, 193, 7, 0.1);
+  border-left-color: #ffc107;
+}
+.warning-callout .callout-icon { color: #ffc107; }
+
+.danger-callout {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-left-color: #dc3545;
+}
+.danger-callout .callout-icon { color: #dc3545; }
+
+.success-callout {
+  background-color: rgba(25, 135, 84, 0.1);
+  border-left-color: #198754;
+}
+.success-callout .callout-icon { color: #198754; }
+
+/* Custom Component Example Style */
+.custom-component {
+  padding: 1.5rem;
+  margin: 2rem 0;
+  border-radius: var(--border-radius);
+  background-color: rgba(30, 30, 30, 0.5);
+  border: 1px solid rgba(95, 95, 95, 0.5);
+}
+
+.custom-component h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+}
+
+/* Different styles for custom components */
+.custom-component.highlighted {
+  background-color: rgba(var(--primary-color-rgb), 0.1);
+  border-color: var(--primary-color);
+}
+
+.custom-component.important {
+  background-color: rgba(var(--danger-color-rgb), 0.1);
+  border-color: var(--danger-color);
+}
+
+.custom-component.subdued {
+  background-color: rgba(30, 30, 30, 0.3);
+  border-color: rgba(95, 95, 95, 0.3);
+}

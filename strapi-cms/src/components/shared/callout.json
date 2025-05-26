@@ -1,0 +1,29 @@
+{
+  "collectionName": "components_shared_callouts",
+  "info": {
+    "displayName": "Callout",
+    "icon": "exclamation-circle",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "info",
+        "warning",
+        "danger",
+        "success"
+      ],
+      "default": "info",
+      "required": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

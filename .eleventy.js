@@ -3,6 +3,7 @@ const dateFns = require('date-fns');
 const lazyImagesPlugin = require('eleventy-plugin-lazyimages');
 const syntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
 const renderRichText = require('./src/_data/utils/renderRichText');
+const { CACHE_DIR } = require('./src/_data/utils/pdfProcessor');
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(syntaxHighlight);
@@ -11,7 +12,12 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("src/assets/images");
   eleventyConfig.addPassthroughCopy("src/assets/js");
   eleventyConfig.addPassthroughCopy("src/assets/styles");
-  
+
+  // Serve PDF cache directory
+  eleventyConfig.addPassthroughCopy({
+    [CACHE_DIR]: "pdf-cache"
+  });
+
   // Add helper filter for rendering Strapi Rich Text content (can be kept for other template languages)
   eleventyConfig.addFilter('renderRichText', renderRichText);
 

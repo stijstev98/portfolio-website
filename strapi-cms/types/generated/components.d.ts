@@ -1,3 +1,83 @@
-/*
- * The app doesn't have any components yet.
- */
+import type { Schema, Struct } from '@strapi/strapi';
+
+export interface SharedBookFlip extends Struct.ComponentSchema {
+  collectionName: 'components_shared_book_flips';
+  info: {
+    displayName: 'Book Flip';
+    icon: 'book';
+  };
+  attributes: {
+    pdf_file: Schema.Attribute.Media<'files'> & Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface SharedCallout extends Struct.ComponentSchema {
+  collectionName: 'components_shared_callouts';
+  info: {
+    description: '';
+    displayName: 'Callout';
+    icon: 'exclamation-circle';
+  };
+  attributes: {
+    content: Schema.Attribute.RichText & Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+    type: Schema.Attribute.Enumeration<['info', 'warning', 'danger', 'success']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'info'>;
+  };
+}
+
+export interface SharedMedia extends Struct.ComponentSchema {
+  collectionName: 'components_shared_media';
+  info: {
+    description: '';
+    displayName: 'Media';
+    icon: 'file-image';
+  };
+  attributes: {
+    caption: Schema.Attribute.String;
+    file: Schema.Attribute.Media<'images' | 'videos' | 'files'> & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedRichText extends Struct.ComponentSchema {
+  collectionName: 'components_shared_rich_texts';
+  info: {
+    description: '';
+    displayName: 'Rich Text';
+    icon: 'align-justify';
+  };
+  attributes: {
+    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+  };
+}
+
+export interface SharedVideoEmbed extends Struct.ComponentSchema {
+  collectionName: 'components_shared_video_embeds';
+  info: {
+    description: '';
+    displayName: 'Video Embed';
+    icon: 'video';
+  };
+  attributes: {
+    caption: Schema.Attribute.String;
+    provider: Schema.Attribute.Enumeration<['youtube', 'vimeo']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'youtube'>;
+    provider_uid: Schema.Attribute.String & Schema.Attribute.Required;
+    title: Schema.Attribute.String;
+  };
+}
+
+declare module '@strapi/strapi' {
+  export module Public {
+    export interface ComponentSchemas {
+      'shared.book-flip': SharedBookFlip;
+      'shared.callout': SharedCallout;
+      'shared.media': SharedMedia;
+      'shared.rich-text': SharedRichText;
+      'shared.video-embed': SharedVideoEmbed;
+    }
+  }
+}

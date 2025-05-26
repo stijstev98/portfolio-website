@@ -1,37 +1,75 @@
 const fetch = require('node-fetch');
 const slugify = require('slugify');
 const renderRichText = require('./utils/renderRichText');
+const { convertPdfToImages } = require('./utils/pdfProcessor');
+const path = require('path');
 
 module.exports = async function() {
   console.log("Fetching posts from Strapi...");
   try {
+    // First try with basic populate to get all posts
+    const apiUrl = `http://localhost:1337/api/posts?populate=*&pagination[limit]=100`;
+    const apiUrlAlt = `http://127.0.0.1:1337/api/posts?populate=*&pagination[limit]=100`;
+    
+    console.log('Attempting to fetch from:', apiUrl);
+    
     // Try both localhost and 127.0.0.1
     let response;
     try {
-      response = await fetch('http://localhost:1337/api/posts?populate[0]=post_header_image&populate[1]=post_preview_image&populate[2]=post_images', { 
+      response = await fetch(apiUrl, { 
         timeout: 5000 
       });
     } catch (e) {
       console.log("Trying alternate connection method to Strapi...");
-      response = await fetch('http://127.0.0.1:1337/api/posts?populate[0]=post_header_image&populate[1]=post_preview_image&populate[2]=post_images', { 
+      response = await fetch(apiUrlAlt, { 
         timeout: 5000 
       });
     }
     
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`HTTP error! status: ${response.status}, body: ${errorText}`);
+      console.error(`URL attempted: ${response.url}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
     
+    // Now fetch posts with rich_content separately for those that have it
+    const enhancedPosts = [];
+    for (const post of data.data) {
+      if (post.rich_content && post.rich_content.length > 0) {
+        console.log(`Fetching detailed rich_content for post: ${post.post_title}`);
+        try {
+          const detailUrl = `http://127.0.0.1:1337/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+          const detailResponse = await fetch(detailUrl, { timeout: 5000 });
+          if (detailResponse.ok) {
+            const detailData = await detailResponse.json();
+            enhancedPosts.push(detailData.data);
+          } else {
+            console.warn(`Failed to fetch detailed rich_content for post ${post.post_title}`);
+            enhancedPosts.push(post);
+          }
+        } catch (error) {
+          console.warn(`Error fetching detailed rich_content for post ${post.post_title}:`, error.message);
+          enhancedPosts.push(post);
+        }
+      } else {
+        enhancedPosts.push(post);
+      }
+    }
+    
+    // Replace the original data with enhanced data
+    data.data = enhancedPosts;
+    
     // Log the raw data from Strapi for inspection
-    // console.log("Raw data structure:", JSON.stringify(data.data[0], null, 2));
+    console.log("Raw data structure:", JSON.stringify(data.data[0], null, 2));
 
     if (!data.data || !Array.isArray(data.data)) {
       console.error("Strapi response data.data is not an array or is missing:", data.data);
       return [];
     }
     
-    const posts = data.data.map((post, index) => {
+    const postsData = await Promise.all(data.data.map(async (post, index) => {
       if (!post) {
         console.warn(`Skipping invalid post object at index ${index}:`, post);
         return null;
@@ -84,6 +122,110 @@ module.exports = async function() {
       // Process the rich text body if it exists
       const processedBody = post.post_body ? renderRichText(post.post_body) : '';
       
+      // Process rich_content dynamic zone if it exists
+      let richContentComponents = [];
+      if (post.rich_content && Array.isArray(post.rich_content) && post.rich_content.length > 0) {
+        console.log(`Processing ${post.rich_content.length} rich_content components for post "${post.post_title}"`);
+        
+        richContentComponents = await Promise.all(post.rich_content.map(async (component, index) => {
+          console.log(`Component ${index}:`, component.__component, component);
+          
+          // Each component has a __component field indicating its type
+          switch (component.__component) {
+            case 'shared.rich-text':
+              return {
+                type: 'rich-text',
+                content: component.body ? renderRichText(component.body) : '',
+                rawContent: component.body
+              };
+            case 'shared.video-embed':
+              return {
+                type: 'video-embed',
+                provider: component.provider,
+                provider_uid: component.provider_uid,
+                title: component.title,
+                caption: component.caption
+              };
+            case 'shared.media':
+              const mediaUrl = component.file?.url 
+                ? `http://127.0.0.1:1337${component.file.url}`
+                : null;
+              return {
+                type: 'media',
+                media: mediaUrl ? {
+                  url: mediaUrl,
+                  name: component.file.name || '',
+                  width: component.file.width || 0,
+                  height: component.file.height || 0
+                } : null,
+                caption: component.caption
+              };
+            case 'shared.callout':
+              return {
+                type: 'callout',
+                title: component.title,
+                content: component.content ? renderRichText(component.content) : '',
+                calloutType: component.type || 'info'
+              };
+            case 'shared.book-flip':
+              // Handle PDF file
+              if (component.pdf_file?.url) {
+                const pdfUrl = `http://127.0.0.1:1337${component.pdf_file.url}`;
+                
+                // Extract file metadata including update date
+                const fileMetadata = {
+                  updatedAt: component.pdf_file.updatedAt || component.pdf_file.updated_at || null,
+                  name: component.pdf_file.name || null,
+                  size: component.pdf_file.size || null
+                };
+                
+                try {
+                  const pdfData = await convertPdfToImages(pdfUrl, fileMetadata);
+                  
+                  // Create page data for the book component
+                  const bookPages = pdfData.pages.map((page, idx) => ({
+                    url: `/pdf-cache/${path.basename(path.dirname(page.path))}/${page.filename}`,
+                    pageNumber: page.pageNumber,
+                    width: page.width,
+                    height: page.height,
+                    name: `Page ${page.pageNumber}`,
+                    alt: `Page ${page.pageNumber}`
+                  }));
+                  
+                  return {
+                    type: 'shared.book-flip',
+                    pages: bookPages,
+                    totalPages: bookPages.length,
+                    aspectRatio: pdfData.aspectRatio,
+                    title: component.title || 'Book'
+                  };
+                } catch (error) {
+                  console.error('Error processing PDF for book-flip:', error);
+                  return {
+                    type: 'shared.book-flip',
+                    error: error.message,
+                    pages: [],
+                    totalPages: 0
+                  };
+                }
+              }
+              
+              return {
+                type: 'shared.book-flip',
+                pages: [],
+                totalPages: 0,
+                error: 'No PDF file provided'
+              };
+            default:
+              return {
+                type: 'unknown',
+                component: component.__component,
+                data: component
+              };
+          }
+        }));
+      }
+      
       return {
         data: {
           title: post.post_title,
@@ -91,6 +233,8 @@ module.exports = async function() {
           date: post.publishedAt || post.createdAt || new Date(),
           body: processedBody,
           rawBody: post.post_body, // Keep the original for reference if needed
+          richContent: richContentComponents, // New: rich_content dynamic zone data
+          hasRichContent: richContentComponents.length > 0, // Helper flag
           headerImage: headerImageUrl,
           headerImageMedium: headerImageMedium,
           headerImageWidth: headerImageWidth,
@@ -106,9 +250,22 @@ module.exports = async function() {
         slug: slug,
         id: post.id
       };
-    }).filter(post => post !== null && post.data.title);
+    }));
+    
+    // Apply the filter to the resolved promises result
+    const posts = postsData.filter(post => post !== null && post.data.title);
 
-    console.log(`Fetched and processed ${posts.length} posts from Strapi with images.`);
+    const postsWithRichContent = posts.filter(post => post.data.hasRichContent);
+    console.log(`Fetched and processed ${posts.length} posts from Strapi.`);
+    console.log(`Found ${postsWithRichContent.length} posts with rich_content dynamic zone data.`);
+    
+    if (postsWithRichContent.length > 0) {
+      console.log('Posts with rich_content:');
+      postsWithRichContent.forEach(post => {
+        console.log(`- "${post.data.title}" has ${post.data.richContent.length} components`);
+      });
+    }
+    
     return posts;
   } catch (error) {
     console.error("Error fetching posts from Strapi:", error);

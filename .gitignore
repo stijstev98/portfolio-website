@@ -20,3 +20,6 @@ yarn-error.log*
 
 # Strapi CMS
 /strapi-cms/public/uploads
+
+# Cache directory
+.cache/

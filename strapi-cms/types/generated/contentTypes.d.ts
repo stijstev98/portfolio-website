@@ -364,6 +364,15 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     post_preview_image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
     post_title: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
+    rich_content: Schema.Attribute.DynamicZone<
+      [
+        'shared.video-embed',
+        'shared.rich-text',
+        'shared.media',
+        'shared.callout',
+        'shared.book-flip',
+      ]
+    >;
     short_description: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> & Schema.Attribute.Private;

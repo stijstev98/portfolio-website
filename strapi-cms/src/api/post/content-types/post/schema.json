@@ -54,6 +54,16 @@
     },
     "short_description": {
       "type": "string"
+    },
+    "rich_content": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.video-embed",
+        "shared.rich-text",
+        "shared.media",
+        "shared.callout",
+        "shared.book-flip"
+      ]
     }
   }
 }

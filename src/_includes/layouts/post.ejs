@@ -32,13 +32,7 @@ layout: layouts/base.ejs
 <section class="post-content-section">
   <div class="container">
     <div class="post-body">
-      <% if (post.data.body) { %>
-        <% try { %>
-          <%- post.data.body %>
-        <% } catch(e) { %>
-          <%= post.data.body %>
-        <% } %>
-      <% } %>
+      <%- content %>
     </div>
   </div>
 </section>
