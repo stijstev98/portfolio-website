@@ -357,7 +357,6 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
       Schema.Attribute.Private;
-    post_body: Schema.Attribute.Blocks;
     post_body2: Schema.Attribute.JSON & Schema.Attribute.CustomField<'plugin::lexical.lexical'>;
     post_description: Schema.Attribute.Text;
     post_header_image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;

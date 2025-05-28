@@ -28,9 +28,6 @@
         "audios"
       ]
     },
-    "post_body": {
-      "type": "blocks"
-    },
     "post_preview_image": {
       "type": "media",
       "multiple": false,
