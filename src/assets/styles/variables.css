@@ -13,6 +13,8 @@
     /* Status colors */
     --success-color: #4CAF50;
     --error-color: #F44336;
+    --info-color: #0dcaf0;
+    --warning-color: #ffc107;
     
     /* Spacing and borders */
     --border-radius: 12px;
@@ -22,16 +24,39 @@
     --title-font: 'pressio-condensed', sans-serif;
     --title-font-narrow: 'pressio-compressed', sans-serif;
     --body-font: 'Sans Soucis 2.7.5', sans-serif;
+    --mono-font: 'Courier New', monospace;
 
-    /* Typography styles */
-    --title-jumbo-size: 70rem;
-    --title-large-size: 5rem;
+    /* Typography scales */
+    --title-jumbo-size: 5rem;
+    --title-large-size: 4rem;
+    --title-medium-size: 3rem;
+    --title-small-size: 2rem;
     --body-text-size: 1.1rem;
     --body-text-line-height: 1.7;
+    --body-text-small: 0.9rem;
+    
+    /* Standard spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 2.5rem;
+    --spacing-xxl: 3rem;
+    
+    /* Standard shadows */
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
+    --shadow-xl: 0 15px 30px rgba(0, 0, 0, 0.2);
     
     /* Animation */
     --anim-duration-slow: 0.8s;
     --anim-duration-medium: 0.5s;
     --anim-duration-fast: 0.3s;
     --anim-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Backgrounds */
+    --bg-overlay: rgba(30, 30, 30, 0.5);
+    --bg-primary-subtle: rgba(49, 109, 123, 0.1);
+    --bg-code: rgba(255, 255, 255, 0.1);
 }

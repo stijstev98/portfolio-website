@@ -1,13 +1,11 @@
-/* Post Header Section - Full width with gradient overlay */
+/* Post Header Section */
 .post-header-section {
   position: absolute;
   width: 100vw;
   left: 0;
   top: 0;
-  margin-left: 0;
-  margin-top: 0;
-  margin-bottom: 3rem;
-  z-index: 1; /* Lower than navigation (z-index: 100) */
+  margin: 0 0 var(--spacing-xxl) 0;
+  z-index: 1;
 }
 
 .post-header-image-container {
@@ -33,65 +31,64 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, rgba(18, 18, 18, 0.2) 0%, rgba(18, 18, 18, 0.8) 80%, var(--bg-color) 100%);
+  background: linear-gradient(to bottom, 
+      rgba(18, 18, 18, 0.2) 0%, 
+      rgba(18, 18, 18, 0.8) 80%, 
+      var(--bg-color) 100%);
 }
 
 .post-header-content {
   position: absolute;
   bottom: 0;
   left: 0;
-  right: 0; 
+  right: 0;
   width: 100%;
   z-index: 20;
 }
 
-/* Post Header Container - Consistent width for all content */
 .post-header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 0rem;
   width: 100%;
 }
 
-/* Post Title Styling - Enhanced from base typography */
+/* Post Title */
 .post-title {
   font-family: var(--title-font-narrow);
   font-size: var(--title-large-size);
   font-weight: 900;
   line-height: 0.9;
-  margin-bottom: 1rem;
+  margin-bottom: var(--spacing-sm);
   padding: 0;
 }
 
-/* Post Short Description */
 .post-short-description {
   font-size: 1.25rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 1rem; /* Reduced from 2rem to tighten spacing before breadcrumb */
+  margin-bottom: var(--spacing-sm);
   max-width: 70%;
-  line-height: 1.3; /* Tightened line height */
+  line-height: 1.3;
 }
 
 .breadcrumb-container {
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: var(--spacing-xs) 0 var(--spacing-sm);
 }
 
 /* Post Content Section */
 .post-content-section {
-  padding: 2rem 0;
-  margin-top: 40vh; /* Match the height of the header section */
+  padding: var(--spacing-lg) 0;
+  margin-top: 40vh;
 }
 
 .post-hero-content h1 {
-  font-size: 4rem;
-  margin-bottom: 1rem;
+  font-size: var(--title-large-size);
+  margin-bottom: var(--spacing-sm);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   color: #fff;
   display: inline;
   background-color: var(--primary-color);
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-xs) var(--spacing-sm);
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   line-height: 1.6;
@@ -99,7 +96,7 @@
 
 /* Breadcrumb */
 .post-breadcrumb {
-  margin-bottom: 2rem;
+  margin-bottom: var(--spacing-lg);
 }
 
 .breadcrumb {
@@ -112,15 +109,15 @@
 }
 
 .breadcrumb-item {
-  font-size: 0.9rem;
+  font-size: var(--body-text-small);
   color: var(--text-light);
-  margin-right: 0.5rem;
+  margin-right: var(--spacing-xs);
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
   content: "›";
   color: var(--text-light);
-  margin-right: 0.5rem;
+  margin-right: var(--spacing-xs);
 }
 
 .breadcrumb-item.active {
@@ -130,12 +127,12 @@
 /* Post Content */
 .post-content-wrapper {
   position: relative;
-  background-color: rgba(30, 30, 30, 0.5);
+  background-color: var(--bg-overlay);
   border-radius: var(--border-radius);
-  padding: 3rem;
-  margin-bottom: 3rem;
+  padding: var(--spacing-xxl);
+  margin-bottom: var(--spacing-xxl);
   border-left: var(--default-border);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-xl);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -144,19 +141,19 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.95rem;
+  font-size: var(--body-text-small);
   color: var(--text-light);
 }
 
 .post-description {
   font-size: 1.4rem;
   line-height: 1.8;
-  margin-bottom: 3rem;
-  padding: 2rem;
-  background-color: rgba(49, 109, 123, 0.1);
+  margin-bottom: var(--spacing-xxl);
+  padding: var(--spacing-lg);
+  background-color: var(--bg-primary-subtle);
   border-radius: var(--small-radius);
   border-left: 4px solid var(--primary-color);
   font-style: italic;
@@ -166,20 +163,20 @@
 .post-description::before {
   content: "";
   position: absolute;
-  top: -1rem;
-  left: 1rem;
-  font-size: 5rem;
+  top: -var(--spacing-sm);
+  left: var(--spacing-sm);
+  font-size: var(--title-jumbo-size);
   color: var(--primary-color);
   opacity: 0.2;
   font-family: var(--title-font);
 }
 
-/* Post content specific typography enhancements */
+/* Post content typography */
 .post-content p:first-of-type::first-letter {
   font-size: 3.5rem;
   float: left;
   line-height: 0.8;
-  margin-right: 0.5rem;
+  margin-right: var(--spacing-xs);
   padding-top: 0.2rem;
   color: var(--primary-color);
   font-weight: bold;
@@ -187,39 +184,35 @@
 }
 
 .post-content h2 {
-  padding-bottom: 0.5rem;
+  padding-bottom: var(--spacing-xs);
   display: inline-block;
-  margin-top: 3rem;
-  margin-bottom: 1.5rem;
+  margin: var(--spacing-xxl) 0 var(--spacing-md);
 }
 
 .post-content h3 {
-  margin-top: 2.5rem;
-  margin-bottom: 1.25rem;
+  margin: var(--spacing-xl) 0 1.25rem;
 }
 
-/* Post content specific link styling */
 .post-content a {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
-  transition: all 0.2s ease;
+  transition: all var(--anim-duration-fast) ease;
 }
 
-/* Post content specific image styling */
 .post-content img {
   max-width: 100%;
   height: auto;
   border-radius: var(--border-radius);
-  margin: 2.5rem auto;
+  margin: var(--spacing-xl) auto;
   display: block;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  border: 3px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-md);
+  border: 3px solid var(--border-color);
 }
 
 .post-content blockquote {
-  margin: 2rem 0;
-  padding-left: 2rem;
+  margin: var(--spacing-lg) 0;
+  padding-left: var(--spacing-lg);
   border-left: 4px solid var(--primary-color);
   font-style: italic;
   color: var(--text-light);
@@ -227,19 +220,19 @@
 
 /* Image gallery */
 .post-gallery {
-  margin: 4rem 0 2rem;
+  margin: 4rem 0 var(--spacing-lg);
 }
 
 .post-gallery h3 {
-  margin-bottom: 1.5rem;
-  font-size: 2rem;
+  margin-bottom: var(--spacing-md);
+  font-size: var(--title-small-size);
   color: var(--primary-color);
 }
 
 .gallery-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: var(--spacing-md);
 }
 
 .post-gallery-item {
@@ -247,9 +240,10 @@
   border-radius: var(--border-radius);
   overflow: hidden;
   aspect-ratio: 16/9;
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform var(--anim-duration-fast) ease, box-shadow var(--anim-duration-fast) ease;
+  border: 2px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  transition: transform var(--anim-duration-fast) ease, 
+              box-shadow var(--anim-duration-fast) ease;
 }
 
 .post-gallery-item img {
@@ -261,7 +255,7 @@
 
 .post-gallery-item:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-lg);
 }
 
 .post-gallery-item:hover img {
@@ -275,11 +269,11 @@
   }
   
   .post-content-wrapper {
-    padding: 2.5rem;
+    padding: var(--spacing-xl);
   }
   
   .post-description {
-    padding: 1.5rem;
+    padding: var(--spacing-md);
     font-size: 1.3rem;
   }
 }
@@ -291,11 +285,11 @@
   
   .post-short-description {
     max-width: 100%;
-    line-height: 1.4; /* Slightly looser for readability on mobile */
+    line-height: 1.4;
   }
   
   .post-content-wrapper {
-    padding: 2rem;
+    padding: var(--spacing-lg);
   }
   
   .post-description {
@@ -319,11 +313,11 @@
   }
   
   .post-content-wrapper {
-    padding: 1.5rem;
+    padding: var(--spacing-md);
   }
   
   .post-description {
     font-size: 1.1rem;
-    padding: 1rem;
+    padding: var(--spacing-sm);
   }
 }

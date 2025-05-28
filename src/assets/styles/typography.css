@@ -3,11 +3,13 @@ body {
     font-family: var(--body-font);
     color: var(--text-color);
     background-color: var(--bg-color);
-    line-height: 1.6;
-    font-size: 1rem;
+    line-height: var(--body-text-line-height);
+    font-size: var(--body-text-size);
     font-weight: 300;
+    letter-spacing: 0.02em;
 }
 
+/* Headings */
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--title-font-narrow);
     margin-top: 0;
@@ -16,22 +18,21 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
+/* Title sizes */
 .jumbo-title {
     font-size: var(--title-jumbo-size);
-    color: var(--text-color);
-    font-size: 5rem;
     font-family: var(--title-font-narrow);
     text-transform: uppercase;
-    margin-bottom: 2rem;
+    margin-bottom: var(--spacing-lg);
     font-weight: 800;
-    text-align: left;
     letter-spacing: 0.05em;
 }
 
+/* Links */
 a {
     color: var(--primary-color);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: color var(--anim-duration-fast) ease;
 }
 
 a:hover {
@@ -39,6 +40,7 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Body text variants */
 .body-text {
     font-size: var(--body-text-size);
     line-height: var(--body-text-line-height);
@@ -46,103 +48,101 @@ a:hover {
     letter-spacing: 0.02em;
 }
 
-/* Content-specific typography */
+/* Content typography - consolidated styles */
 .content {
-  letter-spacing: 0.05em;
-  line-height: 2;
-  font-size: var(--body-text-size);
+    letter-spacing: 0.05em;
+    line-height: 2;
+    font-size: var(--body-text-size);
 }
 
 .content ul,
 .content ol,
 .content p {
-  overflow: auto;
+    overflow: auto;
 }
 
 .content > div > ul,
 .content > div > ol {
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+    margin: var(--spacing-md) 0;
 }
 
 .content ul,
 .content ol {
-  padding-left: 2rem;
+    padding-left: var(--spacing-lg);
 }
 
 .content ul {
-  list-style-position: outside;
-  list-style-type: disc;
+    list-style: disc outside;
 }
 
 .content ol {
-  list-style-position: outside;
-  list-style-type: decimal;
+    list-style: decimal outside;
 }
 
-.content pre[class*='language-'] {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+.content pre[class*='language-'],
+.content table {
+    margin: var(--spacing-lg) 0;
 }
 
 .content table {
-  white-space: nowrap;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  border-collapse: collapse;
-  display: block;
-  overflow: auto;
+    white-space: nowrap;
+    border-collapse: collapse;
+    display: block;
+    overflow: auto;
 }
 
 .content th,
 .content td {
-  border: 1px solid #dee2e6;
-  padding: 1rem 2rem;
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-lg);
 }
 
 .content th {
-  background-color: #f8f9fa;
+    background-color: var(--bg-overlay);
 }
 
-/* Rich text content typography */
+/* Post content specific typography */
 .post-content img {
-  max-width: 100%;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-  margin-left: auto;
-  margin-right: auto;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    margin: var(--spacing-lg) auto;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    display: block;
 }
 
 .post-content blockquote {
-  padding-left: 1rem;
-  font-style: italic;
-  border-left: 4px solid #dee2e6;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+    padding-left: var(--spacing-sm);
+    font-style: italic;
+    border-left: 4px solid var(--border-color);
+    margin: var(--spacing-md) 0;
 }
 
 .post-content code:not([class*="language-"]) {
-  background-color: #f8f9fa;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
+    background-color: var(--bg-code);
+    padding: 0.125rem 0.25rem;
+    border-radius: var(--small-radius);
+    font-size: var(--body-text-small);
+    font-family: var(--mono-font);
 }
 
+.post-content p {
+    margin-bottom: var(--spacing-md);
+}
+
+/* Featured content */
 .featured-image img {
-  width: 100%;
-  height: 16rem;
-  object-fit: cover;
-  margin-bottom: 2rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 16rem;
+    object-fit: cover;
+    margin-bottom: var(--spacing-lg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
 }
 
 .post-meta {
-  color: #6c757d;
-  font-size: 0.875rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #e9ecef;
-  padding-bottom: 1rem;
+    color: var(--text-light);
+    font-size: var(--body-text-small);
+    margin-bottom: var(--spacing-sm);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--spacing-sm);
 }
