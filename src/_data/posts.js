@@ -4,26 +4,56 @@ const renderRichText = require('./utils/renderRichText');
 const { convertPdfToImages } = require('./utils/pdfProcessor');
 const path = require('path');
 
+// Use consistent base URL for Strapi
+const STRAPI_BASE_URL = 'http://127.0.0.1:1337';
+
+/**
+ * Extract media documentIds from Lexical content
+ * @param {Object} lexicalContent - The Lexical JSON content
+ * @returns {Array} Array of documentIds
+ */
+function extractMediaDocumentIds(lexicalContent) {
+  const documentIds = [];
+  
+  function traverseNodes(nodes) {
+    if (!Array.isArray(nodes)) return;
+    
+    for (const node of nodes) {
+      if (node.type === 'strapi-image' && node.documentId) {
+        documentIds.push(node.documentId);
+      }
+      
+      // Recursively check children
+      if (node.children) {
+        traverseNodes(node.children);
+      }
+    }
+  }
+  
+  if (lexicalContent && lexicalContent.root && lexicalContent.root.children) {
+    traverseNodes(lexicalContent.root.children);
+  }
+  
+  return [...new Set(documentIds)]; // Remove duplicates
+}
+
 module.exports = async function() {
   console.log("Fetching posts from Strapi...");
   try {
-    // First try with basic populate to get all posts including Lexical fields
-    const apiUrl = `http://localhost:1337/api/posts?populate=*&pagination[limit]=100`;
-    const apiUrlAlt = `http://127.0.0.1:1337/api/posts?populate=*&pagination[limit]=100`;
+    // Use basic populate to avoid complex validation issues
+    const apiUrl = `${STRAPI_BASE_URL}/api/posts?populate=*&pagination[limit]=100`;
     
     console.log('Attempting to fetch from:', apiUrl);
     
-    // Try both localhost and 127.0.0.1
+    // Try to fetch from Strapi
     let response;
     try {
       response = await fetch(apiUrl, { 
-        timeout: 5000 
+        timeout: 10000 
       });
     } catch (e) {
-      console.log("Trying alternate connection method to Strapi...");
-      response = await fetch(apiUrlAlt, { 
-        timeout: 5000 
-      });
+      console.log("Connection failed to Strapi. Make sure Strapi is running on port 1337.");
+      throw e;
     }
     
     if (!response.ok) {
@@ -33,33 +63,6 @@ module.exports = async function() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    
-    // Now fetch posts with rich_content separately for those that have it
-    const enhancedPosts = [];
-    for (const post of data.data) {
-      if (post.rich_content && post.rich_content.length > 0) {
-        console.log(`Fetching detailed rich_content for post: ${post.post_title}`);
-        try {
-          const detailUrl = `http://127.0.0.1:1337/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
-          const detailResponse = await fetch(detailUrl, { timeout: 5000 });
-          if (detailResponse.ok) {
-            const detailData = await detailResponse.json();
-            enhancedPosts.push(detailData.data);
-          } else {
-            console.warn(`Failed to fetch detailed rich_content for post ${post.post_title}`);
-            enhancedPosts.push(post);
-          }
-        } catch (error) {
-          console.warn(`Error fetching detailed rich_content for post ${post.post_title}:`, error.message);
-          enhancedPosts.push(post);
-        }
-      } else {
-        enhancedPosts.push(post);
-      }
-    }
-    
-    // Replace the original data with enhanced data
-    data.data = enhancedPosts;
     
     // Log the raw data from Strapi for inspection
     console.log("Raw data structure:", JSON.stringify(data.data[0], null, 2));
@@ -79,23 +82,29 @@ module.exports = async function() {
       const titleForSlug = post.post_title || `post-${post.id || index}`;
       const slug = slugify(titleForSlug, { lower: true, strict: true });
       
-      // Get image URLs from the correct structure
+      // Helper function to construct image URL
+      const constructImageUrl = (imageUrl) => {
+        if (!imageUrl) return null;
+        return imageUrl.startsWith('http') ? imageUrl : `${STRAPI_BASE_URL}${imageUrl}`;
+      };
+      
+      // Get image URLs from the correct structure with better error handling
       const headerImageUrl = post.post_header_image?.url 
-        ? `http://127.0.0.1:1337${post.post_header_image.url}`
+        ? constructImageUrl(post.post_header_image.url)
         : null;
       
       const previewImageUrl = post.post_preview_image?.url
-        ? `http://127.0.0.1:1337${post.post_preview_image.url}` 
+        ? constructImageUrl(post.post_preview_image.url)
         : headerImageUrl; // Fall back to header image if no preview image
       
       // For responsive images, optionally get medium and small formats
       const headerImageMedium = post.post_header_image?.formats?.medium?.url
-        ? `http://127.0.0.1:1337${post.post_header_image.formats.medium.url}`
+        ? constructImageUrl(post.post_header_image.formats.medium.url)
         : null;
       
       const previewImageMedium = post.post_preview_image?.formats?.medium?.url
-        ? `http://127.0.0.1:1337${post.post_preview_image.formats.medium.url}`
-        : null;
+        ? constructImageUrl(post.post_preview_image.formats.medium.url)
+        : headerImageMedium;
       
       // Extract header image dimensions
       const headerImageWidth = post.post_header_image?.width || 0;
@@ -112,12 +121,12 @@ module.exports = async function() {
           || img.formats?.medium?.url
           || null;
         return {
-          url: src ? `http://127.0.0.1:1337${src}` : null,
-          medium: mediumSrc ? `http://127.0.0.1:1337${mediumSrc}` : null,
+          url: src ? constructImageUrl(src) : null,
+          medium: mediumSrc ? constructImageUrl(mediumSrc) : null,
           width: img.attributes?.width || img.width || 0,
           height: img.attributes?.height || img.height || 0
         };
-      });
+      }).filter(img => img.url); // Filter out any images without URLs
       
       // Process the rich text body if it exists (Lexical format)
       let processedBody = '';
@@ -125,23 +134,35 @@ module.exports = async function() {
       let linkAssets = {};
       
       if (post.post_body2) {
-        // For Lexical content, we need to fetch associated media if they have suffixes
-        // Check if post has post_body2Media field for media assets
-        if (post.post_body2Media && Array.isArray(post.post_body2Media)) {
-          mediaAssets = post.post_body2Media.map(media => ({
-            documentId: media.documentId || media.id,
-            url: media.url,
-            name: media.name,
-            alternativeText: media.alternativeText,
-            width: media.width,
-            height: media.height,
-            caption: media.caption
-          }));
-        }
-        
-        // Check if post has post_body2Links field for internal links
-        if (post.post_body2Links && Array.isArray(post.post_body2Links)) {
-          linkAssets = post.post_body2Links;
+        // For Lexical content, we need to fetch associated media
+        // Extract media documentIds from Lexical content and fetch them
+        const mediaDocumentIds = extractMediaDocumentIds(post.post_body2);
+        if (mediaDocumentIds.length > 0) {
+          console.log(`Found ${mediaDocumentIds.length} media references in Lexical content:`, mediaDocumentIds);
+          
+          try {
+            // Fetch media assets for these documentIds
+            const mediaApiUrl = `${STRAPI_BASE_URL}/api/upload/files?filters[documentId][$in]=${mediaDocumentIds.join(',')}`;
+            const mediaResponse = await fetch(mediaApiUrl, { timeout: 5000 });
+            
+            if (mediaResponse.ok) {
+              const mediaData = await mediaResponse.json();
+              mediaAssets = mediaData.map(media => ({
+                documentId: media.documentId,
+                url: media.url,
+                name: media.name,
+                alternativeText: media.alternativeText,
+                width: media.width,
+                height: media.height,
+                caption: media.caption
+              }));
+              console.log(`Successfully fetched ${mediaAssets.length} media assets from upload API`);
+            } else {
+              console.warn(`Failed to fetch media assets from upload API: ${mediaResponse.status}`);
+            }
+          } catch (error) {
+            console.warn(`Error fetching media assets:`, error.message);
+          }
         }
         
         processedBody = renderRichText(post.post_body2, {
@@ -179,7 +200,7 @@ module.exports = async function() {
               };
             case 'shared.media':
               const mediaUrl = component.file?.url 
-                ? `http://127.0.0.1:1337${component.file.url}`
+                ? constructImageUrl(component.file.url)
                 : null;
               return {
                 type: 'media',
@@ -199,9 +220,30 @@ module.exports = async function() {
                 calloutType: component.type || 'info'
               };
             case 'shared.book-flip':
+              // If pdf_file is not populated, fetch it separately
+              if (!component.pdf_file && component.id) {
+                try {
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
+                  
+                  if (componentResponse.ok) {
+                    const componentData = await componentResponse.json();
+                    const populatedComponent = componentData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.book-flip' && c.id === component.id
+                    );
+                    
+                    if (populatedComponent?.pdf_file) {
+                      component = populatedComponent; // Replace with populated component
+                    }
+                  }
+                } catch (error) {
+                  console.warn('Failed to fetch book-flip component details:', error.message);
+                }
+              }
+              
               // Handle PDF file
               if (component.pdf_file?.url) {
-                const pdfUrl = `http://127.0.0.1:1337${component.pdf_file.url}`;
+                const pdfUrl = constructImageUrl(component.pdf_file.url);
                 
                 // Extract file metadata including update date
                 const fileMetadata = {

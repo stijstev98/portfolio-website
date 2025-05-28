@@ -11,23 +11,141 @@ eleventyComputed:
   date: "<%= post.data.date %>"
 ---
 
+<%
+// Find book flip component in rich_content
+let bookFlipComponent = null;
+if (post.data.richContent && post.data.richContent.length > 0) {
+  bookFlipComponent = post.data.richContent.find(component => 
+    component.type === 'shared.book-flip' && 
+    component.pages && 
+    component.pages.length > 0
+  );
+}
+
+// Process the body content
+let processedBody = '';
+let hasFlipBookShortcode = false;
+
+if (post.data.hasLexicalContent) {
+  processedBody = post.data.body;
+} else if (Array.isArray(post.data.body)) {
+  processedBody = this.renderRichText(post.data.body);
+} else if (typeof post.data.body === 'string') {
+  processedBody = this.renderRichText(post.data.body);
+}
+
+// Check if [flip-book] shortcode exists in the body
+if (bookFlipComponent && processedBody.includes('[flip-book]')) {
+  hasFlipBookShortcode = true;
+  // Split the content around the shortcode for rendering
+  const parts = processedBody.split('[flip-book]');
+  var beforeShortcode = parts[0] || '';
+  var afterShortcode = parts[1] || '';
+}
+%>
+
 <div class="post-content">
-  <% if (post.data.hasLexicalContent) { %>
-    <!-- Render Lexical rich text content -->
+  <% if (processedBody) { %>
     <div class="rich-content">
-      <%- post.data.body %>
-    </div>
-  <% } else if (Array.isArray(post.data.body)) { %>
-    <!-- Legacy Strapi blocks format -->
-    <div class="rich-content">
-      <%- this.renderRichText(post.data.body) %>
-    </div>
-  <% } else if (typeof post.data.body === 'string') { %>
-    <!-- Legacy string/markdown format -->
-    <div class="rich-content">
-      <%- this.renderRichText(post.data.body) %>
+      <% if (hasFlipBookShortcode && bookFlipComponent) { %>
+        <%# Render content before shortcode %>
+        <%- beforeShortcode %>
+        
+        <%# Render the book flip component %>
+        <%- include('/components/book-flip', { 
+          pages: bookFlipComponent.pages, 
+          aspectRatio: bookFlipComponent.aspectRatio,
+          title: bookFlipComponent.title,
+          error: bookFlipComponent.error 
+        }) %>
+        
+        <%# Render content after shortcode %>
+        <%- afterShortcode %>
+      <% } else { %>
+        <%# Output the body as is %>
+        <%- processedBody %>
+      <% } %>
     </div>
   <% } else { %>
     <p>No content available.</p>
   <% } %>
+  
+  <% 
+  // If book flip component exists but wasn't placed via shortcode, render it after the body
+  if (bookFlipComponent && !hasFlipBookShortcode) { 
+  %>
+    <div class="rich-content-block book-flip-block">
+      <%- include('/components/book-flip', { 
+        pages: bookFlipComponent.pages, 
+        aspectRatio: bookFlipComponent.aspectRatio,
+        title: bookFlipComponent.title,
+        error: bookFlipComponent.error 
+      }) %>
+    </div>
+  <% } %>
+  
+  <% 
+  // Render other rich content components (excluding book flip which we already handled)
+  if (post.data.richContent && post.data.richContent.length > 0) {
+    const otherComponents = post.data.richContent.filter(component => component.type !== 'shared.book-flip');
+    
+    for (const component of otherComponents) {
+      switch (component.type) {
+        case 'rich-text':
+  %>
+          <div class="rich-content-block rich-text-component">
+            <%- component.content %>
+          </div>
+  <%      break;
+        case 'video-embed':
+  %>
+          <div class="rich-content-block video-embed-component">
+            <%- include('/components/video-embed', component) %>
+          </div>
+  <%      break;
+        case 'media':
+          if (component.media) {
+  %>
+          <div class="rich-content-block media-component">
+            <figure class="rich-content-image">
+              <img src="<%= component.media.url %>" alt="<%= component.media.name %>" 
+                   <% if (component.media.width && component.media.height) { %>
+                   width="<%= component.media.width %>" height="<%= component.media.height %>"
+                   <% } %>
+                   class="rich-content-image">
+              <% if (component.caption) { %>
+                <figcaption><%= component.caption %></figcaption>
+              <% } %>
+            </figure>
+          </div>
+  <%      }
+          break;
+        case 'callout':
+  %>
+          <div class="rich-content-block callout-component">
+            <div class="rich-content-callout <%= component.calloutType %>-callout">
+              <span class="callout-icon">
+                <% if (component.calloutType === 'info') { %>ℹ️
+                <% } else if (component.calloutType === 'warning') { %>⚠️
+                <% } else if (component.calloutType === 'danger') { %>🚨
+                <% } else if (component.calloutType === 'success') { %>✅
+                <% } else { %>💡<% } %>
+              </span>
+              <div class="callout-content">
+                <% if (component.title) { %>
+                  <strong><%= component.title %></strong>
+                <% } %>
+                <%- component.content %>
+              </div>
+            </div>
+          </div>
+  <%      break;
+      }
+    }
+  }
+  %>
 </div>
+
+<% if (bookFlipComponent) { %>
+  <script src="/assets/js/book-flip.js"></script>
+<% } %>

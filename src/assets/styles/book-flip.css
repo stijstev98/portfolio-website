@@ -28,7 +28,7 @@
   transition: translate 1s;
   translate: calc(min(var(--c), 1) * 50%) 0%;
   /* Modified rotation for flatter page opening */
-  rotate: 1 0 0 32deg; /* Adjusted for a slightly flatter view */
+  rotate: 1 0 0 10deg; /* Adjusted for a slightly flatter view */
   --aspect-ratio: 0.75; /* Default 3:4 ratio, will be overridden by inline style */
   /* Calculate height based on width and aspect ratio */
   aspect-ratio: var(--aspect-ratio);

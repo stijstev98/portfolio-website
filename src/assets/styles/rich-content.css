@@ -367,6 +367,23 @@
   border-color: var(--border-color);
 }
 
+/* Book Flip Block */
+.book-flip-block {
+  margin: var(--spacing-xxl) 0;
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.book-flip-block .book-flip-container {
+  margin: 0 auto;
+}
+
+/* Book flip within content (via shortcode) */
+.rich-content .book-flip-container {
+  margin: var(--spacing-xl) 0;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .rich-content blockquote,

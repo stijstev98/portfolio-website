@@ -1,5 +1,8 @@
 const { marked } = require('marked');
 
+// Use consistent base URL for Strapi
+const STRAPI_BASE_URL = 'http://127.0.0.1:1337';
+
 /**
  * Utility function to convert Strapi's Rich Text content to HTML
  * Supports both legacy Strapi blocks format and new Lexical JSON format
@@ -125,6 +128,12 @@ function formatTextNode(node) {
   
   let text = escapeHtml(node.text);
   
+  // Handle [flip-book] shortcode - just pass it through without escaping
+  // It will be replaced in the template
+  if (text.includes('[flip-book]')) {
+    text = text.replace(/\[flip-book\]/g, '[flip-book]');
+  }
+  
   // Apply formatting based on format bitmask
   // Lexical uses bit flags: 1=bold, 2=italic, 4=strikethrough, 8=underline, 16=code, etc.
   if (node.format) {
@@ -221,7 +230,13 @@ function renderStrapiImage(node, media = []) {
     return '';
   }
   
-  const src = `http://127.0.0.1:1337${mediaAsset.url}`;
+  // Helper function to construct image URL
+  const constructImageUrl = (imageUrl) => {
+    if (!imageUrl) return '';
+    return imageUrl.startsWith('http') ? imageUrl : `${STRAPI_BASE_URL}${imageUrl}`;
+  };
+  
+  const src = constructImageUrl(mediaAsset.url);
   const alt = mediaAsset.alternativeText || mediaAsset.name || '';
   const width = mediaAsset.width || '';
   const height = mediaAsset.height || '';
@@ -260,6 +275,22 @@ function renderTextOnly(nodes) {
  */
 function escapeHtml(text) {
   if (typeof text !== 'string') return text;
+  
+  // Don't escape the [flip-book] shortcode
+  const hasFlipBook = text.includes('[flip-book]');
+  if (hasFlipBook) {
+    // Split by shortcode, escape parts, then rejoin
+    const parts = text.split('[flip-book]');
+    const escapedParts = parts.map(part => 
+      part
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+    );
+    return escapedParts.join('[flip-book]');
+  }
   
   return text
     .replace(/&/g, '&amp;')
@@ -305,7 +336,13 @@ function renderStrapiBlocks(content) {
     }
     
     if (block.type === 'image' && block.image) {
-      const url = `http://localhost:1337${block.image.url}`;
+      // Helper function to construct image URL
+      const constructImageUrl = (imageUrl) => {
+        if (!imageUrl) return '';
+        return imageUrl.startsWith('http') ? imageUrl : `${STRAPI_BASE_URL}${imageUrl}`;
+      };
+      
+      const url = constructImageUrl(block.image.url);
       const alt = block.image.alternativeText || '';
       return `<img src="${url}" alt="${alt}" />`;
     }
