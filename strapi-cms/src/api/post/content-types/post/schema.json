@@ -64,6 +64,10 @@
         "shared.callout",
         "shared.book-flip"
       ]
+    },
+    "post_body2": {
+      "type": "customField",
+      "customField": "plugin::lexical.lexical"
     }
   }
 }

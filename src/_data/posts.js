@@ -7,7 +7,7 @@ const path = require('path');
 module.exports = async function() {
   console.log("Fetching posts from Strapi...");
   try {
-    // First try with basic populate to get all posts
+    // First try with basic populate to get all posts including Lexical fields
     const apiUrl = `http://localhost:1337/api/posts?populate=*&pagination[limit]=100`;
     const apiUrlAlt = `http://127.0.0.1:1337/api/posts?populate=*&pagination[limit]=100`;
     
@@ -119,8 +119,39 @@ module.exports = async function() {
         };
       });
       
-      // Process the rich text body if it exists
-      const processedBody = post.post_body ? renderRichText(post.post_body) : '';
+      // Process the rich text body if it exists (Lexical format)
+      let processedBody = '';
+      let mediaAssets = [];
+      let linkAssets = {};
+      
+      if (post.post_body2) {
+        // For Lexical content, we need to fetch associated media if they have suffixes
+        // Check if post has post_body2Media field for media assets
+        if (post.post_body2Media && Array.isArray(post.post_body2Media)) {
+          mediaAssets = post.post_body2Media.map(media => ({
+            documentId: media.documentId || media.id,
+            url: media.url,
+            name: media.name,
+            alternativeText: media.alternativeText,
+            width: media.width,
+            height: media.height,
+            caption: media.caption
+          }));
+        }
+        
+        // Check if post has post_body2Links field for internal links
+        if (post.post_body2Links && Array.isArray(post.post_body2Links)) {
+          linkAssets = post.post_body2Links;
+        }
+        
+        processedBody = renderRichText(post.post_body2, {
+          media: mediaAssets,
+          links: linkAssets
+        });
+      } else if (post.post_body) {
+        // Fallback to legacy rich text format
+        processedBody = renderRichText(post.post_body);
+      }
       
       // Process rich_content dynamic zone if it exists
       let richContentComponents = [];
@@ -232,8 +263,12 @@ module.exports = async function() {
           description: post.post_description,
           date: post.publishedAt || post.createdAt || new Date(),
           body: processedBody,
-          rawBody: post.post_body, // Keep the original for reference if needed
-          richContent: richContentComponents, // New: rich_content dynamic zone data
+          rawBody: post.post_body2 || post.post_body, // Prefer Lexical content, fallback to legacy
+          lexicalContent: post.post_body2, // Store raw Lexical JSON for reference
+          hasLexicalContent: !!post.post_body2, // Helper flag
+          mediaAssets: mediaAssets, // Store processed media assets
+          linkAssets: linkAssets, // Store link assets
+          richContent: richContentComponents, // Rich_content dynamic zone data
           hasRichContent: richContentComponents.length > 0, // Helper flag
           headerImage: headerImageUrl,
           headerImageMedium: headerImageMedium,
@@ -256,13 +291,22 @@ module.exports = async function() {
     const posts = postsData.filter(post => post !== null && post.data.title);
 
     const postsWithRichContent = posts.filter(post => post.data.hasRichContent);
+    const postsWithLexicalContent = posts.filter(post => post.data.hasLexicalContent);
     console.log(`Fetched and processed ${posts.length} posts from Strapi.`);
     console.log(`Found ${postsWithRichContent.length} posts with rich_content dynamic zone data.`);
+    console.log(`Found ${postsWithLexicalContent.length} posts with Lexical content.`);
     
     if (postsWithRichContent.length > 0) {
       console.log('Posts with rich_content:');
       postsWithRichContent.forEach(post => {
         console.log(`- "${post.data.title}" has ${post.data.richContent.length} components`);
+      });
+    }
+    
+    if (postsWithLexicalContent.length > 0) {
+      console.log('Posts with Lexical content:');
+      postsWithLexicalContent.forEach(post => {
+        console.log(`- "${post.data.title}" has Lexical content with ${post.data.mediaAssets.length} media assets`);
       });
     }
     

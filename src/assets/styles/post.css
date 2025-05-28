@@ -49,25 +49,22 @@
 .post-header-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 0rem;
   width: 100%;
 }
 
-/* Post Title Styling */
+/* Post Title Styling - Enhanced from base typography */
 .post-title {
   font-family: var(--title-font-narrow);
-  font-size: 5rem;
+  font-size: var(--title-large-size);
   font-weight: 900;
   line-height: 0.9;
-  text-transform: uppercase;
-  color: var(--text-color);
   margin-bottom: 1rem;
   padding: 0;
 }
 
 /* Post Short Description */
 .post-short-description {
-  font-family: var(--body-font);
   font-size: 1.25rem;
   font-weight: 300;
   color: rgba(255, 255, 255, 0.9);
@@ -85,13 +82,6 @@
 .post-content-section {
   padding: 2rem 0;
   margin-top: 40vh; /* Match the height of the header section */
-}
-
-.post-body {
-  font-family: var(--body-font);
-  font-size: var(--body-text-size);
-  line-height: var(--body-text-line-height);
-  color: var(--text-color);
 }
 
 .post-hero-content h1 {
@@ -125,16 +115,6 @@
   font-size: 0.9rem;
   color: var(--text-light);
   margin-right: 0.5rem;
-}
-
-.breadcrumb-item a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.breadcrumb-item a:hover {
-  color: var(--accent-color);
-  text-decoration: underline;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
@@ -180,7 +160,6 @@
   border-radius: var(--small-radius);
   border-left: 4px solid var(--primary-color);
   font-style: italic;
-  color: var(--text-color);
   position: relative;
 }
 
@@ -195,11 +174,7 @@
   font-family: var(--title-font);
 }
 
-.post-content {
-  font-size: 1.1rem;
-  line-height: 1.8;
-}
-
+/* Post content specific typography enhancements */
 .post-content p:first-of-type::first-letter {
   font-size: 3.5rem;
   float: left;
@@ -212,34 +187,26 @@
 }
 
 .post-content h2 {
-  color: var(--primary-color);
-  font-size: 2rem;
-  margin-top: 3rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 2px solid var(--primary-color);
   padding-bottom: 0.5rem;
   display: inline-block;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 .post-content h3 {
-  color: var(--text-color);
-  font-size: 1.75rem;
   margin-top: 2.5rem;
   margin-bottom: 1.25rem;
 }
 
+/* Post content specific link styling */
 .post-content a {
-  color: var(--primary-color);
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
   transition: all 0.2s ease;
 }
 
-.post-content a:hover {
-  color: var(--accent-color);
-}
-
+/* Post content specific image styling */
 .post-content img {
   max-width: 100%;
   height: auto;
@@ -267,7 +234,6 @@
   margin-bottom: 1.5rem;
   font-size: 2rem;
   color: var(--primary-color);
-  text-transform: uppercase;
 }
 
 .gallery-grid {
@@ -283,7 +249,7 @@
   aspect-ratio: 16/9;
   border: 2px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--anim-duration-fast) ease, box-shadow var(--anim-duration-fast) ease;
 }
 
 .post-gallery-item img {

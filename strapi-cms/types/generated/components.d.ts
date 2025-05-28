@@ -1,5 +1,15 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface LinksLinks extends Struct.ComponentSchema {
+  collectionName: 'components_links_links';
+  info: {
+    displayName: 'Links';
+  };
+  attributes: {
+    posts: Schema.Attribute.Relation<'oneToMany', 'api::post.post'>;
+  };
+}
+
 export interface SharedBookFlip extends Struct.ComponentSchema {
   collectionName: 'components_shared_book_flips';
   info: {
@@ -73,6 +83,7 @@ export interface SharedVideoEmbed extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'links.links': LinksLinks;
       'shared.book-flip': SharedBookFlip;
       'shared.callout': SharedCallout;
       'shared.media': SharedMedia;

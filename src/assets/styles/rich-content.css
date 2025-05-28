@@ -5,12 +5,228 @@
   margin-bottom: 1.5rem;
 }
 
+/* Text Alignment Classes */
+.text-start {
+  text-align: left !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-end {
+  text-align: right !important;
+}
+
+.text-justify {
+  text-align: justify !important;
+}
+
+/* Rich content specific heading styling (extends base typography) */
+.rich-content h1,
+.rich-text-component h1 {
+  border-bottom: 3px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+.rich-content h2,
+.rich-text-component h2 {
+  padding-bottom: 0.5rem;
+  display: inline-block;
+}
+
+/* Rich content specific margins for headings */
+.rich-content h1,
+.rich-content h2,
+.rich-content h3,
+.rich-content h4,
+.rich-content h5,
+.rich-content h6,
+.rich-text-component h1,
+.rich-text-component h2,
+.rich-text-component h3,
+.rich-text-component h4,
+.rich-text-component h5,
+.rich-text-component h6 {
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.rich-content h1:first-child,
+.rich-content h2:first-child,
+.rich-content h3:first-child,
+.rich-content h4:first-child,
+.rich-content h5:first-child,
+.rich-content h6:first-child,
+.rich-text-component h1:first-child,
+.rich-text-component h2:first-child,
+.rich-text-component h3:first-child,
+.rich-text-component h4:first-child,
+.rich-text-component h5:first-child,
+.rich-text-component h6:first-child {
+  margin-top: 0;
+}
+
+/* Rich content specific paragraph spacing */
+.rich-content p,
+.rich-text-component p,
+.post-content p {
+  margin-bottom: 1.5rem;
+}
+
+.rich-content p:last-child,
+.rich-text-component p:last-child {
+  margin-bottom: 0;
+}
+
+/* Rich content specific list spacing */
+.rich-content li,
+.rich-text-component li {
+  margin-bottom: 0.5rem;
+}
+
+.rich-content li:last-child,
+.rich-text-component li:last-child {
+  margin-bottom: 0;
+}
+
+/* Nested lists */
+.rich-content ul ul,
+.rich-content ol ol,
+.rich-content ul ol,
+.rich-content ol ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Rich content specific text formatting */
+.rich-content u,
+.rich-text-component u {
+  text-decoration: underline;
+  text-decoration-color: var(--primary-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+.rich-content s,
+.rich-text-component s {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.rich-content code,
+.rich-text-component code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.125rem 0.375rem;
+  border-radius: var(--small-radius);
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+  color: var(--accent-color);
+  border: 1px solid var(--border-color);
+}
+
+.rich-content sub,
+.rich-text-component sub {
+  font-size: 0.75em;
+  vertical-align: sub;
+}
+
+.rich-content sup,
+.rich-text-component sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+/* Rich content specific link styling */
+.rich-content a,
+.rich-text-component a {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: color var(--anim-duration-fast) ease;
+}
+
+.rich-content a:hover,
+.rich-text-component a:hover {
+  text-decoration-color: var(--accent-color);
+}
+
+/* Blockquotes in rich content */
+.rich-content blockquote,
+.rich-text-component blockquote {
+  margin: 2rem 0;
+  padding: 1.5rem 2rem;
+  border-left: 4px solid var(--primary-color);
+  background-color: rgba(49, 109, 123, 0.1);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  font-style: italic;
+  color: var(--text-light);
+  position: relative;
+}
+
+.rich-content blockquote::before,
+.rich-text-component blockquote::before {
+  content: "\201C";
+  font-size: 4rem;
+  color: var(--primary-color);
+  opacity: 0.3;
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  line-height: 1;
+  font-family: var(--title-font);
+}
+
+.rich-content blockquote p,
+.rich-text-component blockquote p {
+  margin-bottom: 1rem;
+}
+
+.rich-content blockquote p:last-child,
+.rich-text-component blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Code blocks */
+.rich-content pre,
+.rich-text-component pre {
+  background-color: var(--secondary-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin: 2rem 0;
+  overflow-x: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.rich-content pre code,
+.rich-text-component pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-color);
+}
+
+/* Horizontal rules */
+.rich-content hr,
+.rich-text-component hr {
+  border: none;
+  height: 3px;
+  background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+  margin: 3rem 0;
+  border-radius: var(--small-radius);
+}
+
 /* Images within rich content */
 .rich-content-image {
-  margin: 2rem auto; /* Center images and add some vertical space */
+  margin: 2rem auto;
   max-width: 100%;
-  display: block; /* Ensure figure is block for centering */
-  text-align: center; /* Center the image within the figure */
+  display: block;
+  text-align: center;
 }
 
 .rich-content-image img {
@@ -18,14 +234,23 @@
   height: auto;
   border-radius: var(--border-radius);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-  display: inline-block; /* Allow centering if figure is text-align: center */
+  display: inline-block;
+  border: 3px solid var(--border-color);
+  transition: transform var(--anim-duration-fast) ease, box-shadow var(--anim-duration-fast) ease;
+}
+
+.rich-content-image img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
 }
 
 .rich-content-image figcaption {
   font-size: 0.9rem;
   color: var(--text-light);
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   text-align: center;
+  font-style: italic;
+  padding: 0 1rem;
 }
 
 /* Video wrapper for responsive videos */
@@ -35,8 +260,8 @@
   height: 0;
   overflow: hidden;
   max-width: 100%;
-  background: #000; /* Background for letterboxing if video aspect ratio differs */
-  margin: 2rem auto; /* Center video and add vertical space */
+  background: var(--secondary-color);
+  margin: 2rem auto;
   border-radius: var(--border-radius);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
@@ -56,7 +281,8 @@
   font-size: 0.9rem;
   color: var(--text-light);
   padding: 0.5rem;
-  background-color: rgba(0,0,0,0.3);
+  background-color: var(--secondary-color);
+  opacity: 0.8;
 }
 
 /* Callout Blocks */
@@ -65,15 +291,17 @@
   margin: 2rem 0;
   border-radius: var(--border-radius);
   display: flex;
-  align-items: flex-start; /* Align icon and content to the top */
+  align-items: flex-start;
   border-left-width: 5px;
   border-left-style: solid;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .rich-content-callout .callout-icon {
   margin-right: 1rem;
-  font-size: 1.5rem; /* Adjust icon size as needed */
-  line-height: 1.4; /* Align icon better with first line of text */
+  font-size: 1.5rem;
+  line-height: 1.4;
 }
 
 .rich-content-callout .callout-content {
@@ -84,7 +312,7 @@
   margin-bottom: 0;
 }
 
-/* Callout types - using Font Awesome icons as placeholders */
+/* Callout types */
 .info-callout {
   background-color: rgba(13, 202, 240, 0.1);
   border-left-color: #0dcaf0;
@@ -114,8 +342,9 @@
   padding: 1.5rem;
   margin: 2rem 0;
   border-radius: var(--border-radius);
-  background-color: rgba(30, 30, 30, 0.5);
-  border: 1px solid rgba(95, 95, 95, 0.5);
+  background-color: var(--secondary-color);
+  opacity: 0.8;
+  border: 1px solid var(--border-color);
 }
 
 .custom-component h3 {
@@ -125,16 +354,53 @@
 
 /* Different styles for custom components */
 .custom-component.highlighted {
-  background-color: rgba(var(--primary-color-rgb), 0.1);
+  background-color: rgba(49, 109, 123, 0.1); /* Using primary color values */
   border-color: var(--primary-color);
 }
 
 .custom-component.important {
-  background-color: rgba(var(--danger-color-rgb), 0.1);
-  border-color: var(--danger-color);
+  background-color: rgba(244, 67, 54, 0.1); /* Using error color values */
+  border-color: var(--error-color);
 }
 
 .custom-component.subdued {
-  background-color: rgba(30, 30, 30, 0.3);
-  border-color: rgba(95, 95, 95, 0.3);
+  background-color: var(--secondary-color);
+  opacity: 0.6;
+  border-color: var(--border-color);
+}
+
+/* Media Queries for Rich Content */
+@media (max-width: 768px) {
+  .rich-content blockquote,
+  .rich-text-component blockquote {
+    padding: 1rem 1.5rem;
+  }
+  
+  .rich-content-callout {
+    padding: 1rem;
+  }
+  
+  .rich-content pre,
+  .rich-text-component pre {
+    padding: 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .rich-content blockquote,
+  .rich-text-component blockquote {
+    padding: 1rem;
+    margin: 1.5rem 0;
+  }
+  
+  .rich-content-callout {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .rich-content-callout .callout-icon {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 }
