@@ -6,6 +6,7 @@
 /* Import our modular CSS files */
 @import 'variables.css';
 @import 'typography.css'; /* Base typography styles that can be overridden */
+@import 'rich-content.css'; /* Rich content specific styles */
 @import 'layout.css'; /* Layout and utility styles */
 @import 'animations.css';
 @import 'section.css'; /* Added common section styles */

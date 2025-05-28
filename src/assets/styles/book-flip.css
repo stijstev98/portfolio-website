@@ -34,6 +34,9 @@
   --aspect-ratio: 0.75; /* Default 3:4 ratio, will be overridden by inline style */
   /* Calculate height based on width and aspect ratio */
   aspect-ratio: var(--aspect-ratio);
+  & a {
+    color: inherit;
+  }
 }
 
 .page {
@@ -95,6 +98,25 @@
   /* Add a subtle perspective to the page faces for the curl */
   perspective: 800px; 
   transform-style: preserve-3d;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-between;
+  padding: 2em;
+  border: 1px solid #0002;
+  
+  &:has(img) {
+    padding: 0;
+  }
+  
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  &::after {
+    content: "";
+  }
 }
 
 /* Pseudo-element for the curled corner shadow/highlight */
@@ -131,59 +153,15 @@
 
 /* That's it. Your FlipBook customization styles: */
 
-.book {
-  counter-reset: page -1;
-  & a {
-    color: inherit;
-  }
-}
-
 .page {
   box-shadow: 0em 0.3em 0.8em -0.15em rgba(0,0,0,0.15); /* Softened shadow */
 }
 
-.front,
-.back {
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: space-between;
-  padding: 2em;
-  border: 1px solid #0002;
-  
-  &:has(img) {
-    padding: 0;
-  }
-  
-  & img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  &::after {
-    position: absolute;
-    bottom: 1em;
-    counter-increment: page;
-    content: counter(page) ".";
-    font-size: 0.8em;
-  }
-}
-.cover {
-  &::after {
-    content: "";
-  }
-}
 .front {
-  &::after {
-    right: 1em;
-  }
   background: linear-gradient(to left, #f7f7f7 80%, #eee 100%);
   border-radius: .1em .5em .5em .1em;
 }
 .back {
-  &::after {
-    left: 1em;
-  }
   background-image: linear-gradient(to right, #f7f7f7 80%, #eee 100%);
   border-radius: .5em .1em .1em .5em;
 }
@@ -192,6 +170,9 @@
   background: radial-gradient(circle farthest-corner at 80% 20%, hsl(150 80% 20% / .3) 0%, hsl(170 60% 10% / .1) 100%),
     hsl(231, 32%, 29%) url("https://picsum.photos/id/984/800/900") 50% / cover;
   color: hsl(200 30% 98%);
+  &::after {
+    content: "";
+  }
 }
 
 /* Error message styling */

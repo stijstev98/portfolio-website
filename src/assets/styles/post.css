@@ -124,17 +124,13 @@
   color: var(--text-color);
 }
 
-/* Post Content */
+/* Post Content Wrapper */
 .post-content-wrapper {
   position: relative;
   background-color: var(--bg-overlay);
-  border-radius: var(--border-radius);
   padding: var(--spacing-xxl);
   margin-bottom: var(--spacing-xxl);
   border-left: var(--default-border);
-  box-shadow: var(--shadow-xl);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .post-meta {
@@ -171,18 +167,7 @@
   font-family: var(--title-font);
 }
 
-/* Post content typography */
-.post-content p:first-of-type::first-letter {
-  font-size: 3.5rem;
-  float: left;
-  line-height: 0.8;
-  margin-right: var(--spacing-xs);
-  padding-top: 0.2rem;
-  color: var(--primary-color);
-  font-weight: bold;
-  font-family: var(--title-font);
-}
-
+/* Post content specific overrides */
 .post-content h2 {
   padding-bottom: var(--spacing-xs);
   display: inline-block;
@@ -203,22 +188,11 @@
 .post-content img {
   max-width: 100%;
   height: auto;
-  border-radius: var(--border-radius);
   margin: var(--spacing-xl) auto;
   display: block;
-  box-shadow: var(--shadow-md);
-  border: 3px solid var(--border-color);
 }
 
-.post-content blockquote {
-  margin: var(--spacing-lg) 0;
-  padding-left: var(--spacing-lg);
-  border-left: 4px solid var(--primary-color);
-  font-style: italic;
-  color: var(--text-light);
-}
-
-/* Image gallery */
+/* Post Gallery */
 .post-gallery {
   margin: 4rem 0 var(--spacing-lg);
 }
