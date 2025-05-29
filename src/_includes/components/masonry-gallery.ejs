@@ -7,29 +7,67 @@
       <% posts.forEach(post => { %>
         <% 
           let aspectRatio = 'default-aspect';
-          // Use header image dimensions for aspect ratio calculation
-          if (post.data.headerImageWidth && post.data.headerImageHeight) {
-            const ratio = post.data.headerImageHeight / post.data.headerImageWidth;
+          // Use preview image dimensions for aspect ratio calculation (prioritize preview over header)
+          let imageWidth = post.data.previewImageWidth || post.data.headerImageWidth;
+          let imageHeight = post.data.previewImageHeight || post.data.headerImageHeight;
+          
+          if (imageWidth && imageHeight) {
+            const ratio = imageHeight / imageWidth;
             if (ratio < 0.8) aspectRatio = 'wide-aspect';
-            else if (ratio > 1.2) aspectRatio = 'tall-aspect';
-            if (ratio > 2) aspectRatio += ' very-tall-aspect';
-            else if (ratio < 0.5) aspectRatio += ' very-wide-aspect';
+            else if (ratio > 1.2) aspectRatio = 'tall-aspect'; // Removed very-tall-aspect - cap at tall-aspect
+            // Removed the very-tall check - extra tall images will use tall-aspect with center/crop
+            if (ratio < 0.5) aspectRatio += ' very-wide-aspect';
+          }
+          
+          // Determine media type and URL for the main display
+          let mediaType = 'image';
+          let mediaUrl = null;
+          let mediaMimeType = null;
+          let fallbackMediaUrl = null; // For the hidden data
+          
+          // Priority: post_preview_image > post_header_image > first gallery item
+          if (post.data.previewImage) {
+            mediaUrl = post.data.previewImage || post.data.previewImageMedium;
+            fallbackMediaUrl = mediaUrl;
+            // Check if preview image is actually a video
+            if (post.data.previewImageMime && post.data.previewImageMime.startsWith('video/')) {
+              mediaType = 'video';
+              mediaMimeType = post.data.previewImageMime;
+            }
+          } else if (post.data.headerImage) {
+            // Fallback to header image when preview image is not available
+            mediaUrl = post.data.headerImage || post.data.headerImageMedium;
+            fallbackMediaUrl = mediaUrl;
+            // Check if header image is actually a video
+            if (post.data.headerImageMime && post.data.headerImageMime.startsWith('video/')) {
+              mediaType = 'video';
+              mediaMimeType = post.data.headerImageMime;
+            }
+          } else if (post.data.images && post.data.images.length > 0) {
+            // Final fallback to first gallery item
+            const firstImage = post.data.images[0];
+            mediaUrl = firstImage.url || firstImage.medium;
+            fallbackMediaUrl = mediaUrl;
+            // Check if first gallery item is a video
+            if (firstImage.mime && firstImage.mime.startsWith('video/')) {
+              mediaType = 'video';
+              mediaMimeType = firstImage.mime;
+            }
           }
         %>
         <div class="masonry-item <%= aspectRatio %>" data-post-id="<%= post.id %>" data-scroll-animation="fade-up">
           <a href="<%= post.url %>" class="masonry-item-link">
-            <% if (post.data.previewImage) { %>
+            <% if (mediaUrl) { %>
               <div class="masonry-item-image">
-                <img src="<%= post.data.previewImage || post.data.previewImageMedium %>" alt="<%= post.data.title %>" loading="lazy"/>
-              </div>
-            <% } else if (post.data.headerImage) { %>
-              <div class="masonry-item-image">
-                <img src="<%= post.data.headerImage || post.data.headerImageMedium %>" alt="<%= post.data.title %>" loading="lazy"/>
-              </div>
-            <% } else if (post.data.images && post.data.images.length > 0 && (post.data.images[0].url || post.data.images[0].medium) ) { %>
-              <!-- Fallback to first gallery image if no preview/header -->
-              <div class="masonry-item-image">
-                <img src="<%= post.data.images[0].url || post.data.images[0].medium %>" alt="<%= post.data.title %>" loading="lazy"/>
+                <% if (mediaType === 'video') { %>
+                  <video muted loop autoplay playsinline preload="metadata" loading="lazy">
+                    <source src="<%= mediaUrl %>" type="<%= mediaMimeType %>">
+                    <!-- Fallback for unsupported video -->
+                    <img src="/images/video-placeholder.jpg" alt="<%= post.data.title %>" loading="lazy"/>
+                  </video>
+                <% } else { %>
+                  <img src="<%= mediaUrl %>" alt="<%= post.data.title %>" loading="lazy"/>
+                <% } %>
               </div>
             <% } %>
             <div class="masonry-item-overlay">
@@ -37,11 +75,11 @@
             </div>
           </a>
           <div class="masonry-item-data" style="display: none;">
-            <div class="post-image"><%= post.data.previewImage || post.data.headerImage || ((post.data.images && post.data.images.length > 0) ? (post.data.images[0].url || post.data.images[0].medium) : '') %></div>
+            <div class="post-image"><%= fallbackMediaUrl || '' %></div>
             <div class="post-title"><%= post.data.title %></div>
             <div class="post-description"><%= post.data.description || '' %></div>
             <div class="post-url"><%= post.url %></div>
-            <div class="post-all-images" data-images='<%= JSON.stringify((post.data.images || []).map(img => img.url || img.medium).filter(Boolean)) %>'></div>
+            <div class="post-all-images" data-images='<%= JSON.stringify((post.data.images || []).map(img => ({ url: img.url || img.medium, mime: img.mime })).filter(item => item.url)) %>'></div>
           </div>
         </div>
       <% }); %>
@@ -95,22 +133,50 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (allPostImages && allPostImages.length > 0) {
       currentImageIndex = 0;
-      if (infoboxImage && allPostImages[currentImageIndex]) {
-         infoboxImage.src = allPostImages[currentImageIndex];
-      } else if (infoboxImage) {
-         infoboxImage.src = ''; // Clear if image URL is bad or missing
-      }
+      setCurrentMediaInInfobox(currentImageIndex);
 
       if (allPostImages.length > 1) { 
         imageInterval = setInterval(() => {
           currentImageIndex = (currentImageIndex + 1) % allPostImages.length;
-          if (infoboxImage && allPostImages[currentImageIndex]) {
-            infoboxImage.src = allPostImages[currentImageIndex];
-          } else if (infoboxImage) {
-            infoboxImage.src = ''; 
-          }
+          setCurrentMediaInInfobox(currentImageIndex);
         }, cycleDelay);
       }
+    }
+  }
+  
+  function setCurrentMediaInInfobox(index) {
+    if (!infoboxImage || !allPostImages[index]) return;
+    
+    const mediaItem = allPostImages[index];
+    
+    // Remove any existing video elements
+    const existingVideo = infobox.querySelector('.infobox-image video');
+    if (existingVideo) {
+      existingVideo.remove();
+    }
+    
+    if (mediaItem.type === 'video') {
+      // Create video element for infobox
+      const video = document.createElement('video');
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+      
+      const source = document.createElement('source');
+      source.src = mediaItem.url;
+      source.type = mediaItem.mime || 'video/mp4';
+      video.appendChild(source);
+      
+      // Hide the img and show video
+      infoboxImage.style.display = 'none';
+      infoboxImage.parentNode.appendChild(video);
+    } else {
+      // Show image
+      infoboxImage.style.display = 'block';
+      infoboxImage.src = mediaItem.url || '';
     }
   }
   
@@ -119,6 +185,13 @@ document.addEventListener('DOMContentLoaded', function() {
       clearInterval(imageInterval);
       imageInterval = null;
     }
+    
+    // Clean up video elements
+    const existingVideo = infobox.querySelector('.infobox-image video');
+    if (existingVideo) {
+      existingVideo.remove();
+    }
+    infoboxImage.style.display = 'block';
   }
 
   document.addEventListener('mousemove', function(e) {
@@ -164,22 +237,36 @@ document.addEventListener('DOMContentLoaded', function() {
       // Start with header/preview image as first in cycle
       allPostImages = []; 
       if (fallbackImage) {
-        allPostImages.push(fallbackImage);
+        allPostImages.push({ url: fallbackImage, type: 'image' });
       }
 
-      // Then add all gallery images
+      // Then add all gallery images/videos
       if (allImagesDiv && allImagesDiv.dataset.images) {
         try {
           const imagesData = JSON.parse(allImagesDiv.dataset.images);
-          const galleryImages = imagesData.filter(imgUrl => imgUrl && typeof imgUrl === 'string');
-          allPostImages = [...allPostImages, ...galleryImages];
+          const galleryItems = imagesData.map(item => {
+            if (typeof item === 'string') {
+              // Legacy format - just URL string
+              return { url: item, type: 'image' };
+            } else if (item && typeof item === 'object') {
+              // New format with mime type support
+              return {
+                url: item.url,
+                type: item.mime && item.mime.startsWith('video/') ? 'video' : 'image',
+                mime: item.mime
+              };
+            }
+            return null;
+          }).filter(Boolean);
+          
+          allPostImages = [...allPostImages, ...galleryItems];
         } catch (parseError) {
           console.warn('Failed to parse post_images for cycling:', parseError);
         }
       }
       
-      if (allPostImages.length > 0 && infoboxImage) {
-        infoboxImage.src = allPostImages[0];
+      if (allPostImages.length > 0) {
+        setCurrentMediaInInfobox(0);
       } else if (infoboxImage) {
         infoboxImage.src = ''; 
       }
@@ -252,5 +339,23 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
   }
+  
+  // Initialize video elements for better performance
+  const videos = document.querySelectorAll('.masonry-item video');
+  videos.forEach(video => {
+    video.addEventListener('loadeddata', function() {
+      this.setAttribute('data-loaded', 'true');
+    });
+    
+    video.addEventListener('error', function() {
+      console.warn('Video failed to load:', this.src);
+      // Optionally hide or replace with placeholder
+      const placeholder = this.parentElement.querySelector('img');
+      if (placeholder) {
+        this.style.display = 'none';
+        placeholder.style.display = 'block';
+      }
+    });
+  });
 });
 </script>

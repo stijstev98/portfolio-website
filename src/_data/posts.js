@@ -105,7 +105,7 @@ module.exports = async function() {
       
       const previewImageUrl = post.post_preview_image?.url
         ? constructImageUrl(post.post_preview_image.url)
-        : headerImageUrl; // Fall back to header image if no preview image
+        : null; // Don't fall back to header image - keep them separate
       
       // For responsive images, optionally get medium and small formats
       const headerImageMedium = post.post_header_image?.formats?.medium?.url
@@ -114,11 +114,16 @@ module.exports = async function() {
       
       const previewImageMedium = post.post_preview_image?.formats?.medium?.url
         ? constructImageUrl(post.post_preview_image.formats.medium.url)
-        : headerImageMedium;
+        : null;
       
-      // Extract header image dimensions
+      // Extract image dimensions and mime types for video support
       const headerImageWidth = post.post_header_image?.width || 0;
       const headerImageHeight = post.post_header_image?.height || 0;
+      const headerImageMime = post.post_header_image?.mime || null;
+      
+      const previewImageWidth = post.post_preview_image?.width || 0;
+      const previewImageHeight = post.post_preview_image?.height || 0;
+      const previewImageMime = post.post_preview_image?.mime || null;
       
       // Build gallery from post_images (handle both array and nested data)
       const gallerySource = Array.isArray(post.post_images)
@@ -134,7 +139,8 @@ module.exports = async function() {
           url: src ? constructImageUrl(src) : null,
           medium: mediumSrc ? constructImageUrl(mediumSrc) : null,
           width: img.attributes?.width || img.width || 0,
-          height: img.attributes?.height || img.height || 0
+          height: img.attributes?.height || img.height || 0,
+          mime: img.attributes?.mime || img.mime || null
         };
       }).filter(img => img.url); // Filter out any images without URLs
       
@@ -360,10 +366,12 @@ module.exports = async function() {
           headerImageMedium: headerImageMedium,
           headerImageWidth: headerImageWidth,
           headerImageHeight: headerImageHeight,
+          headerImageMime: headerImageMime,
           previewImage: previewImageUrl,
           previewImageMedium: previewImageMedium,
-          previewImageWidth: post.post_preview_image?.width || 0,
-          previewImageHeight: post.post_preview_image?.height || 0,
+          previewImageWidth: previewImageWidth,
+          previewImageHeight: previewImageHeight,
+          previewImageMime: previewImageMime,
           images: galleryImages
         },
         url: `/posts/${slug}/`,

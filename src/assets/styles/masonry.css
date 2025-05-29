@@ -41,6 +41,7 @@
 
 .masonry-item.tall-aspect {
   grid-row: span 2;
+  /* For extra tall content (ratio > 2), we'll center and crop */
 }
 
 /* For very tall images */
@@ -52,13 +53,39 @@
 .masonry-item-image {
   width: 100%;
   height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
-.masonry-item-image img {
+.masonry-item-image img,
+.masonry-item-image video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+}
+
+/* Ensure videos behave like images */
+.masonry-item-image video {
+  background-color: var(--bg-color, #000);
+  /* Performance optimizations for videos */
+  will-change: auto;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+/* Video loading state */
+.masonry-item-image video:not([data-loaded]) {
+  background-color: var(--border-color, #333);
+}
+
+/* Special handling for tall-aspect items to ensure proper cropping */
+.masonry-item.tall-aspect .masonry-item-image img,
+.masonry-item.tall-aspect .masonry-item-image video {
+  object-fit: cover;
+  object-position: center center; /* Center both horizontally and vertically */
+  min-height: 100%;
+  min-width: 100%;
 }
 
 .masonry-item-link {

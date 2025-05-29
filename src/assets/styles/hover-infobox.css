@@ -71,6 +71,19 @@
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Move shadow to image itself */
 }
 
+.infobox-image video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+/* Ensure smooth transitions when switching between images and videos */
+.infobox-image img,
+.infobox-image video {
+  transition: opacity 0.2s ease;
+}
+
 .infobox-content {
   position: relative;
   background-color: var(--secondary-color, #222);
