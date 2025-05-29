@@ -51,3 +51,96 @@
     </div>
     <% } %>
 </div>
+
+<!-- First-time user tutorial infobox -->
+<%- include('./hover_infobox', { 
+  id: 'hover-infobox-book',
+  image: '',
+  title: '',
+  description: 'Click or tap the edge of a page to turn it',
+  url: '#',
+  showImage: false,
+  iconType: 'font-awesome',
+  iconClass: 'fas fa-book-open',
+  maxWidth: 'medium'
+}) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if this is the user's first visit
+  const hasVisitedBefore = localStorage.getItem('bookFlipTutorialShown');
+  
+  if (!hasVisitedBefore) {
+    const bookContainer = document.querySelector('.book-flip-container');
+    const infobox = document.getElementById('hover-infobox-book');
+    
+    if (bookContainer && infobox) {
+      const infoboxTitle = infobox.querySelector('.infobox-title');
+      const infoboxDescription = infobox.querySelector('.infobox-description');
+      const infoboxButton = infobox.querySelector('.infobox-go-button');
+      
+      bookContainer.addEventListener('mouseenter', function(e) {
+        // Only show tutorial if not shown before
+        if (!localStorage.getItem('bookFlipTutorialShown')) {
+          // Configure infobox for tutorial AND set content
+          if (infobox) {
+            infobox.dataset.iconType = 'font-awesome';
+            const iconElement = infobox.querySelector('.infobox-go-button i');
+            if (iconElement) {
+              iconElement.className = 'fas fa-book-open'; // Set Font Awesome open book icon
+            }
+            const contentBox = infobox.querySelector('.infobox-content');
+            if (contentBox) {
+              contentBox.classList.add('no-title'); // Ensure no-title styling is applied
+            }
+          }
+
+          // Set content every time we enter - this ensures it overrides any previous content
+          if (infoboxTitle) {
+            infoboxTitle.textContent = ''; // Clear any previous title
+            infoboxTitle.innerHTML = ''; // Also clear any HTML content
+          }
+          if (infoboxDescription) {
+            infoboxDescription.textContent = 'Click or tap the edge of a page to turn it';
+          }
+
+          // Position infobox at cursor coordinates
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+          infobox.style.display = 'block';
+          
+          // Add bouncy animation
+          infobox.classList.remove('animate-in');
+          setTimeout(() => infobox.classList.add('animate-in'), 10);
+        }
+      });
+      
+      bookContainer.addEventListener('mouseleave', function() {
+        // Hide infobox and remove animation
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+      });
+      
+      // Update infobox position on mouse move
+      bookContainer.addEventListener('mousemove', function(e) {
+        if (infobox && infobox.style.display !== 'none') {
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+        }
+      });
+      
+      // Mark tutorial as shown when user interacts with the book
+      bookContainer.addEventListener('click', function() {
+        localStorage.setItem('bookFlipTutorialShown', 'true');
+        // Hide infobox immediately
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+      });
+    }
+  }
+});
+</script>

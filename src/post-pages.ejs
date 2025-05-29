@@ -51,7 +51,8 @@ eleventyComputed:
           <div class="rich-content-block scrolling-gallery-component">
             <%- include('/components/scrolling-gallery', { 
               gallery_content: component.gallery_content, 
-              gallery_height: component.gallery_height
+              gallery_height: component.gallery_height,
+              maxWidth: 'medium'
             }) %>
           </div>
     <%    break;

@@ -3,9 +3,10 @@
   position: fixed;
   pointer-events: none; /* Allow mouse interactions with elements underneath */
   z-index: 1000;
-  width: 20vw;
-  min-width: 300px;
-  max-width: 900px;
+  /* Fallback width in case data-max-width is not set */
+  width: 15vw;
+  min-width: 200px;
+  max-width: 300px;
   display: none; /* Hidden by default */
   /* Remove the default positioning - we'll use transforms instead */
   transform-origin: top left;
@@ -105,6 +106,26 @@
   font-weight: 200 !important;
 }
 
+/* Adjust content box when no title is present (via class) */
+.infobox-content.no-title {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+}
+
+/* Styling for when no title is present (via class) - description becomes more prominent */
+.infobox-content.no-title .infobox-description {
+  font-size: 1rem;
+  font-weight: 600 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  line-height: 1.5;
+}
+
+/* Also handle cases where title exists but is empty */
+.infobox-content.no-title .infobox-title {
+  display: none; /* Hide empty title completely */
+}
+
 .infobox-button {
   position: absolute;
   z-index: 10; /* Increased from 4 to ensure it's above everything */
@@ -121,16 +142,15 @@
   height: 40px;
   background-color: var(--secondary-color);
   color: white !important;
-  text-decoration: none;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.3); /* Added subtle white glow */
   border-radius: 0; /* Square button */
+  cursor: default; /* Remove pointer cursor since it's not clickable */
 }
 
 .infobox-go-button:hover {
   background-color: var(--primary-dark, #2980b9);
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.4); /* Enhanced white glow on hover */
-  text-decoration: none;
 }
 
 /* Play triangle icon */
@@ -174,6 +194,136 @@
   border-width: 0 0 3px 0;
   border-color: transparent transparent var(--secondary-color, #222) transparent;
   background: linear-gradient(45deg, var(--secondary-color, #222) 50%, transparent 50%);
+}
+
+/* Book icon */
+.book-icon {
+  width: 14px;
+  height: 16px;
+  background-color: #fff;
+  position: relative;
+  border-radius: 1px;
+  border-left: 2px solid var(--secondary-color, #222);
+}
+
+.book-icon::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background-color: var(--secondary-color, #222);
+}
+
+.book-icon::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background-color: var(--secondary-color, #222);
+}
+
+/* Open book icon */
+.open-book-icon {
+  width: 18px;
+  height: 14px;
+  background-color: #fff;
+  position: relative;
+  border-radius: 2px 2px 0 0;
+}
+
+.open-book-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1px;
+  height: 14px;
+  background-color: var(--secondary-color, #222);
+}
+
+.open-book-icon::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 2px;
+  right: 2px;
+  height: 8px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    var(--secondary-color, #222) 2px, 
+    transparent 2px, 
+    transparent calc(50% - 1px),
+    transparent 50%,
+    transparent calc(50% + 1px),
+    transparent calc(100% - 2px),
+    var(--secondary-color, #222) calc(100% - 2px), 
+    transparent 100%
+  );
+}
+
+/* Expand icon (4 arrows pointing outward) */
+.expand-icon {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  border: 1px solid #fff;
+  border-radius: 2px;
+}
+
+.expand-icon::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 4px solid #fff;
+  box-shadow: 
+    0 19px 0 -4px #fff, /* bottom arrow */
+    -19px -4px 0 -4px #fff, /* left arrow (rotated using box-shadow trick) */
+    19px -4px 0 -4px #fff; /* right arrow */
+}
+
+.expand-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid #fff;
+  box-shadow: 18px 0 0 0 #fff; /* right arrow */
+}
+
+/* Font Awesome icon support */
+.infobox-go-button i {
+  font-size: 14px;
+  color: #fff;
+}
+
+/* SVG file icon support */
+.infobox-go-button .svg-icon {
+  width: 16px;
+  height: 16px;
+  fill: #fff;
+  filter: brightness(0) invert(1); /* Make SVG white */
+}
+
+/* Custom SVG icon support */
+.infobox-go-button svg {
+  fill: #fff;
+  stroke: none;
 }
 
 /* Adjust content styling when no image is present */
@@ -230,13 +380,58 @@
 }
 
 /* Max-width variations for different gallery types */
+
+/* Default variant: 15vw or 300px max */
+.hover-infobox[data-max-width="default"] {
+  width: 15vw !important;
+  min-width: 200px !important;
+  max-width: 300px !important;
+}
+
+.hover-infobox[data-max-width="default"] .infobox-content {
+  width: 80% !important;
+}
+
 .hover-infobox[data-max-width="compact"] {
-  width: auto;
-  min-width: 150px;
-  max-width: 200px;
+  width: auto !important;
+  min-width: 150px !important;
+  max-width: 200px !important;
 }
 
 .hover-infobox[data-max-width="compact"] .infobox-content {
-  width: 100%;
-  max-width: 150px;
+  width: 100% !important;
+  max-width: 150px !important;
+}
+
+/* Small variant: 10vw or 150px max */
+.hover-infobox[data-max-width="small"] {
+  width: 10vw !important;
+  min-width: 120px !important;
+  max-width: 150px !important;
+}
+
+.hover-infobox[data-max-width="small"] .infobox-content {
+  width: 100% !important;
+}
+
+/* Medium variant: 15vw or 250px max */
+.hover-infobox[data-max-width="medium"] {
+  width: 15vw !important;
+  min-width: 200px !important;
+  max-width: 250px !important;
+}
+
+.hover-infobox[data-max-width="medium"] .infobox-content {
+  width: 80% !important;
+}
+
+/* Large variant: 20vw or 400px max */
+.hover-infobox[data-max-width="large"] {
+  width: 20vw !important;
+  min-width: 300px !important;
+  max-width: 400px !important;
+}
+
+.hover-infobox[data-max-width="large"] .infobox-content {
+  width: 80% !important;
 }

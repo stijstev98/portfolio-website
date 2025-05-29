@@ -1,6 +1,7 @@
 <!-- Scrolling Gallery Component -->
 <div class="scrolling-gallery-container" 
-     data-height="<%= locals.gallery_height || '300px' %>">
+     data-height="<%= locals.gallery_height || '300px' %>"
+     data-max-width="<%= locals.maxWidth || 'small' %>">
   <div class="scrolling-gallery-track">
     <% if (locals.gallery_content && gallery_content.length > 0) { %>
       <!-- Render media items twice for seamless looping -->
@@ -46,13 +47,15 @@
 
 <!-- Render the hover infobox once outside the loop -->
 <%- include('./hover_infobox', { 
+  id: 'hover-infobox-scrolling',
   image: '',
   title: '',
   description: '',
   url: '#',
   showImage: false,
-  iconType: 'image',
-  maxWidth: 'compact'
+  iconType: 'font-awesome',
+  iconClass: 'fas fa-expand-arrows-alt',
+  maxWidth: 'medium'
 }) %>
 
 <!-- Lightbox for images and videos -->
@@ -73,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const track = container.querySelector('.scrolling-gallery-track');
   const items = track.querySelectorAll('.scrolling-gallery-item');
-  const infobox = document.getElementById('hover-infobox');
+  const infobox = document.getElementById('hover-infobox-scrolling');
   const lightbox = document.getElementById('scrolling-gallery-lightbox');
   
   if (!track || items.length === 0) return;
@@ -133,6 +136,19 @@ document.addEventListener('DOMContentLoaded', function() {
         container.classList.add('has-hovered-item');
         item.classList.add('is-hovered');
 
+        // Configure infobox for this specific gallery type
+        if (infobox) {
+          infobox.dataset.iconType = 'font-awesome';
+          const iconElement = infobox.querySelector('.infobox-go-button i');
+          if (iconElement) {
+            iconElement.className = 'fas fa-expand-arrows-alt'; // Set Font Awesome expand arrows icon
+          }
+          const contentBox = infobox.querySelector('.infobox-content');
+          if (contentBox) {
+            contentBox.classList.remove('no-title'); // Ensure no-title styling is removed
+          }
+        }
+
         // Get media data
         const dataDiv = item.querySelector('.scrolling-gallery-data');
         if (!dataDiv) return;
@@ -148,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
           if (infoboxImage) infoboxImage.src = ''; // No image preview for scrolling gallery
           if (infoboxTitle) infoboxTitle.textContent = mediaAlt || mediaName; // Use Alt text as title
           if (infoboxDescription) infoboxDescription.textContent = mediaCaption; // Use caption as description
-          if (infoboxButton) infoboxButton.href = '#';
 
           // Position infobox at cursor coordinates
           infobox.style.left = e.clientX + 'px';
