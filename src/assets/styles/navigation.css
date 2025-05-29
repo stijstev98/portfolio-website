@@ -7,12 +7,9 @@
   pointer-events: none;
 }
 
-/* make the header sticky at top */
-.custom-header {
-  position: sticky;
-  top: 0;
-  background-color: transparent;
-  z-index: 100;
+/* Body margin to account for logo bar positioning */
+body {
+  margin-left: 0; /* Remove the fixed margin, we'll position relative to content */
 }
 
 /* Pronunciation styles */
@@ -81,70 +78,74 @@
   100% { transform: scale(1); }
 }
 
-/* make the header sticky at top */
+/* Header styling */
 .custom-header {
   position: sticky;
   top: 0;
   background-color: transparent;
   z-index: 100;
-}
-
-/* flex-row inside your normal container */
-.header-row {
   display: flex;
-  align-items: center;
-  height: 30vh;  /* initial height */
-  transition: height 0.3s ease-out;
-}
-.header-row-regular {
-  display: flex;
-  align-items: center;
-  height: 10vh !important; /* initial height */
+  align-items: flex-start;
+  width: 100%;
+  height: 10vh;
   transition: height 0.3s ease-out;
 }
 
-/* When scrolled, shrink the header */
-body.scrolled .header-row {
-  height: 10vh; /* minimum height */
-}
-
-/* the blue bar, aligned to .container's left edge */
+/* Logo bar positioned relative to content area for regular pages */
 .logo-bar {
-  flex: 0 0 50px;      /* fixed width */
-  height: calc(100% + 30px);
+  position: fixed;
+  left: calc(50% - 700px); /* Position more to the left of max-width content */
+  top: 0; /* Sit against top of screen */
+  width: 50px;
+  height: 8vh !important; /* Taller collapsed height for regular pages by default - force this */
   background-color: var(--primary-color);
   display: flex;
-  align-items: flex-end; /* Align items to bottom */
+  align-items: flex-end; /* Position logo towards bottom of banner */
   justify-content: center;
-  padding-bottom: 2rem; /* Add 2rem padding to bottom */
+  padding-bottom: 0.8rem; /* Add bottom padding to position logo lower */
+  z-index: 101;
+  transition: all 0.3s ease;
 }
 
-/* your SVG/PNG inside */
+/* Ensure regular pages (non-homepage) use the collapsed height */
+body:not(.homepage) .logo-bar {
+  height: 8vh !important;
+  align-items: flex-end !important;
+  padding-bottom: 0.8rem !important;
+}
+
 .logo-bar img {
   width: 100%;
   height: auto;
   object-fit: contain;
-  margin-top: 2rem;
+  max-height: 100%;
 }
 
-/* nav links flush right */
+/* Navigation wrapper for regular pages */
+.nav-wrapper {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  z-index: 102;
+}
+
+/* Header navigation styling */
 .header-nav {
-  margin-left: auto;
   display: flex;
-  padding-top: 1rem;
+  align-items: center;
   font-family: var(--title-font);
   font-size: 0.9rem;
   font-weight: 400 !important;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  justify-content: flex-end; /* Align nav links to the right */
-  gap: 2rem; /* Add spacing between navigation items */
+  gap: 2rem;
 }
 
 .header-nav a {
   color: var(--text-color);
   position: relative;
   text-decoration: none;
+  text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65);
 }
 
 .header-nav a::after {
@@ -155,6 +156,7 @@ body.scrolled .header-row {
   width: 0;
   height: 2px;
   background: var(--primary-color);
+  transition: width 0.3s ease;
 }
 
 .header-nav a:hover::after {
@@ -167,97 +169,21 @@ body.scrolled .header-row {
 }
 
 .header-nav .btn-outline {
-  padding: 0.1em 0.8em;
-  border: 3px solid var(--primary-color);
-}
-
-/* Hero section styles */
-.hero-section {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; 
-  width: 100%;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-/* Hero visibility transitions */
-.hero {
-  padding-top: 5rem;
-  transition: opacity 0.4s ease-out, max-height 0.5s ease-out, padding 0.5s ease-out;
-  opacity: 1;
-  max-height: 300px; /* Set a reasonable maximum height */
-  overflow: hidden;
-  transform-origin: top;
-}
-
-body.scrolled .hero {
-  opacity: 0;
-  max-height: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-
-/* Right-aligned text in the hero section */
-.hero__inner {
-  text-align: right; /* Right align the hero text */
-}
-
-.hero__inner h1 {
-  font-family: "pressio-compressed", sans-serif !important;
-  font-size: 5rem !important;
-  font-weight: 900 !important;
-  line-height: 0.9 !important;
-  text-align: right; /* Ensure hero title is right-aligned */
-}
-
-.hero__tag {
-  color: var(--primary-color);
-  border: var(--default-border);
-  font-size: 3rem;
+  padding: 0.4em 1em;
+  border: 2px solid var(--primary-color);
   color: var(--text-color);
-  padding: 0 0.5rem;
-  font-family: var(--title-font), sans-serif !important;
-  display: inline-block;
-  vertical-align: middle; /* Align vertically in the middle */
-  line-height: 1; /* Tighter line height to help with alignment */
-  position: relative;
-  top: -0.15em; /* Fine-tune the vertical position */
-  transition: opacity 0.25s ease; /* Add smooth transition for text changes */
-}
-.creation__tag {
-  color: var(--primary-color);
+  border-radius: 4px;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Hero entry animation */
-.hero__inner .word,
-.nav-animation {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: floatIn 0.6s ease forwards;
-}
-.hero__inner .word:nth-child(1) { animation-delay: 0.25s; }
-.hero__inner .word:nth-child(2) { animation-delay: 0.35s; }
-.hero__inner .word:nth-child(3) { animation-delay: 0.45s; }
-.hero__inner .word:nth-child(4) { animation-delay: 0.55s; }
-.hero__inner .word:nth-child(5) { animation-delay: 0.65s; }
-.hero__inner .word:nth-child(6) { animation-delay: 0.75s; }
-.nav-animation             { animation-delay: 0.85s; }
-
-@keyframes floatIn {
-  to { opacity: 1; transform: translateY(0); }
+.header-nav .btn-outline:hover {
+  background-color: var(--primary-color);
+  color: #fff;
 }
 
-/* Nav animation when hero is hidden */
-.nav-animation {
-  transition: transform 0.5s ease-out;
-  position: relative;
-}
-
-body.scrolled .nav-animation {
-  transform: translateY(-40rem); /* Move nav up further */
+.header-nav .btn-outline::after {
+  display: none;
 }
 
 /* Mobile menu styles */
@@ -275,10 +201,20 @@ body.scrolled .nav-animation {
   margin-left: auto;
 }
 
-/* Display mobile nav elements only on small screens */
+/* Mobile responsive styles */
 @media (max-width: 768px) {
   .header-nav {
     display: none;
+  }
+
+  /* Adjust logo bar for mobile - position closer to left edge */
+  .logo-bar {
+    left: 0.5rem;
+    top: 0;
+    width: 40px;
+    height: 6vh; /* Proportionally taller for mobile */
+    align-items: flex-end; /* Position logo towards bottom */
+    padding-bottom: 0.6rem; /* Proportional bottom padding */
   }
 
   .hamburger-menu {
@@ -289,8 +225,8 @@ body.scrolled .nav-animation {
     height: 20px;
     cursor: pointer;
     z-index: 110;
-    position: relative;    /* ensure it can be moved via margin */
-    margin-left: auto;     /* push it to the far right */
+    position: relative;
+    margin-left: auto;
   }
   
   .hamburger-line {
@@ -380,121 +316,37 @@ body.scrolled .nav-animation {
   body.menu-open {
     overflow: hidden;
   }
-}
-
-/* Media Queries */
-@media (max-width: 992px) {
-  .hero__inner h1 {
-    font-size: 4rem !important;
-  }
-
-  .hero__tag {
-    font-size: 2.5rem;
-  }
   
-  .pronunciation {
-    font-size: 0.75rem;
-  }
-  
-  .pronunciation-btn {
-    width: 24px;
-    height: 24px;
-  }
-  
-  .pronunciation-wrapper {
-    height: 1.4rem;
+  /* Nav wrapper positioning for mobile */
+  .nav-wrapper {
+    right: 1rem;
   }
 }
 
-@media (max-width: 768px) {
-  /* Adjust header height */
-  .header-row {
-    height: 25vh;
-  }
-
-  body.scrolled .header-row {
-    height: 8vh;
-  }
-
-  /* Disable some animations */
-  .hero__inner .word {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
-
-  .nav-animation {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
-
-  /* Adjust hero text size */
-  .hero__inner h1 {
-    font-size: 3rem !important;
-  }
-
-  .hero__tag {
-    font-size: 2rem;
-    top: -0.1em;
-  }
-  
-  /* Simplify transitions */
-  body.scrolled .nav-animation {
-    transform: translateY(-10rem);
-  }
-  
-  .pronunciation {
-    font-size: 0.7rem;
-  }
-  
-  .pronunciation-btn {
-    width: 22px;
-    height: 22px;
-    padding: 3px;
-    padding-top: 0.15rem;
-  }
-  
-  .pronunciation-wrapper {
-    height: 1.3rem;
-  }
-}
-
+/* Responsive breakpoints */
 @media (max-width: 576px) {
-  /* Make header and hero compact */
-  .header-row {
-    height: 20vh;
-  }
-  
   .logo-bar {
-    flex: 0 0 40px;
-    padding-bottom: 1rem;
-  }
-
-  .hero {
-    padding-top: 2.5rem;
-  }
-
-  .hero__inner h1 {
-    font-size: 2.5rem !important;
-  }
-
-  .hero__tag {
-    font-size: 1.8rem;
+    left: 0.25rem;
+    width: 35px;
+    height: 5vh; /* Slightly taller for smallest screens */
+    align-items: flex-end; /* Position logo towards bottom */
+    padding-bottom: 0.5rem; /* Smaller bottom padding for small screens */
   }
   
-  .pronunciation {
-    font-size: 0.65rem;
+  .nav-wrapper {
+    right: 0.5rem;
   }
-  
-  .pronunciation-btn {
-    width: 20px;
-    height: 20px;
-    padding: 2px;
-    padding-top: 0.1rem;
+}
+
+@media (max-width: 1400px) {
+  /* Adjust logo positioning for smaller screens where calc might not work well */
+  .logo-bar {
+    left: 1rem; /* Move closer to left edge on smaller screens */
   }
-  
-  .pronunciation-wrapper {
-    height: 1.2rem;
+}
+
+@media (max-width: 1200px) {
+  .logo-bar {
+    left: 0.5rem; /* Even closer to left edge */
   }
 }

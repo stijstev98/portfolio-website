@@ -2,7 +2,6 @@
 .nav-container {
   display: flex;
   align-items: center;
-  margin-left: auto;
 }
 
 /* Desktop Navigation */
@@ -120,5 +119,54 @@ body.scrolled .nav-animation {
     opacity: 1;
     transform: none;
     animation: none;
+  }
+  
+  /* Adjust nav wrapper positioning for mobile */
+  .nav-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 102;
+  }
+  
+  /* Hero nav wrapper adjustments for mobile */
+  .hero-nav-wrapper {
+    position: relative;
+  }
+  
+  body.scrolled .hero-nav-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    transform: translateY(0);
+    z-index: 102;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-wrapper,
+  body.scrolled .hero-nav-wrapper {
+    right: 0.5rem;
+  }
+}
+
+@media (max-width: 1400px) {
+  /* Ensure nav positioning works well on medium screens */
+  .nav-wrapper {
+    right: 2rem;
+  }
+  
+  body.scrolled .hero-nav-wrapper {
+    right: 2rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .nav-wrapper {
+    right: 1.5rem;
+  }
+  
+  body.scrolled .hero-nav-wrapper {
+    right: 1.5rem;
   }
 }

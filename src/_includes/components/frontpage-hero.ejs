@@ -1,10 +1,13 @@
 <header class="custom-header">
+  <!-- Logo positioned at left edge of screen -->
+  <div class="logo-bar">
+    <a href="/" aria-label="Home">
+      <img src="/assets/images/logo_white.png" alt="Stijn Stevens Logo">
+    </a>
+  </div>
+  
+  <!-- Main content area with hero and navigation -->
   <div class="container header-row">
-    <div class="logo-bar">
-      <a href="/" aria-label="Home">
-        <img src="/assets/images/logo_white.png" alt="Stijn Stevens Logo">
-      </a>
-    </div>
     <section class="hero-section">
       <div class="hero">
         <div class="hero__inner">
@@ -30,7 +33,8 @@
           </h1>
         </div>
       </div>
-      <div class="nav-animation">
+      <!-- Nav positioned relative to hero section -->
+      <div class="nav-animation hero-nav-wrapper">
         <%- include('./nav-links') %>
       </div>
     </section>

@@ -73,103 +73,66 @@
   100% { transform: scale(1); }
 }
 
-/* make the header sticky at top */
+/* Header styling for homepage */
 .custom-header {
   position: sticky;
   top: 0;
   background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100%);
   z-index: 100;
-}
-
-/* flex-row inside your normal container */
-.header-row {
   display: flex;
-  align-items: center;
-  height: 30vh;  /* initial height */
+  align-items: flex-start;
+  width: 100%;
+  height: 30vh;
   transition: height 0.3s ease-out;
 }
 
 /* When scrolled, shrink the header */
-body.scrolled .header-row {
-  height: 10vh; /* minimum height */
+body.scrolled .custom-header {
+  height: 10vh;
 }
 
-/* the blue bar, aligned to .container's left edge */
-.logo-bar {
-  flex: 0 0 50px;      /* fixed width */
-  height: calc(100% + 30px);
+/* Logo bar for homepage - positioned relative to content and taller initially */
+/* Only apply these styles to pages with hero sections (homepage) */
+.header-transparent .logo-bar {
+  position: fixed;
+  left: calc(50% - 700px); /* Position more to the left of max-width content */
+  top: 0; /* Sit against top of screen */
+  width: 50px;
+  height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
   background-color: var(--primary-color);
   display: flex;
-  align-items: flex-end; /* Align items to bottom */
+  align-items: flex-end;
   justify-content: center;
-  padding-bottom: 2rem; /* Add 2rem padding to bottom */
+  padding-bottom: 1rem;
+  z-index: 101;
+  transition: all 0.3s ease;
 }
 
-/* your SVG/PNG inside */
+/* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
+body.scrolled .header-transparent .logo-bar {
+  height: 8vh !important; /* Match the taller collapsed height used on regular pages */
+  align-items: flex-end; /* Keep logo at bottom */
+  padding-bottom: 0.8rem; /* Match regular page padding */
+}
+
 .logo-bar img {
   width: 100%;
   height: auto;
   object-fit: contain;
-  margin-bottom: -1rem !important;
+  max-height: 100%;
+  margin-bottom: 0;
 }
 
-/* nav links flush right */
-.header-nav {
-  margin-left: auto;
+/* Container for hero content */
+.header-row {
   display: flex;
-  align-items: center; /* Added for vertical alignment */
-  padding-top: 1rem;
-  font-family: var(--title-font);
-  font-size: 0.9rem;
-  font-weight: 400 !important;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  justify-content: flex-end; /* Align nav links to the right */
-}
-
-.header-nav a {
-  color: var(--text-color); /* Ensure this is appropriate for hero */
-  position: relative;
-  text-decoration: none;
-  padding: 0.5em 0; /* Added for consistency */
-  margin: 0 0.5rem; /* Added for spacing */
-}
-
-.header-nav a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -0.2em;
-  width: 0;
-  height: 2px;
-  background: var(--primary-color);
-}
-
-.header-nav a:hover::after {
+  align-items: center;
   width: 100%;
-}
-
-.header-nav a:hover {
-  color: var(--text-color);
-  text-decoration: none;
-}
-
-.header-nav .btn-outline {
-  padding: 0.4em 1em; /* Consistent padding */
-  border: 2px solid var(--primary-color); /* Ensure border is visible */
-  color: var(--text-color); /* Or var(--primary-color) if preferred for hero */
-  border-radius: 4px; /* Optional */
-  background-color: transparent; /* Ensure no conflicting background */
-  transition: all 0.2s ease-in-out;
-}
-
-.header-nav .btn-outline:hover {
-  background-color: var(--primary-color);
-  color: #fff; /* Assuming white text on hover */
-}
-
-.header-nav .btn-outline::after {
-    display: none; /* No underline for buttons */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  height: 100%;
+  transition: height 0.3s ease-out;
 }
 
 /* Hero section styles */
@@ -251,6 +214,80 @@ body.scrolled .hero {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Hero navigation wrapper - positioned relative to hero */
+.hero-nav-wrapper {
+  position: relative;
+  transition: all 0.5s ease-out;
+}
+
+/* When scrolled, move hero nav to fixed position at screen edge */
+body.scrolled .hero-nav-wrapper {
+  position: fixed;
+  top: 1rem;
+  right: 2rem;
+  transform: translateY(0);
+  z-index: 102;
+}
+
+/* Hero nav links styling */
+.hero-nav-wrapper .header-nav {
+  display: flex;
+  align-items: center;
+  font-family: var(--title-font);
+  font-size: 0.9rem;
+  font-weight: 400 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  gap: 2rem;
+  justify-content: flex-end;
+}
+
+.hero-nav-wrapper .header-nav a {
+  color: var(--text-color);
+  position: relative;
+  text-decoration: none;
+  padding: 0.5em 0;
+  text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65);
+}
+
+.hero-nav-wrapper .header-nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.2em;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  transition: width 0.3s ease;
+}
+
+.hero-nav-wrapper .header-nav a:hover::after {
+  width: 100%;
+}
+
+.hero-nav-wrapper .header-nav a:hover {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.hero-nav-wrapper .header-nav .btn-outline {
+  padding: 0.4em 1em;
+  border: 2px solid var(--primary-color);
+  color: var(--text-color);
+  border-radius: 4px;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+}
+
+.hero-nav-wrapper .header-nav .btn-outline:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.hero-nav-wrapper .header-nav .btn-outline::after {
+  display: none;
+}
+
 /* Nav animation when hero is hidden */
 .nav-animation {
   transition: transform 0.5s ease-out;
@@ -260,8 +297,6 @@ body.scrolled .hero {
 body.scrolled .nav-animation {
   transform: translateY(-40rem); /* Move nav up further */
 }
-
-/* Mobile menu styles now come from mobile-menu.css */
 
 /* Media Queries */
 @media (max-width: 992px) {
@@ -295,6 +330,19 @@ body.scrolled .nav-animation {
 
   body.scrolled .header-row {
     height: 8vh;
+  }
+
+  /* Adjust logo bar for mobile homepage - only for hero pages */
+  .header-transparent .logo-bar {
+    left: 0.5rem;
+    width: 40px;
+    height: 25vh !important; /* Full mobile header height initially */
+  }
+
+  body.scrolled .header-transparent .logo-bar {
+    height: 6vh !important; /* Match mobile navigation collapsed height */
+    align-items: flex-end; /* Position logo towards bottom when collapsed */
+    padding-bottom: 0.6rem; /* Match mobile padding */
   }
 
   /* Disable some animations */
@@ -347,9 +395,17 @@ body.scrolled .nav-animation {
     height: 20vh;
   }
   
-  .logo-bar {
-    flex: 0 0 40px;
-    padding-bottom: 1rem;
+  /* Adjust logo bar for smallest screens - only for hero pages */
+  .header-transparent .logo-bar {
+    left: 0.25rem;
+    width: 35px;
+    height: 20vh !important; /* Full small header height initially */
+  }
+
+  body.scrolled .header-transparent .logo-bar {
+    height: 5vh !important; /* Match smallest screen navigation collapsed height */
+    align-items: flex-end; /* Position logo towards bottom when collapsed */
+    padding-bottom: 0.5rem; /* Match smallest screen padding */
   }
 
   .hero {
@@ -377,5 +433,18 @@ body.scrolled .nav-animation {
   
   .pronunciation-wrapper {
     height: 1.2rem;
+  }
+}
+
+@media (max-width: 1400px) {
+  /* Adjust logo positioning for smaller screens */
+  .logo-bar {
+    left: 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .logo-bar {
+    left: 0.5rem;
   }
 }
