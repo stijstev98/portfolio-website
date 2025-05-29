@@ -64,15 +64,6 @@ const sampleVideoEmbeds = [
   { provider: 'youtube', provider_uid: 'fJEqQjCb6gU', title: 'CSS Grid Layout Tutorial' }
 ];
 
-// Sample callout types and content
-const calloutTypes = ['info', 'warning', 'success', 'danger'];
-const calloutContent = [
-  { title: 'Pro Tip', content: 'Always test your applications across different devices and browsers for the best user experience.' },
-  { title: 'Important Note', content: 'Remember to backup your data before making major changes to your production environment.' },
-  { title: 'Best Practice', content: 'Use semantic HTML elements to improve accessibility and SEO performance.' },
-  { title: 'Warning', content: 'Be cautious when implementing third-party scripts as they can impact page performance.' }
-];
-
 // Download random picsum image and upload to Strapi, return its media ID
 async function uploadRandomImage() {
   // Select random dimensions
@@ -251,262 +242,6 @@ startxref
   }
 }
 
-// Generate rich Lexical content for post_body2
-function generateLexicalContent(theme) {
-  const nodes = [];
-  
-  // Add a main heading (h1)
-  nodes.push({
-    type: 'heading',
-    tag: 'h1',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.sentence().replace('.', ''),
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1
-  });
-  
-  // Add introduction paragraph
-  nodes.push({
-    type: 'paragraph',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.paragraph(),
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1,
-    textFormat: 0,
-    textStyle: ''
-  });
-  
-  // Add a subheading (h2)
-  nodes.push({
-    type: 'heading',
-    tag: 'h2',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.words(3).split(' ').map(word => 
-          word.charAt(0).toUpperCase() + word.slice(1)
-        ).join(' '),
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1
-  });
-  
-  // Add paragraph with formatted text
-  nodes.push({
-    type: 'paragraph',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.sentences(2) + ' ',
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      },
-      { 
-        type: 'text', 
-        text: 'This is important information',
-        detail: 0,
-        format: 1, // Bold
-        mode: 'normal',
-        style: '',
-        version: 1
-      },
-      { 
-        type: 'text', 
-        text: ' that you should ',
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      },
-      { 
-        type: 'text', 
-        text: 'definitely remember',
-        detail: 0,
-        format: 2, // Italic
-        mode: 'normal',
-        style: '',
-        version: 1
-      },
-      { 
-        type: 'text', 
-        text: '. ' + faker.lorem.sentence(),
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1,
-    textFormat: 0,
-    textStyle: ''
-  });
-  
-  // Add a bullet list
-  nodes.push({
-    type: 'list',
-    listType: 'bullet',
-    start: 1,
-    tag: 'ul',
-    children: [
-      {
-        type: 'listitem',
-        children: [
-          { 
-            type: 'text', 
-            text: faker.lorem.sentence(),
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            version: 1
-          }
-        ],
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1
-      },
-      {
-        type: 'listitem',
-        children: [
-          { 
-            type: 'text', 
-            text: faker.lorem.sentence(),
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            version: 1
-          }
-        ],
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1
-      },
-      {
-        type: 'listitem',
-        children: [
-          { 
-            type: 'text', 
-            text: faker.lorem.sentence(),
-            detail: 0,
-            format: 0,
-            mode: 'normal',
-            style: '',
-            version: 1
-          }
-        ],
-        direction: 'ltr',
-        format: '',
-        indent: 0,
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1
-  });
-  
-  // Add horizontal rule
-  nodes.push({ 
-    type: 'horizontalrule',
-    version: 1
-  });
-  
-  // Add quote
-  nodes.push({
-    type: 'quote',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.sentence(),
-        detail: 0,
-        format: 2, // Italic
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1
-  });
-  
-  // Add concluding paragraph
-  nodes.push({
-    type: 'paragraph',
-    children: [
-      { 
-        type: 'text', 
-        text: faker.lorem.paragraph(),
-        detail: 0,
-        format: 0,
-        mode: 'normal',
-        style: '',
-        version: 1
-      }
-    ],
-    direction: 'ltr',
-    format: '',
-    indent: 0,
-    version: 1,
-    textFormat: 0,
-    textStyle: ''
-  });
-  
-  return {
-    root: {
-      type: 'root',
-      children: nodes,
-      direction: 'ltr',
-      format: '',
-      indent: 0,
-      version: 1
-    }
-  };
-}
-
 // Generate rich_content dynamic zone components
 async function generateRichContent(shouldIncludeBookFlip = false) {
   const components = [];
@@ -516,17 +251,6 @@ async function generateRichContent(shouldIncludeBookFlip = false) {
     __component: 'shared.rich-text',
     body: faker.lorem.paragraphs(2)
   });
-  
-  // Maybe add a callout
-  if (Math.random() > 0.5) {
-    const callout = faker.helpers.arrayElement(calloutContent);
-    components.push({
-      __component: 'shared.callout',
-      title: callout.title,
-      content: callout.content,
-      type: faker.helpers.arrayElement(calloutTypes)
-    });
-  }
   
   // Maybe add a video embed
   if (Math.random() > 0.7) {
@@ -621,9 +345,6 @@ async function createPost(i) {
     console.warn(`Header image upload failed:`, e.message);
   }
 
-  // Generate Lexical content for post_body2
-  const lexicalContent = generateLexicalContent(theme);
-  
   // Decide if this post should have a book-flip component (30% chance)
   const shouldIncludeBookFlip = Math.random() > 0.7;
   
@@ -634,7 +355,6 @@ async function createPost(i) {
     data: {
       post_title: title,
       post_description: faker.lorem.sentences(2),
-      post_body2: lexicalContent,
       rich_content: richContent,
       // attach uploaded images by their IDs
       post_images: imageIds,

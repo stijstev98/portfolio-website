@@ -58,13 +58,9 @@
         "shared.video-embed",
         "shared.rich-text",
         "shared.media",
-        "shared.callout",
-        "shared.book-flip"
+        "shared.book-flip",
+        "shared.scrolling-gallery"
       ]
-    },
-    "post_body2": {
-      "type": "customField",
-      "customField": "plugin::lexical.lexical"
     }
   }
 }

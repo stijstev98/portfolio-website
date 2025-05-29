@@ -40,8 +40,18 @@ function extractMediaDocumentIds(lexicalContent) {
 module.exports = async function() {
   console.log("Fetching posts from Strapi...");
   try {
-    // Use basic populate to avoid complex validation issues
-    const apiUrl = `${STRAPI_BASE_URL}/api/posts?populate=*&pagination[limit]=100`;
+    // Updated populate strategy for Strapi 5.13.0 to handle dynamic zone media properly
+    const populateParams = [
+      'post_header_image',
+      'post_preview_image', 
+      'post_images',
+      'rich_content',
+      'rich_content.file', // For shared.media components
+      'rich_content.pdf_file', // For shared.book-flip components
+      'rich_content.gallery_content' // For shared.scrolling-gallery components
+    ];
+    
+    const apiUrl = `${STRAPI_BASE_URL}/api/posts?${populateParams.map((param, index) => `populate[${index}]=${param}`).join('&')}&pagination[limit]=100`;
     
     console.log('Attempting to fetch from:', apiUrl);
     
@@ -128,52 +138,6 @@ module.exports = async function() {
         };
       }).filter(img => img.url); // Filter out any images without URLs
       
-      // Process the rich text body if it exists (Lexical format)
-      let processedBody = '';
-      let mediaAssets = [];
-      let linkAssets = {};
-      
-      if (post.post_body2) {
-        // For Lexical content, we need to fetch associated media
-        // Extract media documentIds from Lexical content and fetch them
-        const mediaDocumentIds = extractMediaDocumentIds(post.post_body2);
-        if (mediaDocumentIds.length > 0) {
-          console.log(`Found ${mediaDocumentIds.length} media references in Lexical content:`, mediaDocumentIds);
-          
-          try {
-            // Fetch media assets for these documentIds
-            const mediaApiUrl = `${STRAPI_BASE_URL}/api/upload/files?filters[documentId][$in]=${mediaDocumentIds.join(',')}`;
-            const mediaResponse = await fetch(mediaApiUrl, { timeout: 5000 });
-            
-            if (mediaResponse.ok) {
-              const mediaData = await mediaResponse.json();
-              mediaAssets = mediaData.map(media => ({
-                documentId: media.documentId,
-                url: media.url,
-                name: media.name,
-                alternativeText: media.alternativeText,
-                width: media.width,
-                height: media.height,
-                caption: media.caption
-              }));
-              console.log(`Successfully fetched ${mediaAssets.length} media assets from upload API`);
-            } else {
-              console.warn(`Failed to fetch media assets from upload API: ${mediaResponse.status}`);
-            }
-          } catch (error) {
-            console.warn(`Error fetching media assets:`, error.message);
-          }
-        }
-        
-        processedBody = renderRichText(post.post_body2, {
-          media: mediaAssets,
-          links: linkAssets
-        });
-      } else if (post.post_body) {
-        // Fallback to legacy rich text format
-        processedBody = renderRichText(post.post_body);
-      }
-      
       // Process rich_content dynamic zone if it exists
       let richContentComponents = [];
       if (post.rich_content && Array.isArray(post.rich_content) && post.rich_content.length > 0) {
@@ -185,10 +149,54 @@ module.exports = async function() {
           // Each component has a __component field indicating its type
           switch (component.__component) {
             case 'shared.rich-text':
+              // Handle Lexical content with media asset processing
+              let richTextContent = '';
+              let componentMediaAssets = [];
+              
+              if (component.body) {
+                // Extract media documentIds from this component's Lexical content
+                const mediaDocumentIds = extractMediaDocumentIds(component.body);
+                
+                if (mediaDocumentIds.length > 0) {
+                  console.log(`Found ${mediaDocumentIds.length} media references in rich-text component:`, mediaDocumentIds);
+                  
+                  try {
+                    // Fetch media assets for these documentIds
+                    const mediaApiUrl = `${STRAPI_BASE_URL}/api/upload/files?filters[documentId][$in]=${mediaDocumentIds.join(',')}`;
+                    const mediaResponse = await fetch(mediaApiUrl, { timeout: 5000 });
+                    
+                    if (mediaResponse.ok) {
+                      const mediaData = await mediaResponse.json();
+                      componentMediaAssets = mediaData.map(media => ({
+                        documentId: media.documentId,
+                        url: media.url,
+                        name: media.name,
+                        alternativeText: media.alternativeText,
+                        width: media.width,
+                        height: media.height,
+                        caption: media.caption
+                      }));
+                      console.log(`Successfully fetched ${componentMediaAssets.length} media assets for rich-text component`);
+                    } else {
+                      console.warn(`Failed to fetch media assets for rich-text component: ${mediaResponse.status}`);
+                    }
+                  } catch (error) {
+                    console.warn(`Error fetching media assets for rich-text component:`, error.message);
+                  }
+                }
+                
+                // Render the Lexical content with media assets
+                richTextContent = renderRichText(component.body, {
+                  media: componentMediaAssets,
+                  links: {} // Add link processing if needed later
+                });
+              }
+              
               return {
                 type: 'rich-text',
-                content: component.body ? renderRichText(component.body) : '',
-                rawContent: component.body
+                content: richTextContent,
+                rawContent: component.body,
+                mediaAssets: componentMediaAssets
               };
             case 'shared.video-embed':
               return {
@@ -212,12 +220,54 @@ module.exports = async function() {
                 } : null,
                 caption: component.caption
               };
-            case 'shared.callout':
+            case 'shared.scrolling-gallery':
+              // Process gallery content media
+              let galleryContent = component.gallery_content || [];
+              
+              console.log(`Debug: scrolling-gallery component data:`, JSON.stringify(component, null, 2));
+              
+              // If gallery_content is not populated or empty, fetch it separately
+              if ((!galleryContent || galleryContent.length === 0) && component.id) {
+                console.log(`Gallery content is empty or missing, attempting to fetch separately for component ${component.id}`);
+                try {
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
+                  
+                  if (componentResponse.ok) {
+                    const componentData = await componentResponse.json();
+                    const populatedComponent = componentData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.scrolling-gallery' && c.id === component.id
+                    );
+                    
+                    console.log(`Found populated component:`, JSON.stringify(populatedComponent, null, 2));
+                    
+                    if (populatedComponent?.gallery_content) {
+                      galleryContent = populatedComponent.gallery_content;
+                      console.log(`Successfully fetched ${galleryContent.length} gallery items`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn('Failed to fetch scrolling-gallery component details:', error.message);
+                }
+              }
+              
+              const processedGalleryContent = galleryContent.map(media => ({
+                id: media.id,
+                url: constructImageUrl(media.url),
+                name: media.name || '',
+                alternativeText: media.alternativeText || '',
+                caption: media.caption || '',
+                mime: media.mime || '',
+                width: media.width || 0,
+                height: media.height || 0
+              }));
+              
+              console.log(`Processed ${processedGalleryContent.length} gallery items for scrolling gallery component`);
+              
               return {
-                type: 'callout',
-                title: component.title,
-                content: component.content ? renderRichText(component.content) : '',
-                calloutType: component.type || 'info'
+                type: 'scrolling-gallery',
+                gallery_content: processedGalleryContent,
+                gallery_height: component.gallery_height || '300px'
               };
             case 'shared.book-flip':
               // If pdf_file is not populated, fetch it separately
@@ -304,21 +354,14 @@ module.exports = async function() {
           title: post.post_title,
           description: post.post_description,
           date: post.publishedAt || post.createdAt || new Date(),
-          body: processedBody,
-          rawBody: post.post_body2 || post.post_body, // Prefer Lexical content, fallback to legacy
-          lexicalContent: post.post_body2, // Store raw Lexical JSON for reference
-          hasLexicalContent: !!post.post_body2, // Helper flag
-          mediaAssets: mediaAssets, // Store processed media assets
-          linkAssets: linkAssets, // Store link assets
-          richContent: richContentComponents, // Rich_content dynamic zone data
-          hasRichContent: richContentComponents.length > 0, // Helper flag
+          richContent: richContentComponents,
+          hasRichContent: richContentComponents.length > 0,
           headerImage: headerImageUrl,
           headerImageMedium: headerImageMedium,
           headerImageWidth: headerImageWidth,
           headerImageHeight: headerImageHeight,
           previewImage: previewImageUrl,
           previewImageMedium: previewImageMedium,
-          // Store image dimensions if available
           previewImageWidth: post.post_preview_image?.width || 0,
           previewImageHeight: post.post_preview_image?.height || 0,
           images: galleryImages
@@ -333,22 +376,13 @@ module.exports = async function() {
     const posts = postsData.filter(post => post !== null && post.data.title);
 
     const postsWithRichContent = posts.filter(post => post.data.hasRichContent);
-    const postsWithLexicalContent = posts.filter(post => post.data.hasLexicalContent);
     console.log(`Fetched and processed ${posts.length} posts from Strapi.`);
     console.log(`Found ${postsWithRichContent.length} posts with rich_content dynamic zone data.`);
-    console.log(`Found ${postsWithLexicalContent.length} posts with Lexical content.`);
     
     if (postsWithRichContent.length > 0) {
       console.log('Posts with rich_content:');
       postsWithRichContent.forEach(post => {
         console.log(`- "${post.data.title}" has ${post.data.richContent.length} components`);
-      });
-    }
-    
-    if (postsWithLexicalContent.length > 0) {
-      console.log('Posts with Lexical content:');
-      postsWithLexicalContent.forEach(post => {
-        console.log(`- "${post.data.title}" has Lexical content with ${post.data.mediaAssets.length} media assets`);
       });
     }
     

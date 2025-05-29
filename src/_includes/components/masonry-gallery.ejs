@@ -56,7 +56,10 @@
   image: '',
   title: '',
   description: '',
-  url: '#'
+  url: '#',
+  showImage: true,
+  iconType: 'play',
+  maxWidth: 'default'
 }) %>
 
 <script>
@@ -118,26 +121,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.addEventListener('mousemove', function(e) {
     if (infobox.style.display !== 'none') {
-      // Position the infobox so the content box appears at the cursor
-      // Find the content element to calculate its position relative to infobox
-      const infoboxContent = infobox.querySelector('.infobox-content');
-      if (infoboxContent) {
-        // Calculate the offset from top-left of infobox to top-left of content box
-        const contentRect = infoboxContent.getBoundingClientRect();
-        const infoboxRect = infobox.getBoundingClientRect();
-        
-        // The offset is the difference in position between the infobox and its content
-        const offsetX = contentRect.left - infoboxRect.left;
-        const offsetY = contentRect.top - infoboxRect.top;
-        
-        // Position the infobox so content appears at cursor
-        infobox.style.left = (e.clientX - offsetX) + 'px';
-        infobox.style.top = (e.clientY - offsetY) + 'px';
-      } else {
-        // Fallback to standard positioning
-        infobox.style.left = (e.clientX + 15) + 'px';
-        infobox.style.top = (e.clientY + 15) + 'px';
-      }
+      // Position the infobox at cursor coordinates
+      infobox.style.left = e.clientX + 'px';
+      infobox.style.top = e.clientY + 'px';
     }
   });
 
@@ -187,39 +173,16 @@ document.addEventListener('DOMContentLoaded', function() {
       infoboxDescription.textContent = description || '';
       infoboxButton.href = url || '#';
       
-      // Initial positioning - calculate the offset for content box
-      const infoboxContent = infobox.querySelector('.infobox-content');
-      if (infoboxContent) {
-        // Show the infobox first to get its dimensions
-        infobox.style.visibility = 'hidden';
-        infobox.style.display = 'block';
-        
-        // Once displayed, we can measure dimensions
-        setTimeout(() => {
-          const contentRect = infoboxContent.getBoundingClientRect();
-          const infoboxRect = infobox.getBoundingClientRect();
-          
-          // Calculate offsets from infobox edge to content edge
-          const offsetX = contentRect.left - infoboxRect.left;
-          const offsetY = contentRect.top - infoboxRect.top;
-          
-          // Adjust position so content appears at cursor
-          infobox.style.left = (e.clientX - offsetX) + 'px';
-          infobox.style.top = (e.clientY - offsetY) + 'px';
-          
-          // Make visible after positioning
-          infobox.style.visibility = 'visible';
-        }, 0);
-      } else {
-        // Fallback positioning
-        infobox.style.left = (e.clientX + 15) + 'px';
-        infobox.style.top = (e.clientY + 15) + 'px';
-        infobox.style.display = 'block';
-      }
-      
+      // Position infobox at cursor coordinates
+      infobox.style.left = e.clientX + 'px';
+      infobox.style.top = e.clientY + 'px';
       infobox.style.display = 'block';
       
-      startImageCycling(); 
+      // Add bouncy animation
+      infobox.classList.remove('animate-in');
+      setTimeout(() => infobox.classList.add('animate-in'), 10);
+      
+      startImageCycling();
       
       this.classList.add('is-hovered');
       if (masonryGallery) masonryGallery.classList.add('has-hovered-item');
@@ -227,7 +190,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     item.addEventListener('mouseleave', function() {
       stopImageCycling();
-      if (infobox) infobox.style.display = 'none';
+      if (infobox) {
+        infobox.style.display = 'none';
+        infobox.classList.remove('animate-in');
+      }
       this.classList.remove('is-hovered');
       if (masonryGallery && document.querySelectorAll('.masonry-item.is-hovered').length === 0) {
         masonryGallery.classList.remove('has-hovered-item');
@@ -240,7 +206,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // Check if the mouse is leaving the gallery and not entering a child or the infobox itself
       if (e.relatedTarget && !e.relatedTarget.closest('.masonry-item') && e.relatedTarget !== infobox && !infobox.contains(e.relatedTarget)) {
         stopImageCycling();
-        if (infobox) infobox.style.display = 'none';
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
         document.querySelectorAll('.masonry-item.is-hovered').forEach(item => item.classList.remove('is-hovered'));
         masonryGallery.classList.remove('has-hovered-item');
       }

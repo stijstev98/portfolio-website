@@ -178,8 +178,9 @@
 .book-flip-block {
   margin: var(--spacing-xxl) 0;
   padding: var(--spacing-lg) 0;
-  border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
+  /* Remove border lines above and below */
+  /* border-top: 1px solid var(--border-color); */
+  /* border-bottom: 1px solid var(--border-color); */
 }
 
 .book-flip-block .book-flip-container {

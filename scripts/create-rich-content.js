@@ -53,6 +53,22 @@ async function createComponents() {
     },
     {
       category: 'shared',
+      displayName: 'Scrolling Gallery',
+      attributes: {
+        gallery_content: {
+          type: 'media',
+          multiple: true,
+          required: true,
+          allowedTypes: ['images', 'videos']
+        },
+        gallery_height: {
+          type: 'string',
+          default: '300px'
+        }
+      }
+    },
+    {
+      category: 'shared',
       displayName: 'Callout',
       attributes: {
         type: {

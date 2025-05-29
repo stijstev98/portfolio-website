@@ -8,8 +8,8 @@
   "options": {},
   "attributes": {
     "body": {
-      "type": "richtext",
-      "required": true
+      "type": "customField",
+      "customField": "plugin::lexical.lexical"
     }
   }
 }

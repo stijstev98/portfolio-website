@@ -11,6 +11,27 @@
   transform-origin: top left;
 }
 
+/* Bouncy pop animation for when infobox appears */
+@keyframes bouncy-pop {
+  0% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Apply animation when infobox becomes visible */
+.hover-infobox.animate-in {
+  animation: bouncy-pop 0.14s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 .infobox-layers {
   position: relative;
 }
@@ -20,9 +41,9 @@
   width: 80%; /* Increased from 70% to make image box bigger */
   height: auto;
   margin-left: auto; /* Push to the right */
-  z-index: 3;
+  z-index: 1; /* Changed from 3 to 1 - put image behind content */
   background-color: transparent; /* Make background transparent */
-  margin-bottom: -30px; /* Create overlap effect */
+  margin-bottom: -50px; /* Increased overlap to accommodate new layering */
   box-shadow: none; /* Remove shadow from container */
 }
 
@@ -56,21 +77,21 @@
   padding: 12px 20px; /* Reduced top/bottom padding */
   width: 80%;
   height: fit-content;
-  z-index: 2;
+  z-index: 2; /* Keep content above image */
   margin-bottom: -15px; /* Create overlap effect */
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35); /* Wider shadow */
   color: var(--text-light, #fff);
-  padding-top: 3rem;
+  padding-top: 2rem; /* Reduced from 4rem to 2rem */
+  margin-top: 30px; /* Add top margin to create more space from image */
 }
 
 .infobox-title {
-  font-size: 1.2rem;
+  font-size: 2rem !important;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0 !important; /* Explicitly set all margins, no top margin */
+  padding: 0 !important; /* Ensure no padding */
   font-family: var(--title-font-narrow);
   color: var(--text-color, #fff);
-  font-size: 2rem !important;
   text-transform: unset;
   line-height: 2rem !important;
 }
@@ -86,7 +107,7 @@
 
 .infobox-button {
   position: absolute;
-  z-index: 4;
+  z-index: 10; /* Increased from 4 to ensure it's above everything */
   bottom: 0;
   right: 0;
   transform: translate(50%, 50%); /* Position at the bottom right corner of description box */
@@ -101,14 +122,14 @@
   background-color: var(--secondary-color);
   color: white !important;
   text-decoration: none;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 255, 255, 0.3); /* Added subtle white glow */
   border-radius: 0; /* Square button */
 }
 
 .infobox-go-button:hover {
   background-color: var(--primary-dark, #2980b9);
   transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 255, 255, 0.4); /* Enhanced white glow on hover */
   text-decoration: none;
 }
 
@@ -120,6 +141,51 @@
   border-width: 7px 0 7px 14px; /* Make a triangle */
   border-color: transparent transparent transparent #fff; /* White triangle */
   margin-left: 3px; /* Slight offset to center visually */
+}
+
+/* Image icon */
+.image-icon {
+  width: 16px;
+  height: 12px;
+  background-color: #fff;
+  position: relative;
+  border-radius: 2px;
+}
+
+.image-icon::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 4px;
+  height: 4px;
+  background-color: var(--secondary-color, #222);
+  border-radius: 50%;
+}
+
+.image-icon::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  right: 2px;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 3px 0;
+  border-color: transparent transparent var(--secondary-color, #222) transparent;
+  background: linear-gradient(45deg, var(--secondary-color, #222) 50%, transparent 50%);
+}
+
+/* Adjust content styling when no image is present */
+.infobox-content[data-has-image="false"] {
+  width: 100%;
+  margin-top: 0; /* Reset margin when no image */
+  padding-top: 20px; /* Reset to normal padding when no image */
+}
+
+/* Hide image container when not needed */
+.hover-infobox[data-show-image="false"] .infobox-image {
+  display: none;
 }
 
 /* Dark overlay styles for masonry items */
@@ -161,4 +227,16 @@
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0,0,0,0.5);
   z-index: 3;
+}
+
+/* Max-width variations for different gallery types */
+.hover-infobox[data-max-width="compact"] {
+  width: auto;
+  min-width: 150px;
+  max-width: 200px;
+}
+
+.hover-infobox[data-max-width="compact"] .infobox-content {
+  width: 100%;
+  max-width: 150px;
 }

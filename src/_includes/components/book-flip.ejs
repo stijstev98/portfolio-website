@@ -1,35 +1,53 @@
 <div class="book-flip-container" <% if (typeof aspectRatio !== 'undefined' && aspectRatio) { %>data-aspect-ratio="<%= aspectRatio %>"<% } %>>
-    <div class="book" <% if (typeof aspectRatio !== 'undefined' && aspectRatio) { %>style="--aspect-ratio: <%= typeof aspectRatio === 'number' ? aspectRatio : parseFloat(aspectRatio) %>;"<% } %>>
-    <% if (typeof pages !== 'undefined' && pages && pages.length > 0) { %>
-        <% 
-        // Process pages to ensure proper front/back pairing
-        for (let i = 0; i < pages.length; i += 2) { 
-            const frontPage = pages[i];
-            const backPage = pages[i + 1];
-        %>
-        <div class="page">
-            <div class="front">
-                <img src="<%= frontPage.url %>" 
-                     alt="<%= frontPage.alt || frontPage.name || 'Page ' + frontPage.pageNumber %>" 
-                     style="width: 100%; height: 100%; object-fit: cover;"
-                     onerror="this.onerror=null; this.src='/images/posts/error.png';"
-                     loading="lazy">
-            </div>
-            <div class="back">
-                <% if (backPage) { %>
-                    <img src="<%= backPage.url %>" 
-                         alt="<%= backPage.alt || backPage.name || 'Page ' + backPage.pageNumber %>" 
+    <div class="book-wrapper">
+        <div class="book" <% if (typeof aspectRatio !== 'undefined' && aspectRatio) { %>style="--aspect-ratio: <%= typeof aspectRatio === 'number' ? aspectRatio : parseFloat(aspectRatio) %>;"<% } %>>
+        <% if (typeof pages !== 'undefined' && pages && pages.length > 0) { %>
+            <% 
+            // Process pages to ensure proper front/back pairing
+            for (let i = 0; i < pages.length; i += 2) { 
+                const frontPage = pages[i];
+                const backPage = pages[i + 1];
+            %>
+            <div class="page">
+                <div class="front">
+                    <img src="<%= frontPage.url %>" 
+                         alt="<%= frontPage.alt || frontPage.name || 'Page ' + frontPage.pageNumber %>" 
                          style="width: 100%; height: 100%; object-fit: cover;"
                          onerror="this.onerror=null; this.src='/images/posts/error.png';"
-                         loading="lazy">
-                <% } %>
+                         loading="lazy"
+                         draggable="false">
+                </div>
+                <div class="back">
+                    <% if (backPage) { %>
+                        <img src="<%= backPage.url %>" 
+                             alt="<%= backPage.alt || backPage.name || 'Page ' + backPage.pageNumber %>" 
+                             style="width: 100%; height: 100%; object-fit: cover;"
+                             onerror="this.onerror=null; this.src='/images/posts/error.png';"
+                             loading="lazy"
+                             draggable="false">
+                    <% } %>
+                </div>
             </div>
-        </div>
+            <% } %>
+        <% } else if (typeof error !== 'undefined' && error) { %>
+            <div class="book-error">
+                <p>Error loading book: <%= error %></p>
+            </div>
         <% } %>
-    <% } else if (typeof error !== 'undefined' && error) { %>
-        <div class="book-error">
-            <p>Error loading book: <%= error %></p>
         </div>
-    <% } %>
     </div>
+    
+    <% if (typeof pages !== 'undefined' && pages && pages.length > 0) { %>
+    <!-- Progress Bar -->
+    <div class="book-progress">
+        <div class="progress-container">
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <span class="page-info">
+                Page <span class="current-page">1</span> of <span class="total-pages"><%= Math.ceil(pages.length / 2) %></span>
+            </span>
+        </div>
+    </div>
+    <% } %>
 </div>

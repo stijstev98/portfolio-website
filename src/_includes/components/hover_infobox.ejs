@@ -1,6 +1,10 @@
 <!-- Hover Infobox Component -->
-<div id="hover-infobox" class="hover-infobox">
+<div id="hover-infobox" class="hover-infobox" 
+     data-show-image="<%= locals.showImage !== false ? 'true' : 'false' %>"
+     data-icon-type="<%= locals.iconType || 'play' %>"
+     data-max-width="<%= locals.maxWidth || 'default' %>">
   <div class="infobox-layers">
+    <% if (locals.showImage !== false) { %>
     <div class="infobox-image">
       <!-- Add fixed container to maintain aspect ratio -->
       <div class="infobox-image-container">
@@ -8,15 +12,20 @@
         <img src="<%= locals.image || '' %>" alt="<%= locals.title || 'Project image' %>" />
       </div>
     </div>
+    <% } %>
     
-    <div class="infobox-content">
+    <div class="infobox-content" data-has-image="<%= locals.showImage !== false ? 'true' : 'false' %>">
       <h2 class="infobox-title"><%= locals.title || '' %></h2>
       <p class="infobox-description"><%= locals.description || '' %></p>
       
-      <!-- Play button positioned at the bottom right of the content box -->
+      <!-- Button with dynamic icon -->
       <div class="infobox-button">
         <a href="<%= locals.url || '#' %>" class="infobox-go-button">
+          <% if (locals.iconType === 'image') { %>
+          <div class="image-icon"></div>
+          <% } else { %>
           <div class="play-icon"></div>
+          <% } %>
         </a>
       </div>
     </div>

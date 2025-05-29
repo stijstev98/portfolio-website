@@ -128,12 +128,6 @@ function formatTextNode(node) {
   
   let text = escapeHtml(node.text);
   
-  // Handle [flip-book] shortcode - just pass it through without escaping
-  // It will be replaced in the template
-  if (text.includes('[flip-book]')) {
-    text = text.replace(/\[flip-book\]/g, '[flip-book]');
-  }
-  
   // Apply formatting based on format bitmask
   // Lexical uses bit flags: 1=bold, 2=italic, 4=strikethrough, 8=underline, 16=code, etc.
   if (node.format) {
@@ -275,22 +269,6 @@ function renderTextOnly(nodes) {
  */
 function escapeHtml(text) {
   if (typeof text !== 'string') return text;
-  
-  // Don't escape the [flip-book] shortcode
-  const hasFlipBook = text.includes('[flip-book]');
-  if (hasFlipBook) {
-    // Split by shortcode, escape parts, then rejoin
-    const parts = text.split('[flip-book]');
-    const escapedParts = parts.map(part => 
-      part
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-    );
-    return escapedParts.join('[flip-book]');
-  }
   
   return text
     .replace(/&/g, '&amp;')

@@ -357,7 +357,6 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::post.post'> &
       Schema.Attribute.Private;
-    post_body2: Schema.Attribute.JSON & Schema.Attribute.CustomField<'plugin::lexical.lexical'>;
     post_description: Schema.Attribute.Text;
     post_header_image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     post_images: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios', true>;
@@ -369,8 +368,8 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
         'shared.video-embed',
         'shared.rich-text',
         'shared.media',
-        'shared.callout',
         'shared.book-flip',
+        'shared.scrolling-gallery',
       ]
     >;
     short_description: Schema.Attribute.String;

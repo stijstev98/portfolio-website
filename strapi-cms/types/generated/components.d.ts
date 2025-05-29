@@ -22,22 +22,6 @@ export interface SharedBookFlip extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedCallout extends Struct.ComponentSchema {
-  collectionName: 'components_shared_callouts';
-  info: {
-    description: '';
-    displayName: 'Callout';
-    icon: 'exclamation-circle';
-  };
-  attributes: {
-    content: Schema.Attribute.RichText & Schema.Attribute.Required;
-    title: Schema.Attribute.String;
-    type: Schema.Attribute.Enumeration<['info', 'warning', 'danger', 'success']> &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<'info'>;
-  };
-}
-
 export interface SharedMedia extends Struct.ComponentSchema {
   collectionName: 'components_shared_media';
   info: {
@@ -59,7 +43,20 @@ export interface SharedRichText extends Struct.ComponentSchema {
     icon: 'align-justify';
   };
   attributes: {
-    body: Schema.Attribute.RichText & Schema.Attribute.Required;
+    body: Schema.Attribute.JSON & Schema.Attribute.CustomField<'plugin::lexical.lexical'>;
+  };
+}
+
+export interface SharedScrollingGallery extends Struct.ComponentSchema {
+  collectionName: 'components_shared_scrolling_galleries';
+  info: {
+    description: 'A scrolling gallery with images and videos';
+    displayName: 'Scrolling Gallery';
+    icon: 'slideshow';
+  };
+  attributes: {
+    gallery_content: Schema.Attribute.Media<'images' | 'videos', true> & Schema.Attribute.Required;
+    gallery_height: Schema.Attribute.String & Schema.Attribute.DefaultTo<'300px'>;
   };
 }
 
@@ -85,9 +82,9 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'links.links': LinksLinks;
       'shared.book-flip': SharedBookFlip;
-      'shared.callout': SharedCallout;
       'shared.media': SharedMedia;
       'shared.rich-text': SharedRichText;
+      'shared.scrolling-gallery': SharedScrollingGallery;
       'shared.video-embed': SharedVideoEmbed;
     }
   }
