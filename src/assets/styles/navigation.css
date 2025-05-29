@@ -1,12 +1,3 @@
-/* Scroll trigger positioning */
-.scroll-trigger {
-  position: absolute;
-  top: 100px; /* Our threshold for animation */
-  height: 1px;
-  width: 100%;
-  pointer-events: none;
-}
-
 /* Body margin to account for logo bar positioning */
 body {
   margin-left: 0; /* Remove the fixed margin, we'll position relative to content */

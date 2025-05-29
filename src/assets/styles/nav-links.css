@@ -83,7 +83,7 @@
 
 /* Navigation animation in hero section */
 .nav-animation {
-  transition: transform 0.5s ease-out;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   opacity: 0;
   transform: translateY(20px);

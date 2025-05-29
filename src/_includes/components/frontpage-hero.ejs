@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.speechSynthesis.speak(utterance);
   });
 
-  // 1) staggered entrance
+  // Initial staggered entrance animation
   setTimeout(() => {
     document.querySelector('.hero-section').style.opacity = '1';
     
@@ -110,50 +110,77 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 500);
 
-  // 2) observe when to trigger scroll effect
-  const hero = document.querySelector('.hero');
-  const headerRow = document.querySelector('.header-row');
+  // Smooth scroll-based hero animation system
+  let hasScrolled = false;
+  let animationLocked = false;
+  let navScrollActive = false;
   
-  // Create a trigger element 100px down
-  const scrollTrigger = document.createElement('div');
-  scrollTrigger.className = 'scroll-trigger';
-  document.body.appendChild(scrollTrigger);
-  
-  // Set up observer for the trigger point with smooth transition
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) {
-        document.body.classList.add('scrolled');
-      } else {
-        document.body.classList.remove('scrolled');
-      }
-    });
-  }, { threshold: 0.1 });
-  
-  observer.observe(scrollTrigger);
-  
-  // 3) Dirty-scroll-hack: modified to prevent conflicts with navigation scrolling
-  let jumped = false;
-  let navScrollActive = false; // Flag to track if navigation scroll is active
-  
-  // Listen for custom event from nav links
+  // Listen for custom event from nav links to prevent conflicts
   document.addEventListener('navScrollStarted', () => {
     navScrollActive = true;
-    // Reset after navigation scroll should be complete
     setTimeout(() => {
       navScrollActive = false;
-    }, 1500); // 1.5 seconds is enough time for most scrolls to complete
+    }, 1500);
   });
   
-  window.addEventListener('scroll', () => {
-    // Only trigger the hack if navigation scroll isn't active
-    if (!navScrollActive && !jumped && window.scrollY > 50) {
-      jumped = true;
-      window.scrollBy({ top: 150, behavior: 'smooth' });
-      setTimeout(() => {}, 50);
-    } else if (jumped && window.scrollY < 50) {
-      jumped = false;
+  // Smooth scroll handler with immediate top detection
+  function handleScroll() {
+    // Skip if navigation scroll is active
+    if (navScrollActive || animationLocked) return;
+    
+    const scrollY = window.scrollY;
+    const threshold = 50; // Scroll threshold to trigger animation
+    
+    // First scroll down - trigger collapse animation
+    if (!hasScrolled && scrollY > threshold) {
+      hasScrolled = true;
+      animationLocked = true;
+      
+      // Add scrolled class for smooth transition
+      document.body.classList.add('scrolled');
+      
+      // Reset nav animations when becoming fixed
+      const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
+      navLinks.forEach((link, index) => {
+        link.style.transform = 'translateX(-50px)';
+        link.style.opacity = '0.7';
+        link.style.animationDelay = `${0.1 + (index * 0.05)}s`;
+      });
+      
+      // Unlock after animation completes
+      setTimeout(() => {
+        animationLocked = false;
+      }, 600); // Match CSS transition duration
     }
-  });
+    // Back to top - trigger expand animation
+    else if (hasScrolled && scrollY <= 10) { // Very low threshold for immediate response
+      hasScrolled = false;
+      animationLocked = true;
+      
+      // Remove scrolled class for reverse animation
+      document.body.classList.remove('scrolled');
+      
+      // Reset nav animations for hero position
+      const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
+      navLinks.forEach(link => {
+        link.style.transform = '';
+        link.style.opacity = '';
+        link.style.animationDelay = '';
+      });
+      
+      // Unlock after animation completes
+      setTimeout(() => {
+        animationLocked = false;
+      }, 600); // Match CSS transition duration
+    }
+  }
+  
+  // Use passive scroll listener for better performance
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  
+  // Handle page load with existing scroll position
+  setTimeout(() => {
+    handleScroll();
+  }, 100);
 });
 </script>
