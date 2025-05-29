@@ -7,9 +7,38 @@
       <!-- Render media items twice for seamless looping -->
       <% for (let loop = 0; loop < 2; loop++) { %>
         <% gallery_content.forEach((media, index) => { %>
-          <div class="scrolling-gallery-item" 
+          <% 
+            // Calculate aspect ratio and determine width class
+            let aspectRatio = 1; // Default to square
+            let aspectClass = 'aspect-square';
+            
+            if (media.width && media.height && media.width > 0 && media.height > 0) {
+              aspectRatio = media.width / media.height;
+              
+              if (aspectRatio > 2.5) {
+                aspectClass = 'aspect-very-wide';
+              } else if (aspectRatio > 1.6) {
+                aspectClass = 'aspect-wide';
+              } else if (aspectRatio > 1.2) {
+                aspectClass = 'aspect-landscape';
+              } else if (aspectRatio < 0.8) {
+                aspectClass = 'aspect-portrait';
+              }
+              // else remains aspect-square for ratios between 0.8 and 1.2
+            } else {
+              // Fallback: try to determine aspect ratio from video vs image type
+              if (media.mime && media.mime.startsWith('video/')) {
+                // Most videos are landscape, assume 16:9
+                aspectRatio = 1.78;
+                aspectClass = 'aspect-wide';
+              }
+              // Images without dimensions default to square
+            }
+          %>
+          <div class="scrolling-gallery-item <%= aspectClass %>" 
                data-media-id="<%= media.id || index %>"
-               data-media-type="<%= media.mime ? (media.mime.startsWith('video/') ? 'video' : 'image') : 'image' %>">
+               data-media-type="<%= media.mime ? (media.mime.startsWith('video/') ? 'video' : 'image') : 'image' %>"
+               data-aspect-ratio="<%= aspectRatio %>">
             <% if (media.mime && media.mime.startsWith('video/')) { %>
               <!-- Video panel -->
               <div class="scrolling-gallery-media">
@@ -81,18 +110,50 @@ document.addEventListener('DOMContentLoaded', function() {
   
   if (!track || items.length === 0) return;
 
-  // Set container height
+  // Set container height and CSS custom property
   const height = container.dataset.height || '300px';
   container.style.height = height;
+  
+  // Function to update CSS custom property based on current height
+  function updateGalleryHeight() {
+    const currentHeight = container.offsetHeight;
+    container.style.setProperty('--gallery-height', currentHeight + 'px');
+    
+    // Recalculate total width when height changes (affects aspect ratio widths)
+    setTimeout(() => {
+      let newTotalWidth = 0;
+      items.forEach(item => {
+        newTotalWidth += item.offsetWidth;
+      });
+      halfWidth = newTotalWidth / 2; // Update the halfWidth variable
+      track.style.width = newTotalWidth + 'px';
+      
+      // Reset scroll position if needed
+      if (scrollPosition >= halfWidth) {
+        scrollPosition = 0;
+      }
+    }, 100); // Small delay to allow CSS to update
+  }
+  
+  // Set initial CSS custom property
+  updateGalleryHeight();
+  
+  // Update on window resize to handle responsive changes
+  let resizeTimeout;
+  function handleResize() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(updateGalleryHeight, 150); // Debounce resize events
+  }
+  window.addEventListener('resize', handleResize);
 
-  // Calculate total width for seamless scrolling
+  // Calculate initial total width for seamless scrolling
   let totalWidth = 0;
   items.forEach(item => {
     totalWidth += item.offsetWidth;
   });
   
   // Set track width to half the total (since we duplicate items)
-  const halfWidth = totalWidth / 2;
+  let halfWidth = totalWidth / 2;
   track.style.width = totalWidth + 'px';
 
   let isScrolling = true;

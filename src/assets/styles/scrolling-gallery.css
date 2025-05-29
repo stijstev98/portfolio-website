@@ -6,9 +6,11 @@
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  overflow: hidden;
+  overflow-x: hidden; /* Only hide horizontal overflow */
+  overflow-y: visible; /* Allow vertical overflow for hover effects */
   background: var(--bg-color, #000);
   height: 300px; /* Default height, can be overridden */
+  padding-bottom: 20px; /* Extra space for scaled items */
 }
 
 .scrolling-gallery-track {
@@ -18,8 +20,8 @@
 }
 
 .scrolling-gallery-item {
-  flex-shrink: 0;
   height: 100%;
+  flex-shrink: 0;
   margin-right: 8px; /* Small gap between panels */
   position: relative;
   cursor: pointer;
@@ -38,7 +40,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+  background: var(--bg-color, #000);
 }
 
 /* Video play overlay */
@@ -78,6 +82,7 @@
 .scrolling-gallery-container.has-hovered-item .scrolling-gallery-item.is-hovered {
   filter: brightness(1);
   transform: scale(1.05);
+  transform-origin: center center; /* Scale from center */
   z-index: 10;
 }
 
@@ -160,26 +165,31 @@
   max-height: 100%;
 }
 
-/* Auto-sizing for different media aspect ratios */
-.scrolling-gallery-item {
-  width: auto;
-  min-width: 200px; /* Minimum panel width */
-  max-width: 400px; /* Maximum panel width */
+/* Base aspect ratio classes - width calculated based on container height */
+.scrolling-gallery-item.aspect-portrait {
+  width: calc(var(--gallery-height, 300px) * 0.75); /* 3:4 aspect ratio */
 }
 
-/* Square images */
-.scrolling-gallery-media img[style*="aspect-ratio: 1"] {
-  width: 300px;
+.scrolling-gallery-item.aspect-square {
+  width: var(--gallery-height, 300px); /* 1:1 aspect ratio */
 }
 
-/* Portrait images */
-.scrolling-gallery-media img {
-  min-width: 200px;
+.scrolling-gallery-item.aspect-landscape {
+  width: calc(var(--gallery-height, 300px) * 1.33); /* 4:3 aspect ratio */
 }
 
-/* Landscape images */
-.scrolling-gallery-media video {
-  min-width: 350px;
+.scrolling-gallery-item.aspect-wide {
+  width: calc(var(--gallery-height, 300px) * 1.78); /* 16:9 aspect ratio */
+}
+
+.scrolling-gallery-item.aspect-very-wide {
+  width: calc(var(--gallery-height, 300px) * 2.67); /* Ultra-wide aspect ratio */
+}
+
+/* Override for items that should use cover (when we want to fill completely) */
+.scrolling-gallery-item.aspect-square .scrolling-gallery-media img,
+.scrolling-gallery-item.aspect-square .scrolling-gallery-media video {
+  object-fit: cover;
 }
 
 /* Responsive adjustments */
@@ -189,9 +199,12 @@
   }
   
   .scrolling-gallery-item {
-    min-width: 150px;
-    max-width: 250px;
     margin-right: 4px;
+  }
+  
+  /* Update CSS custom property for mobile */
+  .scrolling-gallery-container {
+    --gallery-height: 200px;
   }
   
   .video-play-overlay {
@@ -219,8 +232,11 @@
   }
   
   .scrolling-gallery-item {
-    min-width: 120px;
-    max-width: 200px;
     margin-right: 2px;
+  }
+  
+  /* Update CSS custom property for small mobile */
+  .scrolling-gallery-container {
+    --gallery-height: 150px;
   }
 } 
