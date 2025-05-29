@@ -30,6 +30,31 @@
 </div>
 
 <script>
+  // Immediate execution to ensure menu starts closed (iOS Safari fix)
+  (function() {
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const menuOverlay = document.querySelector('.menu-overlay');
+    const closeButton = document.querySelector('.mobile-menu-close');
+    
+    // Force initial closed state immediately
+    if (mobileMenu) {
+      mobileMenu.classList.remove('active');
+      mobileMenu.style.transform = 'translateX(280px)';
+    }
+    if (menuOverlay) {
+      menuOverlay.classList.remove('active');
+      menuOverlay.style.opacity = '0';
+      menuOverlay.style.visibility = 'hidden';
+    }
+    if (closeButton) {
+      closeButton.style.opacity = '0';
+      closeButton.style.visibility = 'hidden';
+    }
+    
+    // Remove any menu-open classes from body
+    document.body.classList.remove('menu-open', 'hero-menu-open');
+  })();
+
   document.addEventListener('DOMContentLoaded', () => {
     const mobileMenu = document.querySelector('.mobile-menu');
     const menuOverlay = document.querySelector('.menu-overlay');
@@ -42,6 +67,9 @@
       console.warn('Mobile menu elements not found');
       return;
     }
+    
+    // Double-check that menu starts closed (defensive programming)
+    closeMenu();
     
     // Function to open mobile menu
     function openMenu() {
@@ -66,6 +94,11 @@
       mobileMenu.classList.remove('active');
       menuOverlay.classList.remove('active');
       document.body.classList.remove('menu-open', 'hero-menu-open');
+      
+      // Force immediate styling for iOS Safari
+      mobileMenu.style.transform = '';
+      menuOverlay.style.opacity = '';
+      menuOverlay.style.visibility = '';
       
       setTimeout(() => {
         closeButton.style.visibility = 'hidden';
@@ -99,6 +132,16 @@
       if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
         closeMenu();
       }
+    });
+    
+    // Additional iOS Safari fixes
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        if (mobileMenu.classList.contains('active')) {
+          // Force redraw after orientation change
+          mobileMenu.style.transform = 'translateX(0)';
+        }
+      }, 100);
     });
   });
 </script>

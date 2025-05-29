@@ -32,6 +32,7 @@
   z-index: 9980;
   position: relative;
   margin-left: auto;
+  top: 0.3rem; /* Added to shift menu down slightly */
 }
 
 .hamburger-line {
@@ -41,7 +42,7 @@
   transition: 0.3s;
 }
 
-/* Mobile menu overlay */
+/* Mobile menu overlay - EXPLICIT INITIAL STATE */
 .menu-overlay {
   position: fixed;
   top: 0;
@@ -50,20 +51,21 @@
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 9990;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important; /* Force initial state */
+  visibility: hidden !important; /* Force initial state */
   transition: opacity 0.3s ease, visibility 0.3s ease;
   pointer-events: none;
+  transform: translateZ(0); /* Force hardware acceleration */
   /* display controlled via media query for mobile */
 }
 
 .menu-overlay.active {
-  opacity: 1;
-  visibility: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
   pointer-events: all;
 }
 
-/* Main mobile menu panel */
+/* Main mobile menu panel - EXPLICIT INITIAL STATE */
 .mobile-menu {
   position: fixed;
   top: 0;
@@ -72,11 +74,13 @@
   height: 100vh;
   background-color: var(--bg-color);
   z-index: 9995;
-  transform: translateX(280px); /* slide in from right side */
+  transform: translateX(280px) !important; /* Force initial state - slide in from right side */
   transition: transform 0.3s ease;
   padding: 2rem;
   box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
+  will-change: transform; /* Optimize for animations */
+  transform-style: preserve-3d; /* iOS Safari fix */
   /* display controlled via media query for mobile */
 }
 
@@ -84,7 +88,7 @@
   transform: translateX(0) !important; /* Force transform */
 }
 
-/* Close button */
+/* Close button - EXPLICIT INITIAL STATE */
 .mobile-menu-close {
   /* display controlled via media query for mobile */
   align-items: center;
@@ -101,14 +105,14 @@
   right: 1rem;
   cursor: pointer;
   z-index: 9996;
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important; /* Force initial state */
+  visibility: hidden !important; /* Force initial state */
   transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .mobile-menu.active .mobile-menu-close {
-  opacity: 1;
-  visibility: visible;
+  opacity: 1 !important;
+  visibility: visible !important;
 }
 
 /* Mobile navigation links */
@@ -223,5 +227,40 @@ body.hero-menu-open .hero-section {
   .menu-overlay,
   .mobile-menu-close {
     transform: translateZ(0);
+  }
+  
+  /* Additional iOS Safari fixes for menu state */
+  .mobile-menu:not(.active) {
+    transform: translateX(280px) translateZ(0) !important;
+  }
+  
+  .menu-overlay:not(.active) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  .mobile-menu-close:not(.mobile-menu.active .mobile-menu-close) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+}
+
+/* Additional defensive CSS for all mobile devices */
+@media (max-width: 768px) {
+  /* Force initial closed state on page load */
+  .mobile-menu:not(.active) {
+    transform: translateX(280px) !important;
+  }
+  
+  .menu-overlay:not(.active) {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+  
+  /* Prevent any potential body scroll issues */
+  body:not(.menu-open) {
+    overflow: auto !important;
   }
 }
