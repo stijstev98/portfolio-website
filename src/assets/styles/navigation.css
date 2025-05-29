@@ -102,7 +102,7 @@ body {
   display: flex;
   align-items: flex-end; /* Position logo towards bottom of banner */
   justify-content: center;
-  padding-bottom: 0.8rem; /* Add bottom padding to position logo lower */
+  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner for regular pages */
   z-index: 101;
   transition: all 0.3s ease;
 }
@@ -111,7 +111,7 @@ body {
 body:not(.homepage) .logo-bar {
   height: 8vh !important;
   align-items: flex-end !important;
-  padding-bottom: 0.8rem !important;
+  padding-bottom: 0.5rem !important; /* Position logo almost at bottom of banner for regular pages */
 }
 
 .logo-bar img {
@@ -214,7 +214,7 @@ body:not(.homepage) .logo-bar {
     width: 40px;
     height: 6vh; /* Proportionally taller for mobile */
     align-items: flex-end; /* Position logo towards bottom */
-    padding-bottom: 0.6rem; /* Proportional bottom padding */
+    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile for regular pages */
   }
 
   .hamburger-menu {
@@ -330,7 +330,7 @@ body:not(.homepage) .logo-bar {
     width: 35px;
     height: 5vh; /* Slightly taller for smallest screens */
     align-items: flex-end; /* Position logo towards bottom */
-    padding-bottom: 0.5rem; /* Smaller bottom padding for small screens */
+    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens for regular pages */
   }
   
   .nav-wrapper {

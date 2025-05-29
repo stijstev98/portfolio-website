@@ -71,7 +71,7 @@
     </script>
   </head>
 
-  <body>
+  <body<% if (page.url === "/") { %> class="homepage"<% } %>>
     <!-- Navigation -->
     <% if (page.url !== "/") { %>
       <%- include('../components/navigation') %>

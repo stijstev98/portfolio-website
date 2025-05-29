@@ -92,6 +92,28 @@ body.scrolled .custom-header {
 }
 
 /* Logo bar for homepage - positioned relative to content and taller initially */
+.homepage .logo-bar {
+  position: fixed;
+  left: calc(50% - 700px); /* Position more to the left of max-width content */
+  top: 0; /* Sit against top of screen */
+  width: 50px;
+  height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
+  z-index: 101;
+  transition: all 0.3s ease;
+}
+
+/* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
+body.scrolled .homepage .logo-bar {
+  height: 8vh !important; /* Match the taller collapsed height used on regular pages */
+  align-items: flex-end; /* Keep logo at bottom */
+  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
+}
+
 /* Only apply these styles to pages with hero sections (homepage) */
 .header-transparent .logo-bar {
   position: fixed;
@@ -103,7 +125,7 @@ body.scrolled .custom-header {
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
   z-index: 101;
   transition: all 0.3s ease;
 }
@@ -112,7 +134,7 @@ body.scrolled .custom-header {
 body.scrolled .header-transparent .logo-bar {
   height: 8vh !important; /* Match the taller collapsed height used on regular pages */
   align-items: flex-end; /* Keep logo at bottom */
-  padding-bottom: 0.8rem; /* Match regular page padding */
+  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
 }
 
 .logo-bar img {
@@ -332,17 +354,32 @@ body.scrolled .nav-animation {
     height: 8vh;
   }
 
+  /* Adjust logo bar for mobile homepage */
+  .homepage .logo-bar {
+    left: 0.5rem;
+    width: 40px;
+    height: 25vh !important; /* Full mobile header height initially */
+    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile */
+  }
+
+  body.scrolled .homepage .logo-bar {
+    height: 6vh !important; /* Match mobile navigation collapsed height */
+    align-items: flex-end; /* Position logo towards bottom when collapsed */
+    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile */
+  }
+
   /* Adjust logo bar for mobile homepage - only for hero pages */
   .header-transparent .logo-bar {
     left: 0.5rem;
     width: 40px;
     height: 25vh !important; /* Full mobile header height initially */
+    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile */
   }
 
   body.scrolled .header-transparent .logo-bar {
     height: 6vh !important; /* Match mobile navigation collapsed height */
     align-items: flex-end; /* Position logo towards bottom when collapsed */
-    padding-bottom: 0.6rem; /* Match mobile padding */
+    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile */
   }
 
   /* Disable some animations */
@@ -395,17 +432,32 @@ body.scrolled .nav-animation {
     height: 20vh;
   }
   
+  /* Adjust logo bar for smallest screens on homepage */
+  .homepage .logo-bar {
+    left: 0.25rem;
+    width: 35px;
+    height: 20vh !important; /* Full small header height initially */
+    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens */
+  }
+
+  body.scrolled .homepage .logo-bar {
+    height: 5vh !important; /* Match smallest screen navigation collapsed height */
+    align-items: flex-end; /* Position logo towards bottom when collapsed */
+    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens */
+  }
+  
   /* Adjust logo bar for smallest screens - only for hero pages */
   .header-transparent .logo-bar {
     left: 0.25rem;
     width: 35px;
     height: 20vh !important; /* Full small header height initially */
+    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens */
   }
 
   body.scrolled .header-transparent .logo-bar {
     height: 5vh !important; /* Match smallest screen navigation collapsed height */
     align-items: flex-end; /* Position logo towards bottom when collapsed */
-    padding-bottom: 0.5rem; /* Match smallest screen padding */
+    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens */
   }
 
   .hero {
