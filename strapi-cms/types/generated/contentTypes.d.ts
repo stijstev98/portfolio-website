@@ -370,6 +370,8 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
         'shared.media',
         'shared.book-flip',
         'shared.scrolling-gallery',
+        'shared.masonry-gallery',
+        'shared.simple-media',
       ]
     >;
     short_description: Schema.Attribute.String;

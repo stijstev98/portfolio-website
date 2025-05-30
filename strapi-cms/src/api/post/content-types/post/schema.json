@@ -59,7 +59,9 @@
         "shared.rich-text",
         "shared.media",
         "shared.book-flip",
-        "shared.scrolling-gallery"
+        "shared.scrolling-gallery",
+        "shared.masonry-gallery",
+        "shared.simple-media"
       ]
     }
   }

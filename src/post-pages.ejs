@@ -56,6 +56,27 @@ eleventyComputed:
             }) %>
           </div>
     <%    break;
+        case 'masonry-gallery':
+    %>
+          <div class="rich-content-block masonry-gallery-component masonry-gallery-<%= component.size || 'large' %>">
+            <%- include('/components/masonry-gallery-rich', { 
+              masonry_images: component.masonry_images, 
+              size: component.size || 'large'
+            }) %>
+          </div>
+    <%    break;
+        case 'simple-media':
+        case 'shared.simple-media':
+    %>
+          <div class="rich-content-block simple-media-component">
+            <%- include('/components/simple-media', { 
+              media_files: component.media_files, 
+              size: component.size || 'medium',
+              show_caption: component.show_caption || false,
+              show_infobox: component.show_infobox || false
+            }) %>
+          </div>
+    <%    break;
         case 'shared.book-flip':
         case 'book-flip':
           if (component.pages && component.pages.length > 0) {

@@ -64,6 +64,7 @@
   object-fit: cover;
   object-position: center;
   display: block;
+  transition: transform 0.3s var(--anim-easing); /* Add transition for grow effect */
 }
 
 /* Ensure videos behave like images */
@@ -102,6 +103,12 @@
 .masonry-item-link:focus {
   color: var(--text-color);
   text-decoration: none;
+}
+
+/* Add grow effect on hover for the image/video */
+.masonry-item:hover .masonry-item-image img,
+.masonry-item:hover .masonry-item-image video {
+  transform: scale(1.05);
 }
 
 .masonry-item-overlay {

@@ -1,0 +1,209 @@
+<!-- Reusable Lightbox Component -->
+<div id="<%= locals.id || 'lightbox' %>" class="lightbox" style="display: none;">
+  <div class="lightbox-overlay"></div>
+  <div class="lightbox-content">
+    <button class="lightbox-close">&times;</button>
+    <div class="lightbox-media-container">
+      <!-- Content will be dynamically inserted here -->
+    </div>
+    <div class="lightbox-info">
+      <h3 class="lightbox-title"></h3>
+      <div class="lightbox-caption"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.lightbox.show {
+  opacity: 1;
+}
+
+.lightbox-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: row;
+  background: var(--bg-color);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  width: 85vw;
+  height: 80vh;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 2px solid var(--primary-color);
+  border-radius: 0; /* Square button */
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--anim-duration-fast) ease;
+  box-shadow: 0 0 10px rgba(var(--primary-color-rgb, 49, 109, 123), 0.5),
+              0 0 15px rgba(var(--primary-color-rgb, 49, 109, 123), 0.3);
+}
+
+.lightbox-close:hover {
+  background: var(--primary-color);
+  color: var(--bg-color);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(var(--primary-color-rgb, 49, 109, 123), 0.7),
+              0 0 25px rgba(var(--primary-color-rgb, 49, 109, 123), 0.5);
+}
+
+.lightbox-media-container {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  position: relative;
+  padding: var(--spacing-md);
+  overflow: hidden;
+}
+
+/* Improved image sizing to maximize space usage without cutting off or stretching */
+.lightbox-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Enhanced sizing based on aspect ratio for optimal space usage */
+.lightbox-image[data-orientation="landscape"] {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+}
+
+.lightbox-image[data-orientation="portrait"] {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+}
+
+.lightbox-image[data-orientation="square"] {
+  /* For square images, fill whichever dimension is smaller */
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+}
+
+.lightbox-video {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.lightbox-info {
+  flex: 1;
+  padding: var(--spacing-lg);
+  background: transparent;
+  border-top: none;
+  border-left: 1px solid var(--border-color);
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.lightbox-title {
+  font-family: var(--title-font-narrow);
+  font-size: var(--title-small-size);
+  font-weight: 800;
+  color: var(--text-color);
+  text-transform: uppercase;
+  line-height: 1.2;
+  margin: 0 0 var(--spacing-md) 0;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  letter-spacing: 0;
+}
+
+.lightbox-caption {
+  font-family: var(--body-font);
+  font-size: var(--body-text-small); /* Changed from body-text-size to body-text-small for smaller text */
+  color: var(--text-light);
+  line-height: var(--body-text-line-height);
+  font-weight: 300;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+  margin-bottom: var(--spacing-md);
+}
+
+.lightbox-info:empty {
+  display: none;
+}
+
+.lightbox-title:empty + .lightbox-caption:empty {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .lightbox-content {
+    max-width: 95vw;
+    max-height: 95vh;
+    flex-direction: column; /* Stack vertically on mobile */
+  }
+  
+  .lightbox-info {
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-sm);
+  }
+  
+  .lightbox-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .lightbox-caption {
+    font-size: 0.8rem; /* Even smaller on mobile */
+  }
+  
+  .lightbox-media-container {
+    flex: 2;
+  }
+}
+</style> 

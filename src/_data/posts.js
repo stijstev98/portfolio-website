@@ -48,7 +48,9 @@ module.exports = async function() {
       'rich_content',
       'rich_content.file', // For shared.media components
       'rich_content.pdf_file', // For shared.book-flip components
-      'rich_content.gallery_content' // For shared.scrolling-gallery components
+      'rich_content.gallery_content', // For shared.scrolling-gallery components
+      'rich_content.masonry_images', // For shared.masonry-gallery components
+      'rich_content.media_files' // For shared.simple-media components
     ];
     
     const apiUrl = `${STRAPI_BASE_URL}/api/posts?${populateParams.map((param, index) => `populate[${index}]=${param}`).join('&')}&pagination[limit]=100`;
@@ -344,6 +346,108 @@ module.exports = async function() {
                 pages: [],
                 totalPages: 0,
                 error: 'No PDF file provided'
+              };
+            case 'shared.masonry-gallery':
+              // Process masonry gallery media
+              let masonryImages = component.masonry_images || [];
+              
+              console.log(`Debug: masonry-gallery component data:`, JSON.stringify(component, null, 2));
+              
+              // If masonry_images is not populated or empty, fetch it separately
+              if ((!masonryImages || masonryImages.length === 0) && component.id) {
+                console.log(`Masonry images is empty or missing, attempting to fetch separately for component ${component.id}`);
+                try {
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
+                  
+                  if (componentResponse.ok) {
+                    const componentData = await componentResponse.json();
+                    const populatedComponent = componentData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.masonry-gallery' && c.id === component.id
+                    );
+                    
+                    console.log(`Found populated component:`, JSON.stringify(populatedComponent, null, 2));
+                    
+                    if (populatedComponent?.masonry_images) {
+                      masonryImages = populatedComponent.masonry_images;
+                      console.log(`Successfully fetched ${masonryImages.length} masonry items`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn('Failed to fetch masonry-gallery component details:', error.message);
+                }
+              }
+              
+              const processedMasonryImages = masonryImages.map(media => ({
+                id: media.id,
+                url: constructImageUrl(media.url),
+                name: media.name || '',
+                alternativeText: media.alternativeText || '',
+                caption: media.caption || '',
+                mime: media.mime || '',
+                width: media.width || 0,
+                height: media.height || 0
+              }));
+              
+              console.log(`Processed ${processedMasonryImages.length} media items for masonry gallery component`);
+              
+              return {
+                type: 'masonry-gallery',
+                masonry_images: processedMasonryImages,
+                size: component.size || 'large'
+              };
+            case 'shared.simple-media':
+              // Process simple media files (limit to 3)
+              let mediaFiles = component.media_files || [];
+              
+              console.log(`Debug: simple-media component data:`, JSON.stringify(component, null, 2));
+              
+              // If media_files is not populated or empty, fetch it separately
+              if ((!mediaFiles || mediaFiles.length === 0) && component.id) {
+                console.log(`Media files is empty or missing, attempting to fetch separately for component ${component.id}`);
+                try {
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
+                  
+                  if (componentResponse.ok) {
+                    const componentData = await componentResponse.json();
+                    const populatedComponent = componentData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.simple-media' && c.id === component.id
+                    );
+                    
+                    console.log(`Found populated component:`, JSON.stringify(populatedComponent, null, 2));
+                    
+                    if (populatedComponent?.media_files) {
+                      mediaFiles = populatedComponent.media_files;
+                      console.log(`Successfully fetched ${mediaFiles.length} media files`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn('Failed to fetch simple-media component details:', error.message);
+                }
+              }
+              
+              // Limit to 3 media files and process them
+              const limitedMediaFiles = mediaFiles.slice(0, 3);
+              const processedMediaFiles = limitedMediaFiles.map(media => ({
+                id: media.id,
+                url: constructImageUrl(media.url),
+                name: media.name || '',
+                alternativeText: media.alternativeText || '',
+                caption: media.caption || '',
+                mime: media.mime || '',
+                width: media.width || 0,
+                height: media.height || 0
+              }));
+              
+              console.log(`Processed ${processedMediaFiles.length} media files for simple media component`);
+              
+              return {
+                type: 'simple-media',
+                media_files: processedMediaFiles,
+                size: component.size || 'medium',
+                show_caption: component.show_caption || false,
+                show_infobox: component.show_infobox || false
               };
             default:
               return {

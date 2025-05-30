@@ -1,0 +1,243 @@
+<!-- Rich Content Masonry Gallery Component -->
+<div class="masonry-gallery-rich masonry-gallery-rich-<%= locals.size || 'large' %>" 
+     data-size="<%= locals.size || 'large' %>">
+  <div class="masonry-grid-rich">
+    <% if (locals.masonry_images && masonry_images.length > 0) { %>
+      <% masonry_images.forEach((media, index) => { %>
+        <% 
+          let aspectRatio = 'default-aspect';
+          // Calculate aspect ratio for grid placement
+          let imageWidth = media.width;
+          let imageHeight = media.height;
+          
+          if (imageWidth && imageHeight) {
+            const ratio = imageHeight / imageWidth;
+            if (ratio < 0.8) aspectRatio = 'wide-aspect';
+            else if (ratio > 1.2) aspectRatio = 'tall-aspect';
+            if (ratio < 0.5) aspectRatio += ' very-wide-aspect';
+          }
+          
+          // Determine media type
+          let mediaType = 'image';
+          let mediaMimeType = media.mime;
+          
+          if (mediaMimeType && mediaMimeType.startsWith('video/')) {
+            mediaType = 'video';
+          }
+        %>
+        <div class="masonry-rich-item <%= aspectRatio %>" 
+             data-media-id="<%= media.id %>" 
+             data-media-type="<%= mediaType %>"
+             data-scroll-animation="fade-up">
+          <div class="masonry-rich-item-content">
+            <% if (mediaType === 'video') { %>
+              <div class="masonry-rich-media">
+                <video muted loop autoplay playsinline preload="metadata" loading="lazy">
+                  <source src="<%= media.url %>" type="<%= mediaMimeType %>">
+                  <!-- Fallback for unsupported video -->
+                  <img src="/images/video-placeholder.jpg" alt="<%= media.alternativeText || media.name %>" loading="lazy"/>
+                </video>
+              </div>
+            <% } else { %>
+              <div class="masonry-rich-media">
+                <img src="<%= media.url %>" alt="<%= media.alternativeText || media.name %>" loading="lazy"/>
+              </div>
+            <% } %>
+            
+            <!-- Overlay for hover effect -->
+            <div class="masonry-rich-overlay">
+              <!-- Expand icon removed -->
+            </div>
+          </div>
+          
+          <!-- Hidden data for hover infobox and lightbox -->
+          <div class="masonry-rich-data" style="display: none;">
+            <div class="media-url"><%= media.url %></div>
+            <div class="media-alt"><%= media.alternativeText || media.name || '' %></div>
+            <div class="media-caption"><%= media.caption || '' %></div>
+            <div class="media-type"><%= mediaType %></div>
+            <div class="media-mime"><%= mediaMimeType || '' %></div>
+            <div class="media-name"><%= media.name || '' %></div>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <div class="masonry-rich-empty">No media content available</div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Include the reusable lightbox -->
+<%- include('./lightbox', { id: 'masonry-rich-lightbox' }) %>
+
+<!-- Include hover infobox for caption display -->
+<%- include('./hover_infobox', { 
+  id: 'hover-infobox-masonry-rich',
+  image: '',
+  title: '',
+  description: '',
+  url: '#',
+  showImage: false,
+  iconType: 'font-awesome',
+  iconClass: 'fas fa-expand-arrows-alt',
+  maxWidth: 'medium'
+}) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const masonryGallery = document.querySelector('.masonry-gallery-rich');
+  if (!masonryGallery) return;
+  
+  const lightbox = document.getElementById('masonry-rich-lightbox');
+  const infobox = document.getElementById('hover-infobox-masonry-rich');
+  const items = masonryGallery.querySelectorAll('.masonry-rich-item');
+  
+  // Lightbox functions
+  function openLightbox(url, type, title, caption, mime) {
+    if (!lightbox) return;
+    
+    const mediaContainer = lightbox.querySelector('.lightbox-media-container');
+    const titleElement = lightbox.querySelector('.lightbox-title');
+    const captionElement = lightbox.querySelector('.lightbox-caption');
+    
+    if (!mediaContainer) return;
+    
+    // Clear previous content
+    mediaContainer.innerHTML = '';
+    
+    if (type === 'video') {
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      video.autoplay = true;
+      video.className = 'lightbox-video';
+      if (mime) video.setAttribute('type', mime);
+      mediaContainer.appendChild(video);
+    } else {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = title;
+      img.className = 'lightbox-image';
+      // Determine and set orientation
+      img.onload = () => {
+        if (img.naturalWidth > img.naturalHeight) {
+          img.dataset.orientation = 'landscape';
+        } else if (img.naturalWidth < img.naturalHeight) {
+          img.dataset.orientation = 'portrait';
+        } else {
+          img.dataset.orientation = 'square';
+        }
+      };
+      mediaContainer.appendChild(img);
+    }
+    
+    // Set title and caption
+    if (titleElement) titleElement.textContent = title || '';
+    if (captionElement) captionElement.textContent = caption || '';
+    
+    lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
+    document.body.style.overflow = 'hidden';
+  }
+  
+  function closeLightbox() {
+    if (!lightbox) return;
+    
+    lightbox.classList.remove('show');
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+      document.body.style.overflow = '';
+      
+      // Stop any videos
+      const videos = lightbox.querySelectorAll('video');
+      videos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    }, 300);
+  }
+  
+  // Hover and click handlers for masonry items
+  items.forEach(item => {
+    item.addEventListener('mouseenter', function(e) {
+      // Get media data
+      const dataDiv = item.querySelector('.masonry-rich-data');
+      if (!dataDiv) return;
+      
+      const mediaAlt = dataDiv.querySelector('.media-alt')?.textContent || '';
+      const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+      
+      // Show infobox only if there's caption content
+      if (infobox && (mediaAlt.trim() || mediaCaption.trim())) {
+        const infoboxTitle = infobox.querySelector('.infobox-title');
+        const infoboxDescription = infobox.querySelector('.infobox-description');
+        
+        if (infoboxTitle) infoboxTitle.textContent = mediaAlt;
+        if (infoboxDescription) infoboxDescription.textContent = mediaCaption;
+        
+        // Position and show infobox
+        infobox.style.left = e.clientX + 'px';
+        infobox.style.top = e.clientY + 'px';
+        infobox.style.display = 'block';
+        
+        setTimeout(() => infobox.classList.add('animate-in'), 10);
+      }
+      
+      // Add hover effects
+      item.classList.add('is-hovered');
+      masonryGallery.classList.add('has-hovered-item');
+    });
+    
+    item.addEventListener('mouseleave', function() {
+      // Hide infobox
+      if (infobox) {
+        infobox.style.display = 'none';
+        infobox.classList.remove('animate-in');
+      }
+      
+      // Remove hover effects
+      item.classList.remove('is-hovered');
+      if (!masonryGallery.querySelector('.masonry-rich-item.is-hovered')) {
+        masonryGallery.classList.remove('has-hovered-item');
+      }
+    });
+    
+    item.addEventListener('click', function() {
+      const dataDiv = item.querySelector('.masonry-rich-data');
+      if (!dataDiv) return;
+      
+      const mediaUrl = dataDiv.querySelector('.media-url')?.textContent || '';
+      const mediaType = dataDiv.querySelector('.media-type')?.textContent || 'image';
+      const mediaAlt = dataDiv.querySelector('.media-alt')?.textContent || '';
+      const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+      const mediaMime = dataDiv.querySelector('.media-mime')?.textContent || '';
+      
+      openLightbox(mediaUrl, mediaType, mediaAlt, mediaCaption, mediaMime);
+    });
+  });
+  
+  // Mouse move for infobox positioning
+  document.addEventListener('mousemove', function(e) {
+    if (infobox && infobox.style.display !== 'none') {
+      infobox.style.left = e.clientX + 'px';
+      infobox.style.top = e.clientY + 'px';
+    }
+  });
+  
+  // Lightbox close handlers
+  if (lightbox) {
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    const overlay = lightbox.querySelector('.lightbox-overlay');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (overlay) overlay.addEventListener('click', closeLightbox);
+    
+    // ESC key to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+        closeLightbox();
+      }
+    });
+  }
+});
+</script> 

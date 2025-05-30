@@ -22,6 +22,20 @@ export interface SharedBookFlip extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedMasonryGallery extends Struct.ComponentSchema {
+  collectionName: 'components_shared_masonry_galleries';
+  info: {
+    displayName: 'Masonry Gallery';
+    icon: 'apps';
+  };
+  attributes: {
+    masonry_images: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios', true>;
+    size: Schema.Attribute.Enumeration<['small', 'medium', 'large']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'large'>;
+  };
+}
+
 export interface SharedMedia extends Struct.ComponentSchema {
   collectionName: 'components_shared_media';
   info: {
@@ -60,6 +74,23 @@ export interface SharedScrollingGallery extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSimpleMedia extends Struct.ComponentSchema {
+  collectionName: 'components_shared_simple_media';
+  info: {
+    description: 'Up to 3 pieces of media rendered side by side with captions and lightbox support';
+    displayName: 'Simple Media';
+    icon: 'image';
+  };
+  attributes: {
+    media_files: Schema.Attribute.Media<'images' | 'videos', true> & Schema.Attribute.Required;
+    show_caption: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    show_infobox: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    size: Schema.Attribute.Enumeration<['small', 'medium', 'large']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'medium'>;
+  };
+}
+
 export interface SharedVideoEmbed extends Struct.ComponentSchema {
   collectionName: 'components_shared_video_embeds';
   info: {
@@ -82,9 +113,11 @@ declare module '@strapi/strapi' {
     export interface ComponentSchemas {
       'links.links': LinksLinks;
       'shared.book-flip': SharedBookFlip;
+      'shared.masonry-gallery': SharedMasonryGallery;
       'shared.media': SharedMedia;
       'shared.rich-text': SharedRichText;
       'shared.scrolling-gallery': SharedScrollingGallery;
+      'shared.simple-media': SharedSimpleMedia;
       'shared.video-embed': SharedVideoEmbed;
     }
   }

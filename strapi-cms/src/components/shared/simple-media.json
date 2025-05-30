@@ -1,0 +1,38 @@
+{
+  "collectionName": "components_shared_simple_media",
+  "info": {
+    "displayName": "Simple Media",
+    "icon": "image",
+    "description": "Up to 3 pieces of media rendered side by side with captions and lightbox support"
+  },
+  "options": {},
+  "attributes": {
+    "media_files": {
+      "allowedTypes": [
+        "images",
+        "videos"
+      ],
+      "type": "media",
+      "multiple": true,
+      "required": true
+    },
+    "size": {
+      "type": "enumeration",
+      "enum": [
+        "small",
+        "medium", 
+        "large"
+      ],
+      "default": "medium",
+      "required": true
+    },
+    "show_caption": {
+      "type": "boolean",
+      "default": false
+    },
+    "show_infobox": {
+      "type": "boolean", 
+      "default": false
+    }
+  }
+} 

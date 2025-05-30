@@ -2,6 +2,7 @@
 :root {
     /* Colors */
     --primary-color: #316d7b;
+    --primary-color-rgb: 49, 109, 123;
     --secondary-color: #121212;
     --accent-color: #FF6B6B;
     --bg-color: #121212;
@@ -59,4 +60,16 @@
     --bg-overlay: rgba(30, 30, 30, 0.5);
     --bg-primary-subtle: rgba(49, 109, 123, 0.1);
     --bg-code: rgba(255, 255, 255, 0.1);
+    
+    /* Gallery Size Variables */
+    --gallery-size-small-width: 100%;
+    --gallery-size-small-margin: 0;
+    --gallery-size-medium-width: calc(100% + 10vw);
+    --gallery-size-medium-margin: -5vw;
+    --gallery-size-large-width: 100vw;
+    --gallery-size-large-position: relative;
+    --gallery-size-large-left: 50%;
+    --gallery-size-large-right: 50%;
+    --gallery-size-large-margin-left: -50vw;
+    --gallery-size-large-margin-right: -50vw;
 }

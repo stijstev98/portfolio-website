@@ -87,16 +87,8 @@
   maxWidth: 'medium'
 }) %>
 
-<!-- Lightbox for images and videos -->
-<div id="scrolling-gallery-lightbox" class="lightbox" style="display: none;">
-  <div class="lightbox-overlay"></div>
-  <div class="lightbox-content">
-    <button class="lightbox-close">&times;</button>
-    <div class="lightbox-media-container">
-      <!-- Content will be dynamically inserted here -->
-    </div>
-  </div>
-</div>
+<!-- Include the reusable lightbox -->
+<%- include('./lightbox', { id: 'scrolling-gallery-lightbox' }) %>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -261,8 +253,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const mediaUrl = dataDiv.querySelector('.media-url')?.textContent || '';
         const mediaType = dataDiv.querySelector('.media-type')?.textContent || 'image';
         const mediaName = dataDiv.querySelector('.media-name')?.textContent || '';
+        const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+        const mediaAlt = item.querySelector('.scrolling-gallery-media img')?.alt || '';
 
-        openLightbox(mediaUrl, mediaType, mediaName);
+        openLightbox(mediaUrl, mediaType, mediaAlt, mediaCaption);
       });
     });
 
@@ -276,10 +270,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Lightbox functionality
-  function openLightbox(url, type, name) {
+  function openLightbox(url, type, title, caption) {
     if (!lightbox) return;
 
     const mediaContainer = lightbox.querySelector('.lightbox-media-container');
+    const titleElement = lightbox.querySelector('.lightbox-title');
+    const captionElement = lightbox.querySelector('.lightbox-caption');
+    
     if (!mediaContainer) return;
 
     // Clear previous content
@@ -295,18 +292,35 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       const img = document.createElement('img');
       img.src = url;
-      img.alt = name;
+      img.alt = title;
       img.className = 'lightbox-image';
+      // Determine and set orientation
+      img.onload = () => {
+        if (img.naturalWidth > img.naturalHeight) {
+          img.dataset.orientation = 'landscape';
+        } else if (img.naturalWidth < img.naturalHeight) {
+          img.dataset.orientation = 'portrait';
+        } else {
+          img.dataset.orientation = 'square';
+        }
+      };
       mediaContainer.appendChild(img);
     }
 
+    // Set title and caption (alt text as title, caption as description)
+    if (titleElement) titleElement.textContent = title || '';
+    if (captionElement) captionElement.textContent = caption || '';
+
     lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
     document.body.style.overflow = 'hidden';
   }
 
   function closeLightbox() {
     if (!lightbox) return;
     
+    lightbox.classList.remove('show');
+    setTimeout(() => {
     lightbox.style.display = 'none';
     document.body.style.overflow = '';
 
@@ -316,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
       video.pause();
       video.currentTime = 0;
     });
+    }, 300);
   }
 
   // Lightbox close handlers

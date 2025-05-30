@@ -210,3 +210,39 @@
     margin-bottom: var(--spacing-xs);
   }
 }
+
+/* Add styles for masonry gallery component sizing */
+.masonry-gallery-component {
+  margin: var(--spacing-xl) 0;
+}
+
+/* Size-specific overrides for masonry gallery within rich content */
+.masonry-gallery-component.masonry-gallery-small {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.masonry-gallery-component.masonry-gallery-medium {
+  /* Medium size extends beyond normal content width */
+}
+
+.masonry-gallery-component.masonry-gallery-large {
+  /* Large size is full width */
+}
+
+/* Responsive overrides for masonry gallery in rich content */
+@media (max-width: 768px) {
+  .masonry-gallery-component.masonry-gallery-medium {
+    /* On mobile, medium galleries should behave like small */
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
+/* Media query for rich-text-component p */
+@media (min-width: 769px) {
+  .rich-text-component p {
+    padding-right: 10rem;
+  }
+}
