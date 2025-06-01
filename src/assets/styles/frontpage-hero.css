@@ -1,69 +1,3 @@
-/* Pronunciation styles */
-.pronunciation-container {
-  position: relative;
-  display: inline-block;
-}
-
-.pronunciation-wrapper {
-  position: absolute;
-  bottom: 100%;
-  right: 0;
-  display: flex;
-  align-items: center; /* This centers items vertically */
-  justify-content: flex-end;
-  /* Add vertical alignment */
-  line-height: 1;
-  height: 1.5rem; /* Set a fixed height */
-}
-
-.pronunciation {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.7);
-  font-family: var(--body-font);
-  font-weight: 400;
-  text-transform: lowercase;
-  position: relative;
-  margin-right: 0.2rem;
-  /* Remove any vertical positioning that might interfere */
-  top: auto;
-  vertical-align: middle; /* Align text vertically */
-  display: inline-flex;
-  align-items: center;
-}
-
-.pronunciation-btn {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  cursor: pointer;
-  width: 28px;
-  height: 28px;
-  padding: 4px;
-  opacity: 0.8;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  /* Remove any vertical positioning that might interfere */
-  top: auto;
-  vertical-align: middle; /* Align button vertically */
-}
-
-.pronunciation-btn:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.pronunciation-btn.clicked {
-  animation: pulse 0.5s ease;
-}
-
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-
 /* Header styling for homepage */
 .custom-header {
   position: sticky;
@@ -123,17 +57,9 @@ body.scrolled .homepage .logo-bar {
 
 /* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
 body.scrolled .header-transparent .logo-bar {
-  height: 8vh !important; /* Match the taller collapsed height used on regular pages */
+  height: 10vh !important; /* Match the taller collapsed height used on regular pages */
   align-items: flex-end; /* Keep logo at bottom */
-  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
-}
-
-.logo-bar img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  max-height: 100%;
-  margin-bottom: 0;
+  padding-bottom: 0rem; /* Position logo almost at bottom of banner */
 }
 
 /* Container for hero content */
@@ -521,7 +447,7 @@ body.scrolled .nav-animation {
   }
 
   body.scrolled .header-transparent .logo-bar {
-    height: 6vh !important; /* Adjusted scrolled height */
+    height: 10vh !important; /* Adjusted scrolled height */
     align-items: flex-end; 
     padding-bottom: 0.3rem; 
   }
@@ -551,18 +477,5 @@ body.scrolled .nav-animation {
   
   .pronunciation-wrapper {
     height: 1.2rem;
-  }
-}
-
-@media (max-width: 1400px) {
-  /* Adjust logo positioning for smaller screens */
-  .logo-bar {
-    left: 1rem;
-  }
-}
-
-@media (max-width: 1200px) {
-  .logo-bar {
-    left: 0.5rem;
   }
 }

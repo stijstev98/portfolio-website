@@ -11,7 +11,7 @@
 .post-header-image-container {
   position: relative;
   width: 100%;
-  height: 40vh;
+  height: 45vh;
   overflow: hidden;
   background-color: var(--bg-color);
 }
@@ -50,6 +50,7 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  padding: 0 0rem;
 }
 
 /* Post Title */
@@ -273,25 +274,18 @@
   .gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
+  
+  .post-header-container {
+    padding: 0 1.5rem;
+  }
 }
 
 @media (max-width: 576px) {
-  .post-hero {
-    height: 40vh;
-    min-height: 300px;
+  .post-header-image-container {
+    height: 65vh;
   }
   
-  .post-hero-content h1 {
-    font-size: 2.2rem;
-    padding: 0.3rem 0.7rem;
-  }
-  
-  .post-content-wrapper {
-    padding: var(--spacing-md);
-  }
-  
-  .post-description {
-    font-size: 1.1rem;
-    padding: var(--spacing-sm);
+  .post-header-container {
+    padding: 0 1rem;
   }
 }

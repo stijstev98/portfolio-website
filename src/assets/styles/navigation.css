@@ -93,16 +93,14 @@ body {
   display: flex;
   align-items: flex-end; /* Position logo towards bottom of banner */
   justify-content: center;
-  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner for regular pages */
   z-index: 101;
   transition: all 0.3s ease;
 }
 
 /* Ensure regular pages (non-homepage) use the collapsed height */
 body:not(.homepage) .logo-bar {
-  height: 8vh !important;
+  height: 10vh !important;
   align-items: flex-end !important;
-  padding-bottom: 0.5rem !important; /* Position logo almost at bottom of banner for regular pages */
 }
 
 .logo-bar img {
@@ -203,9 +201,8 @@ body:not(.homepage) .logo-bar {
     left: 0.5rem;
     top: 0;
     width: 40px;
-    height: 6vh; /* Proportionally taller for mobile */
+    height: 10vh; /* Proportionally taller for mobile */
     align-items: flex-end; /* Position logo towards bottom */
-    padding-bottom: 0.4rem; /* Position logo almost at bottom of banner on mobile for regular pages */
   }
 
   .hamburger-menu {

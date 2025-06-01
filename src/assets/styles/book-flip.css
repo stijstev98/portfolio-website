@@ -30,6 +30,8 @@
   max-height: 80vh;
   container-type: inline-size;
   /* Removed min-height and background-image for natural sizing and transparency */
+  max-width: 100vw !important;
+  overflow: hidden;
 }
 
 .book-wrapper {
@@ -44,8 +46,7 @@
   display: flex;
   margin: auto;
   width: min(40cqmin, 80vw, 600px);
-  /* Remove fixed max-height, let aspect ratio control it */
-  /*1* let pointer event go trough pages of lower Z than .book */
+  max-width: 100vw !important;
   pointer-events: none;
   transform-style: preserve-3d;
   transition: translate 1s;
@@ -322,6 +323,7 @@
     width: min(60cqmin, 95vw, 300px);
     /* Remove fixed max-height */
     rotate: 1 0 0 15deg; /* Even flatter on very small screens */
+    translate: 0% 0%; /* Ensure the book remains centered */
   }
   
   .book-progress {
