@@ -149,3 +149,11 @@
 .border-button::after {
     display: none;
 }
+
+@media (max-width: 576px) {
+    .btn,
+    .border-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+}

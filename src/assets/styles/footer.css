@@ -130,3 +130,22 @@
         margin-top: 2rem;
     }
 }
+
+@media (max-width: 576px) {
+    .footer {
+        padding: 3rem 0 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .footer-email a {
+        font-size: 1.5rem;
+    }
+
+    .footer-quote {
+        font-size: 0.9rem;
+    }
+
+    .footer-bottom {
+        margin-top: 3rem;
+    }
+}

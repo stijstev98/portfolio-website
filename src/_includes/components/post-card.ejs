@@ -2,7 +2,7 @@
 <div class="post-card">
   <% if (post.data.cover) { %>
     <div class="post-card-image">
-      <img src="<%= post.data.cover %>" alt="<%= post.data.title %>">
+      <img src="<%= post.data.cover %>" alt="<%= post.data.title %>" loading="lazy">
     </div>
   <% } else { %>
     <div class="post-card-image" style="background-color: var(--secondary-color); display: flex; align-items: center; justify-content: center;">
