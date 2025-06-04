@@ -80,3 +80,22 @@
     text-decoration: none;
     color: var(--text-color);
 }
+@media (max-width: 768px) {
+  .post-card {
+    margin-bottom: 1.5rem;
+  }
+  .post-card-image {
+    height: 160px;
+  }
+  .post-card-content {
+    padding: 1rem;
+  }
+  .post-card-title {
+    font-size: 1.25rem;
+  }
+}
+@media (max-width: 576px) {
+  .post-card-title {
+    font-size: 1.1rem;
+  }
+}

@@ -8,10 +8,11 @@
         </video>
       <% } else { %>
         <!-- Default to image -->
-        <img 
-          class="background-media <%= index === 0 ? 'active' : '' %>" 
-          src="<%= item.src %>" 
+        <img
+          class="background-media <%= index === 0 ? 'active' : '' %>"
+          src="<%= item.src %>"
           alt="<%= item.alt || 'Background image' %>"
+          loading="lazy"
         />
       <% } %>
     <% }); %>

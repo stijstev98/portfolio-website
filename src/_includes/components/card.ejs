@@ -2,7 +2,7 @@
 <div class="content-card <%= locals.className ? className : '' %>">
   <% if (locals.image) { %>
   <div class="content-card-image">
-    <img src="<%= image %>" alt="<%= title || 'Card image' %>" />
+    <img src="<%= image %>" alt="<%= title || 'Card image' %>" loading="lazy" />
   </div>
   <% } %>
   

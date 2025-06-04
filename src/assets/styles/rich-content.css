@@ -246,3 +246,20 @@
     padding-right: 10rem;
   }
 }
+@media (max-width: 768px) {
+  .rich-content-block {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .rich-content-video-wrapper {
+    margin: var(--spacing-md) auto;
+  }
+}
+@media (max-width: 576px) {
+  .rich-content-block {
+    margin-bottom: var(--spacing-md);
+  }
+  .rich-content-video-wrapper {
+    margin: var(--spacing-sm) auto;
+  }
+}

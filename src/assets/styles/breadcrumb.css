@@ -33,3 +33,15 @@
   margin: 0 0.5rem;
   color: rgba(255, 255, 255, 0.8);
 }
+
+@media (max-width: 576px) {
+  .breadcrumb {
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+
+  .breadcrumb-separator {
+    display: none;
+  }
+}

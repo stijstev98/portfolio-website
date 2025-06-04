@@ -8,6 +8,18 @@
   overflow: hidden;
 }
 
+@media (max-width: 768px) {
+  .background-loop {
+    height: 30vh;
+  }
+}
+
+@media (max-width: 576px) {
+  .background-loop {
+    height: 25vh;
+  }
+}
+
 .background-media {
   position: absolute;
   top: 0;

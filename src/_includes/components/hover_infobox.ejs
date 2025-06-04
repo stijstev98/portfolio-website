@@ -13,7 +13,7 @@
       <!-- Add fixed container to maintain aspect ratio -->
       <div class="infobox-image-container">
         <!-- Always include an image element for JavaScript to reference -->
-        <img src="<%= locals.image || '' %>" alt="<%= locals.title || 'Project image' %>" />
+        <img src="<%= locals.image || '' %>" alt="<%= locals.title || 'Project image' %>" loading="lazy" />
       </div>
     </div>
     <% } %>
@@ -30,7 +30,7 @@
             <i class="<%= locals.iconClass %>"></i>
           <% } else if (locals.iconType === 'svg-file' && locals.svgPath) { %>
             <!-- SVG file reference -->
-            <img src="<%= locals.svgPath %>" alt="Icon" class="svg-icon" />
+            <img src="<%= locals.svgPath %>" alt="Icon" class="svg-icon" loading="lazy" />
           <% } else if (locals.iconType === 'custom-svg' && locals.svgContent) { %>
             <!-- Inline custom SVG -->
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">

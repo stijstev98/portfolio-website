@@ -35,6 +35,12 @@
   transform: translateX(-50px);
 }
 
+@media (max-width: 576px) {
+  [data-scroll-animation="fade-up"] {
+    transform: translateY(20px);
+  }
+}
+
 /* Staggered animation for letter-by-letter effects */
 .animated-title {
   overflow: hidden;
