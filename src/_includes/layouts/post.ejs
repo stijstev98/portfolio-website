@@ -7,11 +7,10 @@ layout: layouts/base.ejs
   <div class="post-header-image-container">
     <% if (post.data.headerImage) { %>
       <img src="<%= post.data.headerImage %>" alt="<%= post.data.title %>" class="post-header-image">
-      <div class="post-header-gradient-overlay"></div>
     <% } %>
     
     <div class="post-header-content">
-      <div class="post-header-container">
+      <div class="post-header-content-inner">
         <h1 class="post-title">
           <%= post.data.title %>
         </h1>

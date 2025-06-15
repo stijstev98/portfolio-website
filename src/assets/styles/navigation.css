@@ -71,7 +71,7 @@ body {
 
 /* Header styling */
 .custom-header {
-  position: sticky;
+  position: absolute;
   top: 0;
   background-color: transparent;
   z-index: 100;

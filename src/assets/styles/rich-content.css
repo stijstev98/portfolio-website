@@ -243,6 +243,11 @@
 /* Media query for rich-text-component p */
 @media (min-width: 769px) {
   .rich-text-component p {
-    padding-right: 10rem;
+    max-width: 90ch;
+    word-break: keep-all;
+    padding-left: 2rem;
+    border-left: 2px solid var(--primary-color);
   }
 }
+
+

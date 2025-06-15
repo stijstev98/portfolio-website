@@ -122,13 +122,16 @@
 }
 
 .masonry-item-title {
+  font-family: var(--title-font);
   margin: 0;
-  font-size: 0.7em !important;
+  font-size: 0.85em !important;
   letter-spacing: 0.05rem;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   opacity: 0.7;
   text-transform: unset;
   font-weight: 400 !important;
+  max-width: 30ch;
+  word-break: keep-all;
 }
 
 .masonry-empty {

@@ -43,6 +43,7 @@ h6:first-child {
 p {
     margin-bottom: var(--spacing-md);
     line-height: var(--body-text-line-height);
+    font-size: 1rem;
 }
 
 p:last-child {
