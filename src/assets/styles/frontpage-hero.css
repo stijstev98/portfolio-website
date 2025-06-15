@@ -19,7 +19,7 @@ body.scrolled .custom-header {
 /* Logo bar for homepage - positioned relative to content and taller initially */
 .homepage .logo-bar {
   position: fixed;
-  left: calc(50% - 700px); /* Position more to the left of max-width content */
+  left: 2rem; /* Default to a safe left position */
   top: 0; /* Sit against top of screen */
   width: 50px;
   height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
@@ -32,17 +32,24 @@ body.scrolled .custom-header {
   transition: all 0.3s ease;
 }
 
+/* Only use calc positioning on larger screens where it won't go negative */
+@media (min-width: 1440px) {
+  .homepage .logo-bar {
+    left: calc(50% - 700px);
+  }
+}
+
 /* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
 body.scrolled .homepage .logo-bar {
-  height: 8vh !important; /* Match the taller collapsed height used on regular pages */
-  align-items: flex-end; /* Keep logo at bottom */
-  padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
+  height: 8vh !important; /* Match regular pages height */
+  align-items: flex-end; 
+  padding-bottom: 0.5rem; 
 }
 
 /* Only apply these styles to pages with hero sections (homepage) */
 .header-transparent .logo-bar {
   position: fixed;
-  left: calc(50% - 700px); /* Position more to the left of max-width content */
+  left: 2rem; /* Default to a safe left position */
   top: 0; /* Sit against top of screen */
   width: 50px;
   height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
@@ -55,11 +62,18 @@ body.scrolled .homepage .logo-bar {
   transition: all 0.3s ease;
 }
 
+/* Only use calc positioning on larger screens where it won't go negative */
+@media (min-width: 1440px) {
+  .header-transparent .logo-bar {
+    left: calc(50% - 700px);
+  }
+}
+
 /* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
 body.scrolled .header-transparent .logo-bar {
-  height: 10vh !important; /* Match the taller collapsed height used on regular pages */
+  height: 8vh !important; /* Match the collapsed height used on regular pages */
   align-items: flex-end; /* Keep logo at bottom */
-  padding-bottom: 0rem; /* Position logo almost at bottom of banner */
+  padding-bottom: 0.5rem; /* Match homepage padding */
 }
 
 /* Container for hero content */
@@ -304,6 +318,28 @@ body.scrolled .nav-animation {
   }
 }
 
+/* Tablet breakpoints - ensure logo stays visible on hero pages */
+@media (max-width: 1439px) and (min-width: 769px) {
+  .homepage .logo-bar,
+  .header-transparent .logo-bar {
+    left: 2rem; /* Safe position for tablets */
+  }
+}
+
+@media (max-width: 1200px) and (min-width: 769px) {
+  .homepage .logo-bar,
+  .header-transparent .logo-bar {
+    left: 1.5rem; /* Slightly closer on smaller tablets */
+  }
+}
+
+@media (max-width: 992px) and (min-width: 769px) {
+  .homepage .logo-bar,
+  .header-transparent .logo-bar {
+    left: 1rem; /* Even closer for small tablets */
+  }
+}
+
 @media (max-width: 768px) {
   /* Adjust header height */
   .header-row {
@@ -319,13 +355,13 @@ body.scrolled .nav-animation {
     left: 0.8rem; /* Moved slightly more to the right */
     width: 40px;
     height: 27vh !important; /* Made slightly longer */
-    padding-bottom: 0.4rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   body.scrolled .homepage .logo-bar {
-    height: 7vh !important; /* Adjusted scrolled height */
+    height: 8vh !important; /* Match regular pages height */
     align-items: flex-end; 
-    padding-bottom: 0.4rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   /* Adjust logo bar for mobile homepage - only for hero pages */
@@ -333,13 +369,13 @@ body.scrolled .nav-animation {
     left: 0.8rem; /* Moved slightly more to the right */
     width: 40px;
     height: 27vh !important; /* Made slightly longer */
-    padding-bottom: 0.4rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   body.scrolled .header-transparent .logo-bar {
-    height: 7vh !important; /* Adjusted scrolled height */
-    align-items: flex-end; 
-    padding-bottom: 0.4rem; 
+    height: 8vh !important; /* Match the collapsed height used on regular pages */
+    align-items: flex-end; /* Keep logo at bottom */
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   /* Disable some animations */
@@ -429,13 +465,13 @@ body.scrolled .nav-animation {
     left: 0.5rem; /* Moved slightly more to the right */
     width: 35px;
     height: 22vh !important; /* Made slightly longer */
-    padding-bottom: 0.3rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   body.scrolled .homepage .logo-bar {
-    height: 6vh !important; /* Adjusted scrolled height */
+    height: 8vh !important; /* Match regular pages height */
     align-items: flex-end; 
-    padding-bottom: 0.3rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
   
   /* Adjust logo bar for smallest screens - only for hero pages */
@@ -443,13 +479,13 @@ body.scrolled .nav-animation {
     left: 0.5rem; /* Moved slightly more to the right */
     width: 35px;
     height: 22vh !important; /* Made slightly longer */
-    padding-bottom: 0.3rem; 
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   body.scrolled .header-transparent .logo-bar {
-    height: 10vh !important; /* Adjusted scrolled height */
-    align-items: flex-end; 
-    padding-bottom: 0.3rem; 
+    height: 8vh !important; /* Match the collapsed height used on regular pages */
+    align-items: flex-end; /* Keep logo at bottom */
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   .hero {

@@ -83,24 +83,26 @@ body {
 }
 
 /* Logo bar positioned relative to content area for regular pages */
-.logo-bar {
+.content-page .logo-bar {
   position: fixed;
-  left: calc(50% - 700px); /* Position more to the left of max-width content */
-  top: 0; /* Sit against top of screen */
+  left: 2rem; /* Default to a safe left position */
+  top: 0;
   width: 50px;
-  height: 8vh !important; /* Taller collapsed height for regular pages by default - force this */
+  height: 8vh !important;
   background-color: var(--primary-color);
   display: flex;
-  align-items: flex-end; /* Position logo towards bottom of banner */
+  align-items: flex-end;
   justify-content: center;
+  padding-bottom: 0.5rem; /* Match homepage padding */
   z-index: 101;
   transition: all 0.3s ease;
 }
 
-/* Ensure regular pages (non-homepage) use the collapsed height */
-body:not(.homepage) .logo-bar {
-  height: 10vh !important;
-  align-items: flex-end !important;
+/* Only use calc positioning on larger screens where it won't go negative */
+@media (min-width: 1440px) {
+  .content-page .logo-bar {
+    left: calc(50% - 700px);
+  }
 }
 
 .logo-bar img {
@@ -197,12 +199,13 @@ body:not(.homepage) .logo-bar {
   }
 
   /* Adjust logo bar for mobile - position closer to left edge */
-  .logo-bar {
+  .content-page .logo-bar {
     left: 0.5rem;
     top: 0;
     width: 40px;
-    height: 10vh; /* Proportionally taller for mobile */
+    height: 8vh; /* Match desktop height for consistency */
     align-items: flex-end; /* Position logo towards bottom */
+    padding-bottom: 0; /* Remove padding on mobile */
   }
 
   .hamburger-menu {
@@ -313,12 +316,12 @@ body:not(.homepage) .logo-bar {
 
 /* Responsive breakpoints */
 @media (max-width: 576px) {
-  .logo-bar {
+  .content-page .logo-bar {
     left: 0.25rem;
     width: 35px;
-    height: 5vh; /* Slightly taller for smallest screens */
+    height: 8vh; /* Match desktop height for consistency */
     align-items: flex-end; /* Position logo towards bottom */
-    padding-bottom: 0.3rem; /* Position logo almost at bottom of banner on smallest screens for regular pages */
+    padding-bottom: 0; /* Remove padding on mobile */
   }
   
   .nav-wrapper {
@@ -326,15 +329,21 @@ body:not(.homepage) .logo-bar {
   }
 }
 
-@media (max-width: 1400px) {
-  /* Adjust logo positioning for smaller screens where calc might not work well */
-  .logo-bar {
-    left: 1rem; /* Move closer to left edge on smaller screens */
+/* Tablet breakpoints - ensure logo stays visible */
+@media (max-width: 1439px) and (min-width: 769px) {
+  .content-page .logo-bar {
+    left: 2rem; /* Safe position for tablets */
   }
 }
 
-@media (max-width: 1200px) {
-  .logo-bar {
-    left: 0.5rem; /* Even closer to left edge */
+@media (max-width: 1200px) and (min-width: 769px) {
+  .content-page .logo-bar {
+    left: 1.5rem; /* Slightly closer on smaller tablets */
+  }
+}
+
+@media (max-width: 992px) and (min-width: 769px) {
+  .content-page .logo-bar {
+    left: 1rem; /* Even closer for small tablets */
   }
 }
