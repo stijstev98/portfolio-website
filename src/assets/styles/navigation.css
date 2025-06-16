@@ -69,6 +69,30 @@ body {
   100% { transform: scale(1); }
 }
 
+/* Header Underlay for Legibility */
+.header-underlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10vh; /* Match regular header height */
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+  mix-blend-mode: multiply;
+  z-index: -1;
+  pointer-events: none;
+  transition: height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* For homepage, make it taller to cover more of the hero */
+.homepage > .header-underlay {
+  height: 45vh; /* Taller on the homepage */
+}
+
+/* When homepage is scrolled, shrink the underlay */
+body.scrolled .homepage > .header-underlay {
+  height: 10vh; /* Match collapsed header height */
+}
+
 /* Header styling */
 .custom-header {
   position: absolute;
