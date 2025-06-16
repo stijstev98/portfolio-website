@@ -83,6 +83,16 @@ body {
   transition: height 0.3s ease-out, opacity 0.3s ease-out;
 }
 
+/* For content pages, make underlay fixed to scroll with navigation */
+.content-page .header-underlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 10vh;
+  z-index: 50; /* Below navigation but above page content */
+}
+
 /* For homepage, make it taller to cover more of the hero */
 .homepage > .header-underlay {
   height: 45vh; /* Taller on the homepage */
