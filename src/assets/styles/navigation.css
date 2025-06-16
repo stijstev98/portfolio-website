@@ -94,8 +94,18 @@ body {
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 0.5rem; /* Match homepage padding */
+  padding-top: 0;
   z-index: 101;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.content-page .logo-bar:hover {
+  padding-top: 15px;
+  height: calc(8vh + 15px) !important;
+  transform: translateY(-5px);
+  cursor: pointer;
 }
 
 /* Only use calc positioning on larger screens where it won't go negative */
@@ -192,8 +202,8 @@ body {
   margin-left: auto;
 }
 
-/* Mobile responsive styles */
-@media (max-width: 768px) {
+/* Mobile and tablet responsive styles */
+@media (max-width: 992px) {
   .header-nav {
     display: none;
   }

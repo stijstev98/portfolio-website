@@ -43,6 +43,7 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  padding: 0 2rem; /* Default padding for all screens */
 }
 
 .post-header-content-inner .post-title {
@@ -57,11 +58,14 @@
 /* Post Title */
 .post-title {
   font-family: var(--title-font-narrow);
-  font-size: var(--title-large-size);
+  font-size: var(--title-jumbo-size);
   font-weight: 900;
   line-height: 0.9;
   margin-bottom: var(--spacing-sm);
   padding: 0;
+  color: var(--text-color);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .post-short-description {
@@ -170,14 +174,51 @@
 }
 
 /* Post content specific overrides */
+.post-content h1 {
+  /* Large titles: bold, medium size, white */
+  font-size: var(--title-medium-size);
+  font-weight: 900;
+  color: var(--text-color);
+  font-family: var(--title-font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: var(--spacing-xxl) 0 var(--spacing-md);
+}
+
 .post-content h2 {
-  padding-bottom: var(--spacing-xs);
-  display: inline-block;
+  /* Medium titles: bold, small size, white */
+  font-size: var(--title-small-size);
+  font-weight: 800;
+  color: var(--text-color);
+  font-family: var(--title-font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
   margin: var(--spacing-xxl) 0 var(--spacing-md);
 }
 
 .post-content h3 {
+  /* Small titles: moderately larger than body, primary color, heavier weight, glow */
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  font-family: var(--title-font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 8px rgba(49, 109, 123, 0.4);
   margin: var(--spacing-xl) 0 1.25rem;
+}
+
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  /* Smallest titles: only slightly larger than body text, primary color */
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--primary-color);
+  font-family: var(--title-font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: var(--spacing-lg) 0 var(--spacing-sm);
 }
 
 .post-content a {
@@ -239,9 +280,25 @@
 }
 
 /* Media Queries */
+/* Large tablets and small desktops */
+@media (max-width: 1200px) {
+  .post-header-content-inner {
+    padding: 0 2rem;
+  }
+  
+  .post-content-wrapper {
+    padding: var(--spacing-xl);
+  }
+}
+
+/* Tablets */
 @media (max-width: 992px) {
   .post-hero-content h1 {
     font-size: 3.5rem;
+  }
+  
+  .post-header-content-inner {
+    padding: 0 2rem;
   }
   
   .post-content-wrapper {
@@ -252,8 +309,28 @@
     padding: var(--spacing-md);
     font-size: 1.3rem;
   }
+  
+  /* Responsive heading adjustments */
+  .post-content h1,
+  .rich-content h1,
+  .rich-text-component h1 {
+    font-size: 2.5rem;
+  }
+  
+  .post-content h2,
+  .rich-content h2,
+  .rich-text-component h2 {
+    font-size: 1.8rem;
+  }
+  
+  .post-content h3,
+  .rich-content h3,
+  .rich-text-component h3 {
+    font-size: 1.25rem;
+  }
 }
 
+/* Small tablets */
 @media (max-width: 768px) {
   .post-title {
     font-size: 3.5rem;
@@ -262,6 +339,10 @@
   .post-short-description {
     max-width: 100%;
     line-height: 1.4;
+  }
+  
+  .post-header-content-inner {
+    padding: 0 1.5rem;
   }
   
   .post-content-wrapper {
@@ -276,11 +357,27 @@
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
   
-  .post-header-content-inner {
-    padding: 0 1.5rem;
+  /* Further responsive heading adjustments */
+  .post-content h1,
+  .rich-content h1,
+  .rich-text-component h1 {
+    font-size: 2.2rem;
+  }
+  
+  .post-content h2,
+  .rich-content h2,
+  .rich-text-component h2 {
+    font-size: 1.6rem;
+  }
+  
+  .post-content h3,
+  .rich-content h3,
+  .rich-text-component h3 {
+    font-size: 1.2rem;
   }
 }
 
+/* Mobile */
 @media (max-width: 576px) {
   .post-content-section {
     margin-top: calc(65vh + 2rem);
@@ -291,5 +388,28 @@
   
   .post-header-content-inner {
     padding: 0 1rem;
+  }
+  
+  .post-title {
+    font-size: 2.8rem;
+  }
+  
+  /* Mobile heading adjustments */
+  .post-content h1,
+  .rich-content h1,
+  .rich-text-component h1 {
+    font-size: 1.8rem;
+  }
+  
+  .post-content h2,
+  .rich-content h2,
+  .rich-text-component h2 {
+    font-size: 1.4rem;
+  }
+  
+  .post-content h3,
+  .rich-content h3,
+  .rich-text-component h3 {
+    font-size: 1.15rem;
   }
 }

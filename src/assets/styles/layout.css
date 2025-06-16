@@ -3,15 +3,31 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 0rem;
+    padding: 0 2rem; /* Default padding for large screens */
 }
 
+/* Large tablets and small desktops */
+@media (max-width: 1200px) {
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+    .container {
+        padding: 0 2rem;
+    }
+}
+
+/* Small tablets */
 @media (max-width: 768px) {
     .container {
         padding: 0 1.5rem;
     }
 }
 
+/* Mobile */
 @media (max-width: 576px) {
     .container {
         padding: 0 1rem;

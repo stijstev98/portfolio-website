@@ -28,8 +28,18 @@ body.scrolled .custom-header {
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
+  padding-top: 0;
   z-index: 101;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.homepage .logo-bar:hover {
+  padding-top: 15px;
+  height: calc(30vh + 15px) !important;
+  transform: translateY(-5px);
+  cursor: pointer;
 }
 
 /* Only use calc positioning on larger screens where it won't go negative */
@@ -43,7 +53,15 @@ body.scrolled .custom-header {
 body.scrolled .homepage .logo-bar {
   height: 8vh !important; /* Match regular pages height */
   align-items: flex-end; 
-  padding-bottom: 0.5rem; 
+  padding-bottom: 0.5rem;
+  padding-top: 0;
+}
+
+body.scrolled .homepage .logo-bar:hover {
+  padding-top: 15px;
+  height: calc(8vh + 15px) !important;
+  transform: translateY(-5px);
+  cursor: pointer;
 }
 
 /* Only apply these styles to pages with hero sections (homepage) */
@@ -58,8 +76,18 @@ body.scrolled .homepage .logo-bar {
   align-items: flex-end;
   justify-content: center;
   padding-bottom: 0.5rem; /* Position logo almost at bottom of banner */
+  padding-top: 0;
   z-index: 101;
-  transition: all 0.3s ease;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.header-transparent .logo-bar:hover {
+  padding-top: 15px;
+  height: calc(30vh + 15px) !important;
+  transform: translateY(-5px);
+  cursor: pointer;
 }
 
 /* Only use calc positioning on larger screens where it won't go negative */
@@ -74,6 +102,14 @@ body.scrolled .header-transparent .logo-bar {
   height: 8vh !important; /* Match the collapsed height used on regular pages */
   align-items: flex-end; /* Keep logo at bottom */
   padding-bottom: 0.5rem; /* Match homepage padding */
+  padding-top: 0;
+}
+
+body.scrolled .header-transparent .logo-bar:hover {
+  padding-top: 15px;
+  height: calc(8vh + 15px) !important;
+  transform: translateY(-5px);
+  cursor: pointer;
 }
 
 /* Container for hero content */

@@ -1,10 +1,8 @@
 <header class="custom-header header-transparent homepage">
   <!-- Logo positioned at left edge of screen -->
-  <div class="logo-bar">
-    <a href="/" aria-label="Home">
-      <img src="/assets/images/logo_white.png" alt="Stijn Stevens Logo">
-    </a>
-  </div>
+  <a href="/" class="logo-bar" aria-label="Home">
+    <img src="/assets/images/logo_white.png" alt="Stijn Stevens Logo">
+  </a>
   
   <!-- Main content area with hero and navigation -->
   <div class="container header-row">
@@ -110,69 +108,96 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 500);
 
-  // Smooth scroll-based hero animation system
-  let hasScrolled = false;
+  // Robust scroll-based hero animation system
+  let heroCollapsed = false;
   let animationLocked = false;
   let navScrollActive = false;
+  let scrollTimeout = null;
   
   // Listen for custom event from nav links to prevent conflicts
   document.addEventListener('navScrollStarted', () => {
     navScrollActive = true;
+    // Force collapse the hero when navigation scroll starts
+    if (!heroCollapsed) {
+      collapseHero();
+    }
+    // Extended timeout for navigation scrolls
     setTimeout(() => {
       navScrollActive = false;
-    }, 1500);
+    }, 2000);
   });
   
-  // Smooth scroll handler with immediate top detection
+  function collapseHero() {
+    if (heroCollapsed || animationLocked) return;
+    
+    heroCollapsed = true;
+    animationLocked = true;
+    
+    // Add scrolled class for smooth transition
+    document.body.classList.add('scrolled');
+    
+    // Reset nav animations when becoming fixed
+    const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
+    navLinks.forEach((link, index) => {
+      link.style.transform = 'translateX(-50px)';
+      link.style.opacity = '0.7';
+      link.style.animationDelay = `${0.1 + (index * 0.05)}s`;
+    });
+    
+    // Unlock after animation completes
+    setTimeout(() => {
+      animationLocked = false;
+    }, 700);
+  }
+  
+  function expandHero() {
+    if (!heroCollapsed || animationLocked) return;
+    
+    heroCollapsed = false;
+    animationLocked = true;
+    
+    // Remove scrolled class for reverse animation
+    document.body.classList.remove('scrolled');
+    
+    // Reset nav animations for hero position
+    const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
+    navLinks.forEach(link => {
+      link.style.transform = '';
+      link.style.opacity = '';
+      link.style.animationDelay = '';
+    });
+    
+    // Unlock after animation completes
+    setTimeout(() => {
+      animationLocked = false;
+    }, 700);
+  }
+  
+  // Debounced scroll handler with more robust logic
   function handleScroll() {
-    // Skip if navigation scroll is active
+    // Clear any existing timeout
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    // Skip if navigation scroll is active or animation is locked
     if (navScrollActive || animationLocked) return;
     
     const scrollY = window.scrollY;
-    const threshold = 50; // Scroll threshold to trigger animation
+    const viewportHeight = window.innerHeight;
+    const threshold = Math.min(100, viewportHeight * 0.15); // Dynamic threshold based on viewport
     
-    // First scroll down - trigger collapse animation
-    if (!hasScrolled && scrollY > threshold) {
-      hasScrolled = true;
-      animationLocked = true;
-      
-      // Add scrolled class for smooth transition
-      document.body.classList.add('scrolled');
-      
-      // Reset nav animations when becoming fixed
-      const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
-      navLinks.forEach((link, index) => {
-        link.style.transform = 'translateX(-50px)';
-        link.style.opacity = '0.7';
-        link.style.animationDelay = `${0.1 + (index * 0.05)}s`;
-      });
-      
-      // Unlock after animation completes
-      setTimeout(() => {
-        animationLocked = false;
-      }, 600); // Match CSS transition duration
-    }
-    // Back to top - trigger expand animation
-    else if (hasScrolled && scrollY <= 10) { // Very low threshold for immediate response
-      hasScrolled = false;
-      animationLocked = true;
-      
-      // Remove scrolled class for reverse animation
-      document.body.classList.remove('scrolled');
-      
-      // Reset nav animations for hero position
-      const navLinks = document.querySelectorAll('.hero-nav-wrapper .header-nav a');
-      navLinks.forEach(link => {
-        link.style.transform = '';
-        link.style.opacity = '';
-        link.style.animationDelay = '';
-      });
-      
-      // Unlock after animation completes
-      setTimeout(() => {
-        animationLocked = false;
-      }, 600); // Match CSS transition duration
-    }
+    // Debounce rapid scroll events
+    scrollTimeout = setTimeout(() => {
+      // Scroll down - trigger collapse animation
+      if (!heroCollapsed && scrollY > threshold) {
+        collapseHero();
+      }
+      // Back to very top - trigger expand animation
+      else if (heroCollapsed && scrollY <= 5) {
+        expandHero();
+      }
+    }, 10); // Short debounce to prevent rapid firing
   }
   
   // Use passive scroll listener for better performance
@@ -180,7 +205,29 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Handle page load with existing scroll position
   setTimeout(() => {
-    handleScroll();
+    const scrollY = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const threshold = Math.min(100, viewportHeight * 0.15);
+    
+    // Set initial state based on scroll position
+    if (scrollY > threshold) {
+      heroCollapsed = true;
+      document.body.classList.add('scrolled');
+    }
   }, 100);
+  
+  // Handle browser back/forward navigation
+  window.addEventListener('pageshow', () => {
+    const scrollY = window.scrollY;
+    const viewportHeight = window.innerHeight;
+    const threshold = Math.min(100, viewportHeight * 0.15);
+    
+    // Sync state with actual scroll position
+    if (scrollY > threshold && !heroCollapsed) {
+      collapseHero();
+    } else if (scrollY <= 5 && heroCollapsed) {
+      expandHero();
+    }
+  });
 });
 </script>
