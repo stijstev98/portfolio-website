@@ -105,8 +105,17 @@ document.addEventListener('DOMContentLoaded', function() {
           }
 
           // Position infobox at cursor coordinates
-          infobox.style.left = e.clientX + 'px';
-          infobox.style.top = e.clientY + 'px';
+          const infoboxContent = infobox.querySelector('.infobox-content');
+          if (infoboxContent) {
+            const offsetX = infoboxContent.offsetLeft;
+            const offsetY = infoboxContent.offsetTop;
+            infobox.style.left = (e.clientX - offsetX) + 'px';
+            infobox.style.top = (e.clientY - offsetY) + 'px';
+          } else {
+            infobox.style.left = e.clientX + 'px';
+            infobox.style.top = e.clientY + 'px';
+          }
+
           infobox.style.display = 'block';
           
           // Add bouncy animation
@@ -126,8 +135,16 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update infobox position on mouse move
       bookContainer.addEventListener('mousemove', function(e) {
         if (infobox && infobox.style.display !== 'none') {
-          infobox.style.left = e.clientX + 'px';
-          infobox.style.top = e.clientY + 'px';
+          const infoboxContent = infobox.querySelector('.infobox-content');
+          if (infoboxContent) {
+            const offsetX = infoboxContent.offsetLeft;
+            const offsetY = infoboxContent.offsetTop;
+            infobox.style.left = (e.clientX - offsetX) + 'px';
+            infobox.style.top = (e.clientY - offsetY) + 'px';
+          } else {
+            infobox.style.left = e.clientX + 'px';
+            infobox.style.top = e.clientY + 'px';
+          }
         }
       });
       

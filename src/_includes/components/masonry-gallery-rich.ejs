@@ -176,8 +176,16 @@ document.addEventListener('DOMContentLoaded', function() {
         if (infoboxDescription) infoboxDescription.textContent = mediaCaption;
         
         // Position and show infobox
-        infobox.style.left = e.clientX + 'px';
-        infobox.style.top = e.clientY + 'px';
+        const infoboxContent = infobox.querySelector('.infobox-content');
+        if (infoboxContent) {
+          const offsetX = infoboxContent.offsetLeft;
+          const offsetY = infoboxContent.offsetTop;
+          infobox.style.left = (e.clientX - offsetX) + 'px';
+          infobox.style.top = (e.clientY - offsetY) + 'px';
+        } else {
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+        }
         infobox.style.display = 'block';
         
         setTimeout(() => infobox.classList.add('animate-in'), 10);
@@ -219,8 +227,16 @@ document.addEventListener('DOMContentLoaded', function() {
   // Mouse move for infobox positioning
   document.addEventListener('mousemove', function(e) {
     if (infobox && infobox.style.display !== 'none') {
-      infobox.style.left = e.clientX + 'px';
-      infobox.style.top = e.clientY + 'px';
+      const infoboxContent = infobox.querySelector('.infobox-content');
+      if (infoboxContent) {
+        const offsetX = infoboxContent.offsetLeft;
+        const offsetY = infoboxContent.offsetTop;
+        infobox.style.left = (e.clientX - offsetX) + 'px';
+        infobox.style.top = (e.clientY - offsetY) + 'px';
+      } else {
+        infobox.style.left = e.clientX + 'px';
+        infobox.style.top = e.clientY + 'px';
+      }
     }
   });
   
