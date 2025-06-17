@@ -286,4 +286,23 @@
   }
 }
 
+/* Responsive component visibility */
+.responsive-component[data-responsive="mobile-only"] {
+  display: none;
+}
+
+.responsive-component[data-responsive="desktop-only"] {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .responsive-component[data-responsive="mobile-only"] {
+    display: block;
+  }
+  
+  .responsive-component[data-responsive="desktop-only"] {
+    display: none;
+  }
+}
+
 

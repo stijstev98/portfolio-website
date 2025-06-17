@@ -18,6 +18,9 @@ export interface SharedBookFlip extends Struct.ComponentSchema {
   };
   attributes: {
     pdf_file: Schema.Attribute.Media<'files'> & Schema.Attribute.Required;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
     title: Schema.Attribute.String;
   };
 }
@@ -30,6 +33,9 @@ export interface SharedMasonryGallery extends Struct.ComponentSchema {
   };
   attributes: {
     masonry_images: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios', true>;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
     size: Schema.Attribute.Enumeration<['small', 'medium', 'large']> &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'large'>;
@@ -46,6 +52,9 @@ export interface SharedMedia extends Struct.ComponentSchema {
   attributes: {
     caption: Schema.Attribute.String;
     file: Schema.Attribute.Media<'images' | 'videos' | 'files'> & Schema.Attribute.Required;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
   };
 }
 
@@ -58,6 +67,9 @@ export interface SharedRichText extends Struct.ComponentSchema {
   };
   attributes: {
     body: Schema.Attribute.JSON & Schema.Attribute.CustomField<'plugin::lexical.lexical'>;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
   };
 }
 
@@ -71,6 +83,9 @@ export interface SharedScrollingGallery extends Struct.ComponentSchema {
   attributes: {
     gallery_content: Schema.Attribute.Media<'images' | 'videos', true> & Schema.Attribute.Required;
     gallery_height: Schema.Attribute.String & Schema.Attribute.DefaultTo<'300px'>;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
   };
 }
 
@@ -83,6 +98,9 @@ export interface SharedSimpleMedia extends Struct.ComponentSchema {
   };
   attributes: {
     media_files: Schema.Attribute.Media<'images' | 'videos', true> & Schema.Attribute.Required;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
     show_caption: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     show_infobox: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     size: Schema.Attribute.Enumeration<['small', 'medium', 'large']> &
@@ -104,6 +122,9 @@ export interface SharedVideoEmbed extends Struct.ComponentSchema {
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<'youtube'>;
     provider_uid: Schema.Attribute.String & Schema.Attribute.Required;
+    responsive_display: Schema.Attribute.Enumeration<['default', 'mobile-only', 'desktop-only']> &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<'default'>;
     title: Schema.Attribute.String;
   };
 }

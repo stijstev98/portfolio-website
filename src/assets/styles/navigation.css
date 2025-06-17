@@ -123,6 +123,7 @@ body.scrolled .homepage > .header-underlay {
   top: 0;
   width: 50px;
   height: 8vh !important;
+  min-height: 120px;
   background-color: var(--primary-color);
   display: flex;
   align-items: flex-end;
@@ -138,6 +139,7 @@ body.scrolled .homepage > .header-underlay {
 .content-page .logo-bar:hover {
   padding-top: 15px;
   height: calc(8vh + 15px) !important;
+  min-height: calc(120px + 15px);
   transform: translateY(-5px);
   cursor: pointer;
 }

@@ -33,6 +33,16 @@
     "show_infobox": {
       "type": "boolean", 
       "default": false
+    },
+    "responsive_display": {
+      "type": "enumeration",
+      "enum": [
+        "default",
+        "mobile-only",
+        "desktop-only"
+      ],
+      "default": "default",
+      "required": true
     }
   }
 } 

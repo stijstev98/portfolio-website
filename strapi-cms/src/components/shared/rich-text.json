@@ -10,6 +10,16 @@
     "body": {
       "type": "customField",
       "customField": "plugin::lexical.lexical"
+    },
+    "responsive_display": {
+      "type": "enumeration",
+      "enum": [
+        "default",
+        "mobile-only",
+        "desktop-only"
+      ],
+      "default": "default",
+      "required": true
     }
   }
 }

@@ -204,7 +204,8 @@ module.exports = async function() {
                 type: 'rich-text',
                 content: richTextContent,
                 rawContent: component.body,
-                mediaAssets: componentMediaAssets
+                mediaAssets: componentMediaAssets,
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.video-embed':
               return {
@@ -212,7 +213,8 @@ module.exports = async function() {
                 provider: component.provider,
                 provider_uid: component.provider_uid,
                 title: component.title,
-                caption: component.caption
+                caption: component.caption,
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.media':
               const mediaUrl = component.file?.url 
@@ -226,7 +228,8 @@ module.exports = async function() {
                   width: component.file.width || 0,
                   height: component.file.height || 0
                 } : null,
-                caption: component.caption
+                caption: component.caption,
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.scrolling-gallery':
               // Process gallery content media
@@ -275,7 +278,8 @@ module.exports = async function() {
               return {
                 type: 'scrolling-gallery',
                 gallery_content: processedGalleryContent,
-                gallery_height: component.gallery_height || '300px'
+                gallery_height: component.gallery_height || '300px',
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.book-flip':
               // If pdf_file is not populated, fetch it separately
@@ -328,7 +332,8 @@ module.exports = async function() {
                     pages: bookPages,
                     totalPages: bookPages.length,
                     aspectRatio: pdfData.aspectRatio,
-                    title: component.title || 'Book'
+                    title: component.title || 'Book',
+                    responsiveDisplay: component.responsive_display || 'default'
                   };
                 } catch (error) {
                   console.error('Error processing PDF for book-flip:', error);
@@ -345,7 +350,8 @@ module.exports = async function() {
                 type: 'shared.book-flip',
                 pages: [],
                 totalPages: 0,
-                error: 'No PDF file provided'
+                error: 'No PDF file provided',
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.masonry-gallery':
               // Process masonry gallery media
@@ -394,7 +400,8 @@ module.exports = async function() {
               return {
                 type: 'masonry-gallery',
                 masonry_images: processedMasonryImages,
-                size: component.size || 'large'
+                size: component.size || 'large',
+                responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.simple-media':
               // Process simple media files (limit to 3)
@@ -447,7 +454,8 @@ module.exports = async function() {
                 media_files: processedMediaFiles,
                 size: component.size || 'medium',
                 show_caption: component.show_caption || false,
-                show_infobox: component.show_infobox || false
+                show_infobox: component.show_infobox || false,
+                responsiveDisplay: component.responsive_display || 'default'
               };
             default:
               return {

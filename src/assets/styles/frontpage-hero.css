@@ -23,6 +23,7 @@ body.scrolled .custom-header {
   top: 0; /* Sit against top of screen */
   width: 50px;
   height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
+  min-height: 120px;
   background-color: var(--primary-color);
   display: flex;
   align-items: flex-end;
@@ -38,6 +39,7 @@ body.scrolled .custom-header {
 .homepage .logo-bar:hover {
   padding-top: 15px;
   height: calc(30vh + 15px) !important;
+  min-height: calc(120px + 15px);
   transform: translateY(-5px);
   cursor: pointer;
 }
@@ -52,6 +54,7 @@ body.scrolled .custom-header {
 /* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
 body.scrolled .homepage .logo-bar {
   height: 8vh !important; /* Match regular pages height */
+  min-height: 120px;
   align-items: flex-end; 
   padding-bottom: 0.5rem;
   padding-top: 0;
@@ -60,6 +63,7 @@ body.scrolled .homepage .logo-bar {
 body.scrolled .homepage .logo-bar:hover {
   padding-top: 15px;
   height: calc(8vh + 15px) !important;
+  min-height: calc(120px + 15px);
   transform: translateY(-5px);
   cursor: pointer;
 }
@@ -71,6 +75,7 @@ body.scrolled .homepage .logo-bar:hover {
   top: 0; /* Sit against top of screen */
   width: 50px;
   height: 30vh !important; /* Initially tall, matching hero section height - HOMEPAGE ONLY */
+  min-height: 120px;
   background-color: var(--primary-color);
   display: flex;
   align-items: flex-end;
@@ -86,6 +91,7 @@ body.scrolled .homepage .logo-bar:hover {
 .header-transparent .logo-bar:hover {
   padding-top: 15px;
   height: calc(30vh + 15px) !important;
+  min-height: calc(120px + 15px);
   transform: translateY(-5px);
   cursor: pointer;
 }
@@ -100,6 +106,7 @@ body.scrolled .homepage .logo-bar:hover {
 /* When scrolled, make logo bar shorter like regular pages - HOMEPAGE ONLY */
 body.scrolled .header-transparent .logo-bar {
   height: 8vh !important; /* Match the collapsed height used on regular pages */
+  min-height: 120px;
   align-items: flex-end; /* Keep logo at bottom */
   padding-bottom: 0.5rem; /* Match homepage padding */
   padding-top: 0;
@@ -108,6 +115,7 @@ body.scrolled .header-transparent .logo-bar {
 body.scrolled .header-transparent .logo-bar:hover {
   padding-top: 15px;
   height: calc(8vh + 15px) !important;
+  min-height: calc(120px + 15px);
   transform: translateY(-5px);
   cursor: pointer;
 }

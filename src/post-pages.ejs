@@ -19,20 +19,20 @@ eleventyComputed:
       switch (component.type) {
         case 'rich-text':
     %>
-          <div class="rich-content-block rich-text-component">
+          <div class="rich-content-block rich-text-component responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- component.content %>
           </div>
     <%    break;
         case 'video-embed':
     %>
-          <div class="rich-content-block video-embed-component">
+          <div class="rich-content-block video-embed-component responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- include('/components/video-embed', component) %>
           </div>
     <%    break;
         case 'media':
           if (component.media) {
     %>
-          <div class="rich-content-block media-component">
+          <div class="rich-content-block media-component responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <figure class="rich-content-image">
               <img src="<%= component.media.url %>" alt="<%= component.media.name %>" 
                    <% if (component.media.width && component.media.height) { %>
@@ -48,7 +48,7 @@ eleventyComputed:
           break;
         case 'scrolling-gallery':
     %>
-          <div class="rich-content-block scrolling-gallery-component">
+          <div class="rich-content-block scrolling-gallery-component responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- include('/components/scrolling-gallery', { 
               gallery_content: component.gallery_content, 
               gallery_height: component.gallery_height,
@@ -58,7 +58,7 @@ eleventyComputed:
     <%    break;
         case 'masonry-gallery':
     %>
-          <div class="rich-content-block masonry-gallery-component masonry-gallery-<%= component.size || 'large' %>">
+          <div class="rich-content-block masonry-gallery-component masonry-gallery-<%= component.size || 'large' %> responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- include('/components/masonry-gallery-rich', { 
               masonry_images: component.masonry_images, 
               size: component.size || 'large'
@@ -68,7 +68,7 @@ eleventyComputed:
         case 'simple-media':
         case 'shared.simple-media':
     %>
-          <div class="rich-content-block simple-media-component">
+          <div class="rich-content-block simple-media-component responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- include('/components/simple-media', { 
               media_files: component.media_files, 
               size: component.size || 'medium',
@@ -81,7 +81,7 @@ eleventyComputed:
         case 'book-flip':
           if (component.pages && component.pages.length > 0) {
     %>
-          <div class="rich-content-block book-flip-block">
+          <div class="rich-content-block book-flip-block responsive-component" data-responsive="<%= component.responsiveDisplay || 'default' %>">
             <%- include('/components/book-flip', { 
               pages: component.pages, 
               aspectRatio: component.aspectRatio,
