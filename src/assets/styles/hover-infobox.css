@@ -104,7 +104,7 @@
   font-weight: 600;
   margin: 0 0 0.5rem 0 !important; /* Explicitly set all margins, no top margin */
   padding: 0 !important; /* Ensure no padding */
-  font-family: var(--title-font-narrow);
+  font-family: var(--title-font);
   color: var(--text-color, #fff);
   text-transform: unset;
   line-height: 2rem !important;
