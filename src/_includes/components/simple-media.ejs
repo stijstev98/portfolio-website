@@ -1,8 +1,13 @@
 <!-- Simple Media Component -->
+<% 
+// Generate unique component ID for this instance
+const componentId = 'simple-media-' + Math.random().toString(36).substr(2, 9);
+%>
 <div class="simple-media simple-media-<%= locals.size || 'medium' %>" 
      data-size="<%= locals.size || 'medium' %>"
      data-show-caption="<%= locals.show_caption || false %>"
-     data-show-infobox="<%= locals.show_infobox || false %>">
+     data-show-infobox="<%= locals.show_infobox || false %>"
+     data-component-id="<%= componentId %>">
   
   <div class="simple-media-container">
     <% if (locals.media_files && media_files.length > 0) { %>
@@ -93,13 +98,10 @@
   </div>
 </div>
 
-<!-- Include the reusable lightbox -->
-<%- include('./lightbox', { id: 'simple-media-lightbox' }) %>
-
 <!-- Include hover infobox for caption display (conditional) -->
 <% if (locals.show_infobox) { %>
   <%- include('./hover_infobox', { 
-    id: 'hover-infobox-simple-media',
+    id: 'hover-infobox-' + componentId,
     image: '',
     title: '',
     description: '',
@@ -113,11 +115,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  const simpleMediaComponent = document.querySelector('.simple-media');
+  // Target this specific component instance using the unique component ID
+  const componentId = '<%= componentId %>';
+  const simpleMediaComponent = document.querySelector(`[data-component-id="${componentId}"]`);
   if (!simpleMediaComponent) return;
   
-  const lightbox = document.getElementById('simple-media-lightbox');
-  const infobox = document.getElementById('hover-infobox-simple-media');
+  const lightbox = document.getElementById('shared-simple-media-lightbox');
+  const infobox = document.getElementById('hover-infobox-' + componentId);
   const items = simpleMediaComponent.querySelectorAll('.simple-media-item');
   const showInfobox = simpleMediaComponent.dataset.showInfobox === 'true';
   

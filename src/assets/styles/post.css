@@ -57,7 +57,7 @@
 
 /* Post Title */
 .post-title {
-  font-family: var(--title-font);
+  font-family: var(--title-font-narrow);
   font-size: var(--title-jumbo-size);
   font-weight: 900;
   line-height: 0.9;

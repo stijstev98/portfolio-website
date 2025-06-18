@@ -103,6 +103,17 @@ eleventyComputed:
   <% } %>
 </div>
 
+<!-- Shared lightbox for Simple Media components -->
+<% 
+// Check if any Simple Media components exist
+const hasSimpleMedia = post.data.richContent && post.data.richContent.some(component => 
+  component.type === 'simple-media' || component.type === 'shared.simple-media'
+);
+if (hasSimpleMedia) { 
+%>
+  <%- include('/components/lightbox', { id: 'shared-simple-media-lightbox' }) %>
+<% } %>
+
 <% 
 // Check if any book flip components exist for script inclusion
 const hasBookFlip = post.data.richContent && post.data.richContent.some(component => 
