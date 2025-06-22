@@ -11,7 +11,7 @@
 .post-header-image-container {
   position: absolute;
   width: 100vw;
-  height: 50vh;
+  height: 55vh;
   left: 0;
   top: 0;
   z-index: 0;
@@ -30,6 +30,7 @@
 
 .post-header-content {
   position: absolute;
+  padding-bottom: 1rem;
   bottom: 0;
   left: 0;
   right: 0;
@@ -84,7 +85,7 @@
 /* Post Content Section */
 .post-content-section {
   padding: 2rem 0 var(--spacing-lg) 0;
-  margin-top: calc(50vh + 2rem);
+  margin-top: calc(55vh + 1rem);
 }
 
 .post-hero-content h1 {
