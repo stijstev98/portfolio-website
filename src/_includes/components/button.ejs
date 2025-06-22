@@ -5,7 +5,7 @@ Usage examples:
 2. Border button: include('button', { url: '/contact', text: 'LET\'S TALK', style: 'border-button' })
 3. With icon: include('button', { url: '/projects', text: 'View All', style: 'border-button', iconAfter: '<i class="fas fa-arrow-right"></i>' })
 -->
-<a href="<%= url %>" class="<%= locals.style ? style : 'btn' %> <%= locals.variant && !locals.style ? 'btn-' + variant : '' %> <%= locals.className ? className : '' %>">
+<a href="<%= url %>" class="<%= locals.style ? style : 'btn' %> <%= locals.variant && !locals.style ? 'btn-' + variant : '' %> <%= locals.className ? className : '' %><% if (url.startsWith('#')) { %> scroll-link<% } %>"<% if (url.startsWith('#')) { %> data-scroll-target="<%= url.substring(1) %>"<% } %>>
   <% if (locals.iconBefore) { %>
   <span class="btn-icon btn-icon-before"><%- iconBefore %></span>
   <% } %>
@@ -16,3 +16,30 @@ Usage examples:
   <span class="btn-icon btn-icon-after"><%- iconAfter %></span>
   <% } %>
 </a>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Add smooth scrolling for button scroll links (if not already handled by nav-links.ejs)
+  if (!window.buttonScrollHandlerAdded) {
+    window.buttonScrollHandlerAdded = true;
+    
+    const scrollButtons = document.querySelectorAll('.scroll-link:not(.nav-handled)');
+    scrollButtons.forEach(button => {
+      button.classList.add('nav-handled'); // Prevent duplicate handling
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('data-scroll-target');
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          // Smooth scroll to the target element
+          window.scrollTo({
+            top: targetElement.offsetTop - 100, // Add some offset to avoid hiding under header
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  }
+});
+</script>

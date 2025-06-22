@@ -21,8 +21,16 @@
     // If it's the last part (current page)
     const isLastItem = i === parts.length - 1;
     
+    // Special handling for "posts" - redirect to works section on front page
+    let breadcrumbUrl = currentPath;
+    if (part === 'posts' && !isLastItem) {
+      breadcrumbUrl = '/#works';
+    } else if (isLastItem) {
+      breadcrumbUrl = '';
+    }
+    
     breadcrumbs.push({
-      url: isLastItem ? '' : currentPath,
+      url: breadcrumbUrl,
       text: isLastItem && locals.title ? locals.title.toUpperCase() : text,
       isCurrent: isLastItem
     });
