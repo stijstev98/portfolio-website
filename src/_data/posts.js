@@ -122,10 +122,12 @@ module.exports = async function() {
       const headerImageWidth = post.post_header_image?.width || 0;
       const headerImageHeight = post.post_header_image?.height || 0;
       const headerImageMime = post.post_header_image?.mime || null;
+      const headerImageCaption = post.post_header_image?.caption || null;
       
       const previewImageWidth = post.post_preview_image?.width || 0;
       const previewImageHeight = post.post_preview_image?.height || 0;
       const previewImageMime = post.post_preview_image?.mime || null;
+      const previewImageCaption = post.post_preview_image?.caption || null;
       
       // Build gallery from post_images (handle both array and nested data)
       const gallerySource = Array.isArray(post.post_images)
@@ -142,7 +144,8 @@ module.exports = async function() {
           medium: mediumSrc ? constructImageUrl(mediumSrc) : null,
           width: img.attributes?.width || img.width || 0,
           height: img.attributes?.height || img.height || 0,
-          mime: img.attributes?.mime || img.mime || null
+          mime: img.attributes?.mime || img.mime || null,
+          caption: img.attributes?.caption || img.caption || null
         };
       }).filter(img => img.url); // Filter out any images without URLs
       
@@ -479,11 +482,13 @@ module.exports = async function() {
           headerImageWidth: headerImageWidth,
           headerImageHeight: headerImageHeight,
           headerImageMime: headerImageMime,
+          headerImageCaption: headerImageCaption,
           previewImage: previewImageUrl,
           previewImageMedium: previewImageMedium,
           previewImageWidth: previewImageWidth,
           previewImageHeight: previewImageHeight,
           previewImageMime: previewImageMime,
+          previewImageCaption: previewImageCaption,
           images: galleryImages
         },
         url: `/posts/${slug}/`,

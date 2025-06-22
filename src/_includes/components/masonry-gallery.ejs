@@ -55,8 +55,16 @@
             }
           }
         %>
-        <div class="masonry-item <%= aspectRatio %>" data-post-id="<%= post.id %>" data-scroll-animation="fade-up">
-          <a href="<%= post.url %>" class="masonry-item-link">
+        <div class="masonry-item <%= aspectRatio %>" 
+             data-post-id="<%= post.id %>" 
+             data-scroll-animation="fade-up"
+             data-has-rich-content="<%= post.data.hasRichContent || false %>"
+             data-lightbox-image="<%= fallbackMediaUrl || '' %>"
+             data-lightbox-title="<%= post.data.title || '' %>"
+             data-lightbox-description="<%= post.data.description || '' %>"
+             data-lightbox-image-caption="<%= post.data.previewImageCaption || post.data.headerImageCaption || '' %>"
+             data-lightbox-mime="<%= post.data.previewImageMime || post.data.headerImageMime || '' %>">
+          <a href="<%= post.url %>" class="masonry-item-link" data-post-url="<%= post.url %>">
             <% if (mediaUrl) { %>
               <div class="masonry-item-image">
                 <% if (mediaType === 'video') { %>
@@ -102,9 +110,14 @@
   maxWidth: 'large'
 }) %>
 
+<!-- Include lightbox for posts without rich content -->
+<%- include('./lightbox', { id: 'masonry-lightbox' }) %>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const infobox = document.getElementById('hover-infobox-masonry');
+  const lightbox = document.getElementById('masonry-lightbox');
+  
   if (!infobox) return; 
 
   const infoboxImage = infobox.querySelector('.infobox-image img');
@@ -194,6 +207,158 @@ document.addEventListener('DOMContentLoaded', function() {
     infoboxImage.style.display = 'block';
   }
 
+  // Lightbox functionality
+  function openLightbox(imageUrl, title, description, imageCaption, mimeType) {
+    if (!lightbox) return;
+    
+    const mediaContainer = lightbox.querySelector('.lightbox-media-container');
+    const caption = lightbox.querySelector('.lightbox-caption');
+    
+    if (!mediaContainer || !caption) return;
+    
+    // Clear existing content
+    mediaContainer.innerHTML = '';
+    
+    const isVideo = mimeType && mimeType.startsWith('video/');
+    
+    if (isVideo) {
+      // Create video element
+      const video = document.createElement('video');
+      video.src = imageUrl;
+      video.className = 'lightbox-video';
+      video.alt = title;
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      
+      // Create video controls container
+      const controlsContainer = document.createElement('div');
+      controlsContainer.className = 'lightbox-video-controls';
+      
+      // Create pause/play button
+      const playPauseBtn = document.createElement('button');
+      playPauseBtn.className = 'lightbox-control-btn lightbox-pause-btn';
+      playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      playPauseBtn.title = 'Pause/Play';
+      
+      // Create mute/unmute button
+      const muteBtn = document.createElement('button');
+      muteBtn.className = 'lightbox-control-btn lightbox-mute-btn';
+      muteBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      muteBtn.title = 'Mute/Unmute';
+      
+      controlsContainer.appendChild(playPauseBtn);
+      controlsContainer.appendChild(muteBtn);
+      
+      mediaContainer.appendChild(video);
+      mediaContainer.appendChild(controlsContainer);
+      
+      // Control functionality
+      playPauseBtn.addEventListener('click', function() {
+        if (video.paused) {
+          video.play();
+          this.innerHTML = '<i class="fas fa-pause"></i>';
+        } else {
+          video.pause();
+          this.innerHTML = '<i class="fas fa-play"></i>';
+        }
+      });
+      
+      muteBtn.addEventListener('click', function() {
+        video.muted = !video.muted;
+        if (video.muted) {
+          this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else {
+          this.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+      });
+      
+      // Update controls based on video state
+      video.addEventListener('play', function() {
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+      });
+      
+      video.addEventListener('pause', function() {
+        playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+      });
+    } else {
+      // Create image element
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.className = 'lightbox-image';
+      img.alt = title;
+      
+      // Determine image orientation for proper sizing
+      img.onload = function() {
+        const aspectRatio = this.naturalWidth / this.naturalHeight;
+        if (aspectRatio > 1.2) {
+          this.setAttribute('data-orientation', 'landscape');
+        } else if (aspectRatio < 0.8) {
+          this.setAttribute('data-orientation', 'portrait');
+        } else {
+          this.setAttribute('data-orientation', 'square');
+        }
+      };
+      
+      mediaContainer.appendChild(img);
+    }
+    
+    // Build caption content
+    let captionHtml = '';
+    if (title) {
+      captionHtml += `<h4 style="margin: 0 0 0.5rem 0; font-family: var(--title-font); font-size: 1.3rem; font-weight: 600;">${title}</h4>`;
+    }
+    if (description) {
+      captionHtml += `<p style="margin: 0 0 0.5rem 0; font-size: 1rem; opacity: 0.9;">${description}</p>`;
+    }
+    if (imageCaption) {
+      captionHtml += `<p style="margin: 0; font-size: 0.8rem; opacity: 0.7; font-style: italic;">${imageCaption}</p>`;
+    }
+    
+    caption.innerHTML = captionHtml;
+    
+    // Lock scrolling
+    document.body.classList.add('lightbox-active');
+    
+    // Show lightbox
+    lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
+  }
+  
+  function closeLightbox() {
+    if (!lightbox) return;
+    
+    lightbox.classList.remove('show');
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+      // Unlock scrolling
+      document.body.classList.remove('lightbox-active');
+    }, 300);
+  }
+  
+  // Lightbox event listeners
+  if (lightbox) {
+    const overlay = lightbox.querySelector('.lightbox-overlay');
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    
+    if (overlay) {
+      overlay.addEventListener('click', closeLightbox);
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeLightbox);
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+        closeLightbox();
+      }
+    });
+  }
+
   document.addEventListener('mousemove', function(e) {
     if (infobox.style.display !== 'none') {
       const infoboxContent = infobox.querySelector('.infobox-content');
@@ -217,13 +382,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const masonryItems = document.querySelectorAll('.masonry-item');
   masonryItems.forEach(item => {
+    // Handle clicks for posts without rich content
+    const link = item.querySelector('.masonry-item-link');
+    if (link) {
+      link.addEventListener('click', function(e) {
+        const hasRichContent = item.dataset.hasRichContent === 'true';
+        
+        if (!hasRichContent) {
+          e.preventDefault(); // Prevent navigation
+          
+          const imageUrl = item.dataset.lightboxImage;
+          const title = item.dataset.lightboxTitle;
+          const description = item.dataset.lightboxDescription;
+          const imageCaption = item.dataset.lightboxImageCaption;
+          const mimeType = item.dataset.lightboxMime;
+          
+          if (imageUrl) {
+            openLightbox(imageUrl, title, description, imageCaption, mimeType);
+          }
+        }
+        // If hasRichContent is true, let the default navigation happen
+      });
+    }
+
     item.addEventListener('mouseenter', function(e) {
       // Configure infobox for this specific gallery type
       if (infobox) {
         infobox.dataset.iconType = 'font-awesome';
         const iconElement = infobox.querySelector('.infobox-go-button i');
         if (iconElement) {
-          iconElement.className = 'fas fa-arrow-right'; // Set Font Awesome arrow icon
+          const hasRichContent = item.dataset.hasRichContent === 'true';
+          if (hasRichContent) {
+            iconElement.className = 'fas fa-arrow-right'; // Arrow for posts with rich content
+          } else {
+            iconElement.className = 'fas fa-expand'; // Expand icon for lightbox posts
+          }
         }
         const contentBox = infobox.querySelector('.infobox-content');
         if (contentBox) {
