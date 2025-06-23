@@ -5,7 +5,7 @@ body {
     background-color: var(--bg-color);
     line-height: var(--body-text-line-height);
     font-size: var(--body-text-size);
-    font-weight: 300;
+    font-weight: 400;
     letter-spacing: 0.02em;
     margin: 0;
 }
@@ -253,7 +253,6 @@ img {
 
 /* Content wrapper - basic content styling */
 .content {
-    letter-spacing: 0.05em;
     line-height: 2;
     font-size: var(--body-text-size);
 }

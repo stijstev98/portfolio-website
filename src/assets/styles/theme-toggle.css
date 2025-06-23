@@ -175,24 +175,24 @@ body.dark-theme .mobile-menu-overlay {
 /* Post page specific dark theme adjustments */
 body.dark-theme .post-title {
   color: #FFFFFF;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  text-shadow: 0.25px 0.25px 0.5px rgba(0, 0, 0, 0.5);
 }
 
 body.dark-theme .post-short-description {
   color: rgba(255, 255, 255, 0.9);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0.125px 0.125px 0.25px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-theme .breadcrumb-item {
-  color: #B2B2B2;
+  color: rgba(178, 178, 178, 0.5);
 }
 
 body.dark-theme .breadcrumb-item + .breadcrumb-item::before {
-  color: #B2B2B2;
+  color: rgba(178, 178, 178, 0.4);
 }
 
 body.dark-theme .breadcrumb-item.active {
-  color: #FFFFFF;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 /* Dark theme hover infobox adjustments */

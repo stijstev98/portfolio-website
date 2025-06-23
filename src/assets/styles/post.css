@@ -45,6 +45,51 @@ body.content-page {
   background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
 }
 
+/* Create gradient blur effect using multiple layers similar to navigation */
+.post-header-content::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(15px);
+  mask: linear-gradient(to top, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 0.7) 30%, 
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%);
+  -webkit-mask: linear-gradient(to top, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 0.7) 30%, 
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%);
+  z-index: -1;
+}
+
+.post-header-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  mask: linear-gradient(to top, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.3) 30%, 
+    rgba(0, 0, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0.8) 80%,
+    rgba(0, 0, 0, 0.4) 100%);
+  -webkit-mask: linear-gradient(to top, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.3) 30%, 
+    rgba(0, 0, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0.8) 80%,
+    rgba(0, 0, 0, 0.4) 100%);
+  z-index: -1;
+}
+
 .post-header-content-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -72,17 +117,17 @@ body.content-page {
   color: white;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.6);
 }
 
 .post-short-description {
   font-size: 1.1rem;
-  font-weight: 300;
+  font-weight: 400;
   color: white;
   margin-bottom: var(--spacing-sm);
   max-width: 70%;
   line-height: 1.5;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  text-shadow: 0.25px 0.25px 0.5px rgba(0, 0, 0, 0.5);
 }
 
 .breadcrumb-container {
@@ -93,6 +138,9 @@ body.content-page {
 .post-content-section {
   padding: 2rem 0 var(--spacing-lg) 0;
   margin-top: calc(55vh + 1rem);
+  position: relative;
+  z-index: 30;
+  background-color: var(--bg-color);
 }
 
 .post-hero-content h1 {
@@ -124,18 +172,19 @@ body.content-page {
 
 .breadcrumb-item {
   font-size: var(--body-text-small);
-  color: var(--text-color);
+  color: rgba(255, 255, 255, 0.4);
   margin-right: var(--spacing-xs);
+  font-weight: 300;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
   content: "›";
-  color: var(--text-color);
+  color: rgba(255, 255, 255, 0.3);
   margin-right: var(--spacing-xs);
 }
 
 .breadcrumb-item.active {
-  color: var(--text-color);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Post Content Wrapper */

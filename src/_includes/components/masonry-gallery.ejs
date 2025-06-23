@@ -162,6 +162,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const mediaItem = allPostImages[index];
     
+    // Show the image container since we have media to display
+    const imageContainer = infobox.querySelector('.infobox-image');
+    if (imageContainer) {
+      imageContainer.style.display = 'block';
+    }
+    
     // Remove any existing video elements
     const existingVideo = infobox.querySelector('.infobox-image video');
     if (existingVideo) {
@@ -183,16 +189,61 @@ document.addEventListener('DOMContentLoaded', function() {
       source.type = mediaItem.mime || 'video/mp4';
       video.appendChild(source);
       
+      // Add error handling for videos
+      video.addEventListener('error', function() {
+        console.warn('Video failed to load in infobox:', mediaItem.url);
+        // Skip to next media item
+        skipToNextValidMedia();
+      });
+      
       // Hide the img and show video
       infoboxImage.style.display = 'none';
       infoboxImage.parentNode.appendChild(video);
     } else {
       // Show image
       infoboxImage.style.display = 'block';
+      
+      // Add error handling for images
+      infoboxImage.onerror = function() {
+        console.warn('Image failed to load in infobox:', mediaItem.url);
+        // Skip to next media item
+        skipToNextValidMedia();
+      };
+      
       infoboxImage.src = mediaItem.url || '';
     }
   }
   
+  function skipToNextValidMedia() {
+    if (allPostImages.length <= 1) {
+      // No more images to try, hide the image container
+      const imageContainer = infobox.querySelector('.infobox-image');
+      if (imageContainer) {
+        imageContainer.style.display = 'none';
+      }
+      return;
+    }
+    
+    // Remove the current broken image from the array
+    allPostImages.splice(currentImageIndex, 1);
+    
+    // Adjust current index if needed
+    if (currentImageIndex >= allPostImages.length) {
+      currentImageIndex = 0;
+    }
+    
+    // Try the next image
+    if (allPostImages.length > 0) {
+      setCurrentMediaInInfobox(currentImageIndex);
+    } else {
+      // No valid images left, hide the image container
+      const imageContainer = infobox.querySelector('.infobox-image');
+      if (imageContainer) {
+        imageContainer.style.display = 'none';
+      }
+    }
+  }
+
   function stopImageCycling() {
     if (imageInterval) {
       clearInterval(imageInterval);
@@ -475,6 +526,11 @@ document.addEventListener('DOMContentLoaded', function() {
         setCurrentMediaInInfobox(0);
       } else if (infoboxImage) {
         infoboxImage.src = ''; 
+        // Hide the image container when no images are available
+        const imageContainer = infobox.querySelector('.infobox-image');
+        if (imageContainer) {
+          imageContainer.style.display = 'none';
+        }
       }
       
       infoboxTitle.textContent = title || '';

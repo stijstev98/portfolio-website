@@ -187,3 +187,24 @@
     margin-right: 0;
   }
 }
+
+/* Ensure all mobile devices have 2 columns regardless of orientation */
+@media (max-width: 768px) and (orientation: landscape) {
+  .masonry-grid,
+  .front-page-gallery .masonry-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Match the title styling from main masonry for hover infobox */
+#hover-infobox-masonry-rich .infobox-title {
+  font-family: var(--title-font);
+  font-size: 0.85em !important;
+  letter-spacing: 0.03rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  text-transform: unset;
+  font-weight: 400 !important;
+  color: white;
+  max-width: 30ch;
+  word-break: keep-all;
+}

@@ -79,8 +79,8 @@
   url: '#',
   showImage: false,
   iconType: 'font-awesome',
-  iconClass: 'fas fa-expand-arrows-alt',
-  maxWidth: 'medium'
+  iconClass: 'fas fa-expand',
+  maxWidth: 'large'
 }) %>
 
 <script>
@@ -160,20 +160,36 @@ document.addEventListener('DOMContentLoaded', function() {
   // Hover and click handlers for masonry items
   items.forEach(item => {
     item.addEventListener('mouseenter', function(e) {
+      // Configure infobox for this specific gallery type  
+      if (infobox) {
+        infobox.dataset.iconType = 'font-awesome';
+        const iconElement = infobox.querySelector('.infobox-go-button i');
+        if (iconElement) {
+          iconElement.className = 'fas fa-expand'; // Use expand icon for rich content lightbox
+        }
+        const contentBox = infobox.querySelector('.infobox-content');
+        if (contentBox) {
+          contentBox.classList.remove('no-title'); // Ensure no-title styling is removed
+        }
+      }
+
       // Get media data
       const dataDiv = item.querySelector('.masonry-rich-data');
       if (!dataDiv) return;
       
+      const mediaUrl = dataDiv.querySelector('.media-url')?.textContent || '';
       const mediaAlt = dataDiv.querySelector('.media-alt')?.textContent || '';
       const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+      const mediaType = dataDiv.querySelector('.media-type')?.textContent || 'image';
       
-      // Show infobox only if there's caption content
-      if (infobox && (mediaAlt.trim() || mediaCaption.trim())) {
+      // Update infobox content - only show if there's a real caption
+      if (infobox && mediaCaption.trim()) {
         const infoboxTitle = infobox.querySelector('.infobox-title');
         const infoboxDescription = infobox.querySelector('.infobox-description');
         
-        if (infoboxTitle) infoboxTitle.textContent = mediaAlt;
-        if (infoboxDescription) infoboxDescription.textContent = mediaCaption;
+        // Set title and description
+        if (infoboxTitle) infoboxTitle.textContent = mediaCaption.trim();
+        if (infoboxDescription) infoboxDescription.textContent = ''; // Don't show description
         
         // Position and show infobox
         const infoboxContent = infobox.querySelector('.infobox-content');
