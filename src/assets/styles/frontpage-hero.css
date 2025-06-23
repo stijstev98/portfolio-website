@@ -143,6 +143,7 @@ body.scrolled .header-transparent .logo-bar:hover {
   transition: opacity 0.5s ease;
   z-index: 60; /* Above the frosted underlay (50) */
   position: relative;
+  text-transform: uppercase;
 }
 
 /* Hero visibility transitions - improved smoothness */

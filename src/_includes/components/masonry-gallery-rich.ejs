@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     lightbox.style.display = 'flex';
     setTimeout(() => lightbox.classList.add('show'), 10);
-    document.body.style.overflow = 'hidden';
+    document.body.classList.add('lightbox-active');
   }
   
   function closeLightbox() {
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
     lightbox.classList.remove('show');
     setTimeout(() => {
       lightbox.style.display = 'none';
-      document.body.style.overflow = '';
+      document.body.classList.remove('lightbox-active');
       
       // Stop any videos
       const videos = lightbox.querySelectorAll('video');
