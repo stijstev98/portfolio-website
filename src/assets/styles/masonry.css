@@ -126,12 +126,13 @@
   margin: 0;
   font-size: 0.85em !important;
   letter-spacing: 0.05rem;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-  opacity: 0.7;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  opacity: 1;
   text-transform: unset;
   font-weight: 400 !important;
   max-width: 30ch;
   word-break: keep-all;
+  color: white;
 }
 
 .masonry-empty {

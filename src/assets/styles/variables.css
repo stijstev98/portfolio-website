@@ -3,12 +3,12 @@
     /* Colors */
     --primary-color: #316d7b;
     --primary-color-rgb: 49, 109, 123;
-    --secondary-color: #121212;
+    --secondary-color: #f8f9fa;
     --accent-color: #FF6B6B;
-    --bg-color: #121212;
-    --text-color: #FFFFFF;
-    --text-light: #B2B2B2;
-    --border-color: rgba(255, 255, 255, 0.1);
+    --bg-color: #ffffff;
+    --text-color: #2c3e50;
+    --text-light: #6c757d;
+    --border-color: rgba(0, 0, 0, 0.1);
     --default-border: 3px solid var(--primary-color);
     
     /* Status colors */
@@ -45,10 +45,10 @@
     --spacing-xxl: 3rem;
     
     /* Standard shadows */
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.2);
-    --shadow-xl: 0 15px 30px rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 8px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 15px 30px rgba(0, 0, 0, 0.18);
     
     /* Animation */
     --anim-duration-slow: 0.8s;
@@ -57,9 +57,9 @@
     --anim-easing: cubic-bezier(0.175, 0.885, 0.32, 1.275);
     
     /* Backgrounds */
-    --bg-overlay: rgba(30, 30, 30, 0.5);
-    --bg-primary-subtle: rgba(49, 109, 123, 0.1);
-    --bg-code: rgba(255, 255, 255, 0.1);
+    --bg-overlay: rgba(255, 255, 255, 0.9);
+    --bg-primary-subtle: rgba(49, 109, 123, 0.05);
+    --bg-code: rgba(0, 0, 0, 0.05);
     
     /* Gallery Size Variables */
     --gallery-size-small-width: 100%;

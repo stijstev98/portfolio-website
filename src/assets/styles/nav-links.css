@@ -25,7 +25,7 @@
   position: relative;
   text-decoration: none;
   padding: 0.5em 0; /* Consistent padding for all links */
-  text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65); /* Subtle drop shadow for better legibility */
+  text-shadow: 0 0px 30px rgba(255, 255, 255, 0.8); /* Subtle drop shadow for better legibility */
 }
 
 .header-nav a::after {
@@ -51,19 +51,26 @@
 /* Styling for the emphasized button in desktop navigation */
 .header-nav a.btn-outline {
   padding: 0.4em 1em; /* Adjusted padding for better appearance */
-  border: 2px solid var(--primary-color); /* Clear border definition */
-  color: var(--text-color); /* Text color for the button */
+  border: 2px solid transparent; /* Start transparent */
+  color: var(--bg-color); /* Light text on dark background */
+  background-color: var(--primary-color); /* Primary blue background initially */
   border-radius: 4px; /* Optional: adds rounded corners */
   text-transform: uppercase; /* Consistent with other nav items */
   font-weight: 500; /* Slightly bolder */
-  transition: all 0.2s ease-in-out;
+  transition: all var(--anim-duration-fast) ease;
+  box-shadow: 0 4px 20px rgba(var(--primary-color-rgb, 49, 109, 123), 0.3),
+              0 0 0 0 rgba(var(--primary-color-rgb, 49, 109, 123), 0.4);
 }
 
 .header-nav a.btn-outline:hover {
-  background-color: var(--primary-color);
-  color: #fff; /* Assuming white text on hover, adjust if a variable exists */
+  background-color: transparent;
+  color: var(--text-color);
+  border: 2px solid var(--text-color);
   text-decoration: none;
   text-shadow: none; /* Remove text shadow on hover for cleaner appearance against colored background */
+  transform: scale(1.05);
+  box-shadow: 0 6px 25px rgba(var(--text-color), 0.4),
+              0 0 0 10px rgba(var(--text-color), 0.1);
 }
 
 .header-nav a.btn-outline::after {

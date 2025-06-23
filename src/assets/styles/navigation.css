@@ -75,12 +75,60 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 10vh; /* Match regular header height */
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
-  mix-blend-mode: multiply;
-  z-index: -1;
+  height: 8vh; /* Full logo bar height */
+  min-height: 120px; /* Full minimum logo bar height */
+  background: linear-gradient(to bottom, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(255, 255, 255, 0.6) 30%, 
+    rgba(255, 255, 255, 0.3) 60%,
+    rgba(255, 255, 255, 0.1) 80%,
+    rgba(255, 255, 255, 0) 100%);
+  z-index: 50; /* Below hero text (which should be higher) but above other content */
   pointer-events: none;
   transition: height 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Create gradient blur effect using multiple layers */
+.header-underlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(15px);
+  mask: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 0.7) 30%, 
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%);
+  -webkit-mask: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 1) 0%, 
+    rgba(0, 0, 0, 0.7) 30%, 
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0) 100%);
+}
+
+.header-underlay::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  mask: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.3) 30%, 
+    rgba(0, 0, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0.8) 80%,
+    rgba(0, 0, 0, 0.4) 100%);
+  -webkit-mask: linear-gradient(to bottom, 
+    rgba(0, 0, 0, 0) 0%, 
+    rgba(0, 0, 0, 0.3) 30%, 
+    rgba(0, 0, 0, 0.6) 60%,
+    rgba(0, 0, 0, 0.8) 80%,
+    rgba(0, 0, 0, 0.4) 100%);
 }
 
 /* For content pages, make underlay fixed to scroll with navigation */
@@ -89,18 +137,21 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 10vh;
-  z-index: 50; /* Below navigation but above page content */
+  height: 8vh; /* Full logo bar height */
+  min-height: 120px; /* Full minimum logo bar height */
+  z-index: 50; /* Below navigation (100) but above page content */
 }
 
 /* For homepage, make it taller to cover more of the hero */
 .homepage > .header-underlay {
-  height: 45vh; /* Taller on the homepage */
+  height: 30vh; /* Full homepage logo bar height */
+  min-height: 120px;
 }
 
 /* When homepage is scrolled, shrink the underlay */
 body.scrolled .homepage > .header-underlay {
-  height: 10vh; /* Match collapsed header height */
+  height: 8vh; /* Full collapsed logo bar height */
+  min-height: 120px;
 }
 
 /* Header styling */
@@ -114,6 +165,11 @@ body.scrolled .homepage > .header-underlay {
   width: 100%;
   height: 10vh;
   transition: height 0.3s ease-out;
+}
+
+/* Make header fixed on post pages */
+.content-page .custom-header {
+  position: fixed;
 }
 
 /* Logo bar positioned relative to content area for regular pages */
@@ -130,7 +186,7 @@ body.scrolled .homepage > .header-underlay {
   justify-content: center;
   padding-bottom: 0.5rem; /* Match homepage padding */
   padding-top: 0;
-  z-index: 101;
+  z-index: 101; /* Above frosted underlay (50) */
   transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-decoration: none;
   cursor: pointer;
@@ -163,7 +219,7 @@ body.scrolled .homepage > .header-underlay {
   position: fixed;
   top: 1rem;
   right: 2rem;
-  z-index: 102;
+  z-index: 102; /* Above logo bar and frosted underlay */
 }
 
 /* Header navigation styling */
@@ -182,7 +238,7 @@ body.scrolled .homepage > .header-underlay {
   color: var(--text-color);
   position: relative;
   text-decoration: none;
-  text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65);
+  text-shadow: 0 0px 30px rgba(255, 255, 255, 0.8);
 }
 
 .header-nav a::after {

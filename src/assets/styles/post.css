@@ -1,3 +1,8 @@
+/* Add top padding to post pages to account for fixed header */
+body.content-page {
+  padding-top: 0; /* The post header is absolute, so no padding needed */
+}
+
 /* Post Header Section */
 .post-header-section {
   position: absolute;
@@ -36,8 +41,8 @@
   right: 0;
   width: 100%;
   z-index: 20;
-  text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
-  background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 100%);
+  text-shadow: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
 }
 
 .post-header-content-inner {
@@ -64,18 +69,20 @@
   line-height: 0.9;
   margin-bottom: var(--spacing-sm);
   padding: 0;
-  color: var(--text-color);
+  color: white;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 .post-short-description {
   font-size: 1.1rem;
   font-weight: 300;
-  color: rgba(255, 255, 255, 0.9);
+  color: white;
   margin-bottom: var(--spacing-sm);
   max-width: 70%;
   line-height: 1.5;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .breadcrumb-container {
@@ -91,8 +98,8 @@
 .post-hero-content h1 {
   font-size: var(--title-large-size);
   margin-bottom: var(--spacing-sm);
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  color: #fff;
+  text-shadow: none;
+  color: var(--bg-color);
   display: inline;
   background-color: var(--primary-color);
   padding: var(--spacing-xs) var(--spacing-sm);
@@ -117,13 +124,13 @@
 
 .breadcrumb-item {
   font-size: var(--body-text-small);
-  color: var(--text-light);
+  color: var(--text-color);
   margin-right: var(--spacing-xs);
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
   content: "›";
-  color: var(--text-light);
+  color: var(--text-color);
   margin-right: var(--spacing-xs);
 }
 
@@ -205,7 +212,7 @@
   font-family: var(--title-font);
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  text-shadow: 0 0 8px rgba(49, 109, 123, 0.4);
+  text-shadow: none;
   margin: var(--spacing-md) 0 1.25rem;
 }
 
