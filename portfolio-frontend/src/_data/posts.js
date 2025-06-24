@@ -5,7 +5,7 @@ const { convertPdfToImages } = require('./utils/pdfProcessor');
 const path = require('path');
 
 // Use consistent base URL for Strapi
-const STRAPI_BASE_URL = 'http://127.0.0.1:1337';
+const STRAPI_BASE_URL = process.env.STRAPI_URL || 'http://127.0.0.1:1337';
 
 /**
  * Extract media documentIds from Lexical content
