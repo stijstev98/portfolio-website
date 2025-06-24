@@ -1,0 +1,36 @@
+<!-- Pagination Component -->
+<div class="pagination">
+  <% if (pagination && (pagination.previous || pagination.next)) { %>
+  <div class="pagination-wrapper">
+    <% if (pagination.previous) { %>
+    <a href="<%= pagination.previous.replace(/index.html$/, "") %>" class="pagination-link pagination-prev">
+      <span class="pagination-arrow">←</span>
+      <span class="pagination-text">Newer Posts</span>
+    </a>
+    <% } else { %>
+    <span class="pagination-link pagination-prev disabled">
+      <span class="pagination-arrow">←</span>
+      <span class="pagination-text">Newer Posts</span>
+    </span>
+    <% } %>
+    
+    <% if (pagination.pageNumber !== undefined) { %>
+    <span class="pagination-page-info">
+      Page <%= pagination.pageNumber + 1 %> of <%= Math.ceil(pagination.items.length / pagination.size) %>
+    </span>
+    <% } %>
+    
+    <% if (pagination.next) { %>
+    <a href="<%= pagination.next.replace(/index.html$/, "") %>" class="pagination-link pagination-next">
+      <span class="pagination-text">Older Posts</span>
+      <span class="pagination-arrow">→</span>
+    </a>
+    <% } else { %>
+    <span class="pagination-link pagination-next disabled">
+      <span class="pagination-text">Older Posts</span>
+      <span class="pagination-arrow">→</span>
+    </span>
+    <% } %>
+  </div>
+  <% } %>
+</div>

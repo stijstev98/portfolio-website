@@ -1,0 +1,218 @@
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  isolation: isolate;
+}
+
+.lightbox.show {
+  opacity: 1;
+}
+
+.lightbox-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  mix-blend-mode: multiply;
+  cursor: pointer;
+}
+
+.lightbox-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: var(--spacing-sm);
+  right: var(--spacing-sm);
+  width: 44px;
+  height: 44px;
+  background: var(--primary-color);
+  color: var(--bg-color);
+  border: 2px solid var(--primary-color);
+  border-radius: 0;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--anim-duration-fast) ease;
+  box-shadow: 0 0 10px rgba(var(--primary-color-rgb, 49, 109, 123), 0.5),
+              0 0 15px rgba(var(--primary-color-rgb, 49, 109, 123), 0.3);
+}
+
+.lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(var(--primary-color-rgb, 49, 109, 123), 0.7),
+              0 0 25px rgba(var(--primary-color-rgb, 49, 109, 123), 0.5);
+}
+
+.lightbox-media-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image sizing based on orientation */
+.lightbox-image {
+  max-width: calc(100vw - 10vw);
+  max-height: calc(100vh - 10vh);
+  object-fit: contain;
+  margin: auto;
+  border-radius: var(--border-radius-sm, 8px);
+  box-shadow: 0 0 20px rgba(var(--primary-color-rgb, 49, 109, 123), 0.4);
+}
+
+/* Ensure landscape images don't exceed viewport */
+.lightbox-image[data-orientation="landscape"] {
+  width: auto;
+  height: auto;
+  max-height: calc(100vh - 10vh);
+}
+
+/* Ensure portrait images are fully visible */
+.lightbox-image[data-orientation="portrait"] {
+  width: auto;
+  height: auto;
+  max-height: calc(100vh - 10vh);
+}
+
+/* Square images */
+.lightbox-image[data-orientation="square"] {
+  max-width: min(calc(100vh - 10vh), calc(100vw - 10vw));
+  max-height: min(calc(100vh - 10vh), calc(100vw - 10vw));
+}
+
+.lightbox-video {
+  max-height: calc(100vh - 10vh);
+  max-width: calc(100vw - 10vw);
+  object-fit: contain;
+  border-radius: var(--border-radius-sm, 8px);
+  box-shadow: 0 0 20px rgba(var(--primary-color-rgb, 49, 109, 123), 0.4);
+}
+
+/* Video controls */
+.lightbox-video-controls {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 3;
+}
+
+.lightbox-control-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--primary-color);
+  background: var(--primary-color);
+  color: var(--bg-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all var(--anim-duration-fast) ease;
+  backdrop-filter: blur(5px);
+  box-shadow: 0 0 10px rgba(var(--primary-color-rgb, 49, 109, 123), 0.3);
+}
+
+.lightbox-control-btn:hover {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-color);
+  transform: scale(1.1);
+  box-shadow: 0 0 15px rgba(var(--primary-color-rgb, 49, 109, 123), 0.6);
+}
+
+.lightbox-control-btn i {
+  pointer-events: none;
+}
+
+.lightbox-caption {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  max-width: 40vw;
+  padding: var(--spacing-sm);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  font-family: var(--body-font);
+  font-size: var(--body-text-small);
+  line-height: 1.4;
+  text-shadow: none;
+  z-index: 2;
+  border-radius: 4px;
+  backdrop-filter: blur(8px);
+  border: none;
+  box-shadow: var(--shadow-md);
+}
+
+.lightbox-caption h4 {
+  margin: 0 0 0.5rem 0 !important;
+  font-family: var(--title-font) !important;
+  font-size: 1.3rem !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0.02em !important;
+  color: var(--primary-color) !important;
+  text-shadow: none !important;
+}
+
+.lightbox-caption p {
+  margin: 0 0 0.5rem 0 !important;
+  font-size: 1rem !important;
+  line-height: 1.4 !important;
+}
+
+.lightbox-caption p:last-child {
+  margin-bottom: 0 !important;
+}
+
+.lightbox-caption:empty {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .lightbox-caption {
+    max-width: 100vw;
+    width: calc(100vw - 4rem);
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+}
+
+/* Scroll lock when lightbox is active */
+body.lightbox-active {
+  overflow: hidden;
+}
+
+/* Prevent backdrop-filter interference when lightbox is active */
+body.lightbox-active .header-underlay::before,
+body.lightbox-active .header-underlay::after {
+  backdrop-filter: none !important;
+}

@@ -1,0 +1,163 @@
+<div class="book-flip-container" <% if (typeof aspectRatio !== 'undefined' && aspectRatio) { %>data-aspect-ratio="<%= aspectRatio %>"<% } %>>
+    <div class="book-wrapper">
+        <div class="book" <% if (typeof aspectRatio !== 'undefined' && aspectRatio) { %>style="--aspect-ratio: <%= typeof aspectRatio === 'number' ? aspectRatio : parseFloat(aspectRatio) %>;"<% } %>>
+        <% if (typeof pages !== 'undefined' && pages && pages.length > 0) { %>
+            <% 
+            // Process pages to ensure proper front/back pairing
+            for (let i = 0; i < pages.length; i += 2) { 
+                const frontPage = pages[i];
+                const backPage = pages[i + 1];
+            %>
+            <div class="page">
+                <div class="front">
+                    <img src="<%= frontPage.url %>" 
+                         alt="<%= frontPage.alt || frontPage.name || 'Page ' + frontPage.pageNumber %>" 
+                         style="width: 100%; height: 100%; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='/images/posts/error.png';"
+                         loading="lazy"
+                         draggable="false">
+                </div>
+                <div class="back">
+                    <% if (backPage) { %>
+                        <img src="<%= backPage.url %>" 
+                             alt="<%= backPage.alt || backPage.name || 'Page ' + backPage.pageNumber %>" 
+                             style="width: 100%; height: 100%; object-fit: cover;"
+                             onerror="this.onerror=null; this.src='/images/posts/error.png';"
+                             loading="lazy"
+                             draggable="false">
+                    <% } %>
+                </div>
+            </div>
+            <% } %>
+        <% } else if (typeof error !== 'undefined' && error) { %>
+            <div class="book-error">
+                <p>Error loading book: <%= error %></p>
+            </div>
+        <% } %>
+        </div>
+    </div>
+    
+    <% if (typeof pages !== 'undefined' && pages && pages.length > 0) { %>
+    <!-- Progress Bar -->
+    <div class="book-progress">
+        <div class="progress-container">
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <span class="page-info">
+                Page <span class="current-page">1</span> of <span class="total-pages"><%= Math.ceil(pages.length / 2) %></span>
+            </span>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+<!-- First-time user tutorial infobox -->
+<%- include('./hover_infobox', { 
+  id: 'hover-infobox-book',
+  image: '',
+  title: '',
+  description: 'Click or tap the edge of a page to turn it',
+  url: '#',
+  showImage: false,
+  iconType: 'font-awesome',
+  iconClass: 'fas fa-book-open',
+  maxWidth: 'medium'
+}) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if this is the user's first visit
+  const hasVisitedBefore = localStorage.getItem('bookFlipTutorialShown');
+  
+  if (!hasVisitedBefore) {
+    const bookContainer = document.querySelector('.book-flip-container');
+    const infobox = document.getElementById('hover-infobox-book');
+    
+    if (bookContainer && infobox) {
+      const infoboxTitle = infobox.querySelector('.infobox-title');
+      const infoboxDescription = infobox.querySelector('.infobox-description');
+      const infoboxButton = infobox.querySelector('.infobox-go-button');
+      
+      bookContainer.addEventListener('mouseenter', function(e) {
+        // Only show tutorial if not shown before
+        if (!localStorage.getItem('bookFlipTutorialShown')) {
+          // Configure infobox for tutorial AND set content
+          if (infobox) {
+            infobox.dataset.iconType = 'font-awesome';
+            const iconElement = infobox.querySelector('.infobox-go-button i');
+            if (iconElement) {
+              iconElement.className = 'fas fa-book-open'; // Set Font Awesome open book icon
+            }
+            const contentBox = infobox.querySelector('.infobox-content');
+            if (contentBox) {
+              contentBox.classList.add('no-title'); // Ensure no-title styling is applied
+            }
+          }
+
+          // Set content every time we enter - this ensures it overrides any previous content
+          if (infoboxTitle) {
+            infoboxTitle.textContent = ''; // Clear any previous title
+            infoboxTitle.innerHTML = ''; // Also clear any HTML content
+          }
+          if (infoboxDescription) {
+            infoboxDescription.textContent = 'Click or tap the edge of a page to turn it';
+          }
+
+          // Position infobox at cursor coordinates
+          const infoboxContent = infobox.querySelector('.infobox-content');
+          if (infoboxContent) {
+            const offsetX = infoboxContent.offsetLeft;
+            const offsetY = infoboxContent.offsetTop;
+            infobox.style.left = (e.clientX - offsetX) + 'px';
+            infobox.style.top = (e.clientY - offsetY) + 'px';
+          } else {
+            infobox.style.left = e.clientX + 'px';
+            infobox.style.top = e.clientY + 'px';
+          }
+
+          infobox.style.display = 'block';
+          
+          // Add bouncy animation
+          infobox.classList.remove('animate-in');
+          setTimeout(() => infobox.classList.add('animate-in'), 10);
+        }
+      });
+      
+      bookContainer.addEventListener('mouseleave', function() {
+        // Hide infobox and remove animation
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+      });
+      
+      // Update infobox position on mouse move
+      bookContainer.addEventListener('mousemove', function(e) {
+        if (infobox && infobox.style.display !== 'none') {
+          const infoboxContent = infobox.querySelector('.infobox-content');
+          if (infoboxContent) {
+            const offsetX = infoboxContent.offsetLeft;
+            const offsetY = infoboxContent.offsetTop;
+            infobox.style.left = (e.clientX - offsetX) + 'px';
+            infobox.style.top = (e.clientY - offsetY) + 'px';
+          } else {
+            infobox.style.left = e.clientX + 'px';
+            infobox.style.top = e.clientY + 'px';
+          }
+        }
+      });
+      
+      // Mark tutorial as shown when user interacts with the book
+      bookContainer.addEventListener('click', function() {
+        localStorage.setItem('bookFlipTutorialShown', 'true');
+        // Hide infobox immediately
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+      });
+    }
+  }
+});
+</script>

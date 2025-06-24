@@ -1,0 +1,33 @@
+/* Import Bootstrap */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+/* You may need to add Font Awesome or another icon library */
+@import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+
+/* Import our modular CSS files */
+@import 'variables.css';
+@import 'typography.css'; /* Base typography styles that can be overridden */
+@import 'rich-content.css'; /* Rich content specific styles */
+@import 'layout.css'; /* Layout and utility styles */
+@import 'animations.css';
+@import 'section.css'; /* Added common section styles */
+@import 'navigation.css';
+@import 'footer.css';
+@import 'post-card.css';
+@import 'post.css';
+@import 'breadcrumb.css'; /* Added breadcrumb styles */
+@import 'pagination.css';
+@import 'button.css';
+@import 'card.css';
+@import 'masonry.css';
+@import 'scrolling-gallery.css';
+@import 'hover-infobox.css';
+@import 'frontpage-hero.css';
+@import 'nav-links.css';
+@import 'mobile-menu.css';
+@import 'about-me.css';
+@import 'background-loop.css';
+@import 'book-flip.css';
+@import 'simple-media.css';
+@import 'masonry-gallery-rich.css';
+@import 'lightbox.css';
+@import 'theme-toggle.css';

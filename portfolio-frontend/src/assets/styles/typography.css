@@ -1,0 +1,341 @@
+/* Base typography */
+body {
+    font-family: var(--body-font);
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    line-height: var(--body-text-line-height);
+    font-size: var(--body-text-size);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--title-font);
+    margin: var(--spacing-xl) 0 var(--spacing-md);
+    line-height: 1.2;
+    font-weight: 800;
+    letter-spacing: em;
+}
+
+h1:first-child,
+h2:first-child,
+h3:first-child,
+h4:first-child,
+h5:first-child,
+h6:first-child {
+    margin-top: 0;
+}
+
+/* Title sizes */
+.jumbo-title {
+    font-size: var(--title-jumbo-size);
+    font-family: var(--title-font);
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-lg);
+    font-weight: 800;
+    letter-spacing: 0em;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: var(--spacing-md);
+    line-height: var(--body-text-line-height);
+    font-size: 1rem;
+}
+
+p:last-child {
+    margin-bottom: 0;
+}
+
+/* Links */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color var(--anim-duration-fast) ease;
+}
+
+a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+/* Text formatting */
+strong, b {
+    font-weight: 600;
+}
+
+em, i {
+    font-style: italic;
+}
+
+u {
+    text-decoration: underline;
+    text-decoration-color: var(--primary-color);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+}
+
+s {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+sub {
+    font-size: 0.75em;
+    vertical-align: sub;
+}
+
+sup {
+    font-size: 0.75em;
+    vertical-align: super;
+}
+
+/* Code */
+code {
+    background-color: var(--bg-code);
+    padding: 0.125rem 0.375rem;
+    border-radius: var(--small-radius);
+    font-family: var(--mono-font);
+    font-size: var(--body-text-small);
+    color: var(--accent-color);
+    border: 1px solid var(--border-color);
+}
+
+pre {
+    background-color: var(--secondary-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+    overflow-x: auto;
+    box-shadow: var(--shadow-sm);
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: var(--mono-font);
+    font-size: var(--body-text-small);
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+/* Blockquotes */
+blockquote {
+    margin: var(--spacing-lg) 0;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-left: 4px solid var(--primary-color);
+    background-color: var(--bg-primary-subtle);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    font-style: italic;
+    color: var(--text-light);
+    position: relative;
+}
+
+blockquote::before {
+    content: "\201C";
+    font-size: 4rem;
+    color: var(--primary-color);
+    opacity: 0.3;
+    position: absolute;
+    top: var(--spacing-xs);
+    left: var(--spacing-sm);
+    line-height: 1;
+    font-family: var(--title-font);
+}
+
+blockquote p {
+    margin-bottom: var(--spacing-sm);
+}
+
+blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Lists */
+ul, ol {
+    margin: var(--spacing-md) 0;
+    padding-left: var(--spacing-lg);
+}
+
+ul {
+    list-style: disc outside;
+}
+
+ol {
+    list-style: decimal outside;
+}
+
+li {
+    margin-bottom: var(--spacing-xs);
+}
+
+li:last-child {
+    margin-bottom: 0;
+}
+
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+    margin: var(--spacing-xs) 0;
+}
+
+/* Horizontal rules */
+hr {
+    border: none;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+    margin: var(--spacing-xxl) 0;
+    border-radius: var(--small-radius);
+}
+
+/* Tables */
+table {
+    margin: var(--spacing-lg) 0;
+    white-space: nowrap;
+    border-collapse: collapse;
+    display: block;
+    overflow: auto;
+}
+
+th, td {
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-sm) var(--spacing-lg);
+}
+
+th {
+    background-color: var(--bg-overlay);
+}
+
+/* Images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Text alignment utilities */
+.text-start {
+    text-align: left !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-end {
+    text-align: right !important;
+}
+
+.text-justify {
+    text-align: justify !important;
+}
+
+/* Typography variants */
+.body-text {
+    font-size: var(--body-text-size);
+    line-height: var(--body-text-line-height);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+}
+
+.text-small {
+    font-size: var(--body-text-small);
+}
+
+.text-light {
+    color: var(--text-light);
+}
+
+/* Content wrapper - basic content styling */
+.content {
+    line-height: 2;
+    font-size: var(--body-text-size);
+}
+
+.content ul,
+.content ol,
+.content p {
+    overflow: auto;
+}
+
+.content > div > ul,
+.content > div > ol {
+    margin: var(--spacing-md) 0;
+}
+
+.content pre[class*='language-'],
+.content table {
+    margin: var(--spacing-lg) 0;
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+    body {
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+    
+    .jumbo-title {
+        font-size: 3.5rem;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 2rem;
+    }
+    
+    h3 {
+        font-size: 1.5rem;
+    }
+    
+    blockquote {
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+    
+    blockquote::before {
+        font-size: 3rem;
+    }
+    
+    pre {
+        padding: var(--spacing-sm);
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .jumbo-title {
+        font-size: 2.5rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.75rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+    }
+    
+    blockquote {
+        padding: var(--spacing-sm);
+        margin: var(--spacing-md) 0;
+    }
+    
+    table {
+        font-size: 0.8rem;
+    }
+    
+    th, td {
+        padding: var(--spacing-xs) var(--spacing-sm);
+    }
+}

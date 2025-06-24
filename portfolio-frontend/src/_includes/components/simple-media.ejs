@@ -1,0 +1,359 @@
+<!-- Simple Media Component -->
+<% 
+// Generate unique component ID for this instance
+const componentId = 'simple-media-' + Math.random().toString(36).substr(2, 9);
+%>
+<div class="simple-media simple-media-<%= locals.size || 'medium' %>" 
+     data-size="<%= locals.size || 'medium' %>"
+     data-show-caption="<%= locals.show_caption || false %>"
+     data-show-infobox="<%= locals.show_infobox || false %>"
+     data-component-id="<%= componentId %>">
+  
+  <div class="simple-media-container">
+    <% if (locals.media_files && media_files.length > 0) { %>
+      <% 
+        // Limit to maximum 3 media files
+        const displayMedia = media_files.slice(0, 3);
+        
+        // Calculate common height based on the largest aspect ratio and container width
+        let targetHeight = 300; // Default height in pixels
+        const containerSizes = {
+          'small': 100, // percentage of content width
+          'medium': 110, // slightly wider
+          'large': 100   // full viewport but divided by media count
+        };
+        
+        // For responsive height calculation, we'll use CSS custom properties
+      %>
+      
+      <div class="simple-media-grid" data-media-count="<%= displayMedia.length %>">
+        <% displayMedia.forEach((media, index) => { %>
+          <% 
+            // Determine media type
+            let mediaType = 'image';
+            let mediaMimeType = media.mime;
+            
+            if (mediaMimeType && mediaMimeType.startsWith('video/')) {
+              mediaType = 'video';
+            }
+            
+            // Calculate aspect ratio for uniform height
+            let aspectRatio = 1;
+            if (media.width && media.height && media.width > 0 && media.height > 0) {
+              aspectRatio = media.width / media.height;
+            } else if (mediaType === 'video') {
+              // Default video aspect ratio
+              aspectRatio = 16/9;
+            }
+          %>
+          
+          <div class="simple-media-item" 
+               data-media-id="<%= media.id %>" 
+               data-media-type="<%= mediaType %>"
+               data-aspect-ratio="<%= aspectRatio %>"
+               data-scroll-animation="fade-up"
+               data-index="<%= index %>">
+            
+            <div class="simple-media-content">
+              <% if (mediaType === 'video') { %>
+                <div class="simple-media-wrapper">
+                  <video muted loop preload="metadata" loading="lazy">
+                    <source src="<%= media.url %>" type="<%= mediaMimeType %>">
+                    <!-- Fallback for unsupported video -->
+                    <img src="/images/video-placeholder.jpg" alt="<%= media.alternativeText || media.name %>" loading="lazy"/>
+                  </video>
+                  <div class="video-play-overlay">
+                    <div class="play-icon"></div>
+                  </div>
+                </div>
+              <% } else { %>
+                <div class="simple-media-wrapper">
+                  <img src="<%= media.url %>" alt="<%= media.alternativeText || media.name %>" loading="lazy"/>
+                </div>
+              <% } %>
+            </div>
+            
+            <!-- Caption (shown conditionally) -->
+            <% if (locals.show_caption && (media.caption || media.alternativeText)) { %>
+              <div class="simple-media-caption">
+                <%= media.caption || media.alternativeText %>
+              </div>
+            <% } %>
+            
+            <!-- Hidden data for hover infobox and lightbox -->
+            <div class="simple-media-data" style="display: none;">
+              <div class="media-url"><%= media.url %></div>
+              <div class="media-alt"><%= media.alternativeText || media.name || '' %></div>
+              <div class="media-caption"><%= media.caption || '' %></div>
+              <div class="media-type"><%= mediaType %></div>
+              <div class="media-mime"><%= mediaMimeType || '' %></div>
+              <div class="media-name"><%= media.name || '' %></div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="simple-media-empty">No media content available</div>
+    <% } %>
+  </div>
+</div>
+
+<!-- Include hover infobox for caption display (conditional) -->
+<% if (locals.show_infobox) { %>
+  <%- include('./hover_infobox', { 
+    id: 'hover-infobox-' + componentId,
+    image: '',
+    title: '',
+    description: '',
+    url: '#',
+    showImage: false,
+    iconType: 'font-awesome',
+    iconClass: 'fas fa-expand-arrows-alt',
+    maxWidth: 'medium'
+  }) %>
+<% } %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Target this specific component instance using the unique component ID
+  const componentId = '<%= componentId %>';
+  const simpleMediaComponent = document.querySelector(`[data-component-id="${componentId}"]`);
+  if (!simpleMediaComponent) return;
+  
+  const lightbox = document.getElementById('shared-simple-media-lightbox');
+  const infobox = document.getElementById('hover-infobox-' + componentId);
+  const items = simpleMediaComponent.querySelectorAll('.simple-media-item');
+  const showInfobox = simpleMediaComponent.dataset.showInfobox === 'true';
+  
+  // Calculate individual heights based on aspect ratios
+  function calculateIndividualHeights() {
+    const grid = simpleMediaComponent.querySelector('.simple-media-grid');
+    if (!grid) return;
+    
+    const mediaCount = parseInt(grid.dataset.mediaCount) || 1;
+    const size = simpleMediaComponent.dataset.size || 'medium';
+    
+    // Get the actual container width
+    const containerWidth = grid.offsetWidth;
+    
+    // Calculate item width accounting for gaps
+    const gapSize = 16; // 1rem = 16px
+    const totalGaps = (mediaCount - 1) * gapSize;
+    const itemWidth = (containerWidth - totalGaps) / mediaCount;
+    
+    console.log(`Simple Media: Container width: ${containerWidth}px, Item width: ${itemWidth}px for ${mediaCount} items in ${size} size`);
+    
+    // Calculate height for each individual item based on its aspect ratio
+    items.forEach((item, index) => {
+      const aspectRatio = parseFloat(item.dataset.aspectRatio) || 1;
+      const calculatedHeight = itemWidth / aspectRatio;
+      
+      // Set reasonable height constraints based on size (but allow flexibility for aspect ratios)
+      let minHeight, maxHeight;
+      switch (size) {
+        case 'small':
+          minHeight = 150;
+          maxHeight = 800; // Allow taller images for small size
+          break;
+        case 'medium':
+          minHeight = 200;
+          maxHeight = 1000; // Allow taller images for medium size  
+          break;
+        case 'large':
+          minHeight = 250;
+          maxHeight = 1200; // Allow very tall images for large size
+          break;
+        default:
+          minHeight = 200;
+          maxHeight = 1000;
+      }
+      
+      // Use calculated height within reasonable constraints
+      const finalHeight = Math.max(minHeight, Math.min(calculatedHeight, maxHeight));
+      
+      // Apply the calculated height to this specific wrapper
+      const wrapper = item.querySelector('.simple-media-wrapper');
+      if (wrapper) {
+        wrapper.style.height = finalHeight + 'px';
+        console.log(`Simple Media Item ${index}: Aspect ratio ${aspectRatio.toFixed(2)}, Height: ${finalHeight}px`);
+      }
+    });
+  }
+  
+  // Lightbox functions
+  function openLightbox(url, type, title, caption, mime) {
+    if (!lightbox) return;
+    
+    const mediaContainer = lightbox.querySelector('.lightbox-media-container');
+    const titleElement = lightbox.querySelector('.lightbox-title');
+    const captionElement = lightbox.querySelector('.lightbox-caption');
+    
+    if (!mediaContainer) return;
+    
+    // Clear previous content
+    mediaContainer.innerHTML = '';
+    
+    if (type === 'video') {
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      video.autoplay = true;
+      video.className = 'lightbox-video';
+      if (mime) video.setAttribute('type', mime);
+      mediaContainer.appendChild(video);
+    } else {
+      const img = document.createElement('img');
+      img.src = url;
+      img.alt = title;
+      img.className = 'lightbox-image';
+      // Determine and set orientation
+      img.onload = () => {
+        if (img.naturalWidth > img.naturalHeight) {
+          img.dataset.orientation = 'landscape';
+        } else if (img.naturalWidth < img.naturalHeight) {
+          img.dataset.orientation = 'portrait';
+        } else {
+          img.dataset.orientation = 'square';
+        }
+      };
+      mediaContainer.appendChild(img);
+    }
+    
+    // Set title and caption
+    if (titleElement) titleElement.textContent = title || '';
+    if (captionElement) captionElement.textContent = caption || '';
+    
+    lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
+    document.body.classList.add('lightbox-active');
+  }
+  
+  function closeLightbox() {
+    if (!lightbox) return;
+    
+    lightbox.classList.remove('show');
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+      document.body.classList.remove('lightbox-active');
+      
+      // Stop any videos
+      const videos = lightbox.querySelectorAll('video');
+      videos.forEach(video => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    }, 300);
+  }
+  
+  // Setup hover and click handlers
+  items.forEach(item => {
+    // Hover handlers for infobox (if enabled)
+    if (showInfobox && infobox) {
+      item.addEventListener('mouseenter', function(e) {
+        const dataDiv = item.querySelector('.simple-media-data');
+        if (!dataDiv) return;
+        
+        const mediaAlt = dataDiv.querySelector('.media-alt')?.textContent || '';
+        const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+        
+        // Show infobox only if there's content
+        if (mediaAlt.trim() || mediaCaption.trim()) {
+          const infoboxTitle = infobox.querySelector('.infobox-title');
+          const infoboxDescription = infobox.querySelector('.infobox-description');
+          
+          if (infoboxTitle) infoboxTitle.textContent = mediaAlt;
+          if (infoboxDescription) infoboxDescription.textContent = mediaCaption;
+          
+          // Position and show infobox
+          const infoboxContent = infobox.querySelector('.infobox-content');
+          if (infoboxContent) {
+            const offsetX = infoboxContent.offsetLeft;
+            const offsetY = infoboxContent.offsetTop;
+            infobox.style.left = (e.clientX - offsetX) + 'px';
+            infobox.style.top = (e.clientY - offsetY) + 'px';
+          } else {
+            infobox.style.left = e.clientX + 'px';
+            infobox.style.top = e.clientY + 'px';
+          }
+          infobox.style.display = 'block';
+          
+          setTimeout(() => infobox.classList.add('animate-in'), 10);
+        }
+        
+        // Add hover effects
+        item.classList.add('is-hovered');
+        simpleMediaComponent.classList.add('has-hovered-item');
+      });
+      
+      item.addEventListener('mouseleave', function() {
+        // Hide infobox
+        infobox.style.display = 'none';
+        infobox.classList.remove('animate-in');
+        
+        // Remove hover effects
+        item.classList.remove('is-hovered');
+        if (!simpleMediaComponent.querySelector('.simple-media-item.is-hovered')) {
+          simpleMediaComponent.classList.remove('has-hovered-item');
+        }
+      });
+    }
+    
+    // Click handler for lightbox
+    item.addEventListener('click', function() {
+      const dataDiv = item.querySelector('.simple-media-data');
+      if (!dataDiv) return;
+      
+      const mediaUrl = dataDiv.querySelector('.media-url')?.textContent || '';
+      const mediaType = dataDiv.querySelector('.media-type')?.textContent || 'image';
+      const mediaAlt = dataDiv.querySelector('.media-alt')?.textContent || '';
+      const mediaCaption = dataDiv.querySelector('.media-caption')?.textContent || '';
+      const mediaMime = dataDiv.querySelector('.media-mime')?.textContent || '';
+      
+      openLightbox(mediaUrl, mediaType, mediaAlt, mediaCaption, mediaMime);
+    });
+  });
+  
+  // Mouse move for infobox positioning (if enabled)
+  if (showInfobox && infobox) {
+    document.addEventListener('mousemove', function(e) {
+      if (infobox && infobox.style.display !== 'none') {
+        const infoboxContent = infobox.querySelector('.infobox-content');
+        if (infoboxContent) {
+          const offsetX = infoboxContent.offsetLeft;
+          const offsetY = infoboxContent.offsetTop;
+          infobox.style.left = (e.clientX - offsetX) + 'px';
+          infobox.style.top = (e.clientY - offsetY) + 'px';
+        } else {
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+        }
+      }
+    });
+  }
+  
+  // Lightbox close handlers
+  if (lightbox) {
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    const overlay = lightbox.querySelector('.lightbox-overlay');
+    
+    if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    if (overlay) overlay.addEventListener('click', closeLightbox);
+    
+    // ESC key to close
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+        closeLightbox();
+      }
+    });
+  }
+  
+  // Calculate individual heights on load and resize
+  calculateIndividualHeights();
+  
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(calculateIndividualHeights, 150);
+  });
+});
+</script> 
