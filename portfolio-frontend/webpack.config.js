@@ -64,7 +64,7 @@ module.exports = {
             },
           },
           {
-            loader: 'webpack-sharp-loader',
+            loader: 'sharp-loader',
             options: {
               processFunction: (sharp) => {
                 return sharp

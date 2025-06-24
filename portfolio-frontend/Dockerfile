@@ -1,12 +1,18 @@
-FROM node:18-bullseye-slim as builder
+# Use Ubuntu LTS for best compatibility with native modules on ARM
+FROM node:18-jammy as builder
 
-# Install dependencies for sharp (much simpler than imagemin!)
+# Install a comprehensive list of dependencies for both `sharp` and `canvas`
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3 \
     make \
     g++ \
+    build-essential \
     libvips-dev \
-    build-essential
+    libcairo2-dev \
+    libjpeg-dev \
+    libpango1.0-dev \
+    libgif-dev \
+    librsvg2-dev
 
 WORKDIR /app
 
@@ -22,10 +28,13 @@ COPY . .
 # Build static site
 RUN npm run build
 
-# Production stage
+# --- Production Stage (still nice and small) ---
 FROM nginx:alpine
 
+# Copy built files from the builder stage
 COPY --from=builder /app/_site /usr/share/nginx/html
+
+# Copy our custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
