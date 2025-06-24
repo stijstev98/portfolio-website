@@ -64,23 +64,17 @@ module.exports = {
             },
           },
           {
-            loader: 'image-webpack-loader',
+            loader: 'webpack-sharp-loader',
             options: {
-              mozjpeg: {
-                progressive: true,
-                quality: 65,
+              processFunction: (sharp) => {
+                return sharp
+                  .resize({ width: 1920, withoutEnlargement: true })
+                  .jpeg({ quality: 85, progressive: true })
+                  .png({ quality: 85, compressionLevel: 9 })
+                  .webp({ quality: 85 }); // Optionally create WebP versions
               },
-              // optipng.enabled: false will disable optipng
-              optipng: {
-                enabled: false,
-              },
-              pngquant: {
-                quality: [0.65, 0.9],
-                speed: 4,
-              },
-              gifsicle: {
-                interlaced: true,
-              },
+              // Optional: create multiple sizes
+              outputTypes: ['jpeg', 'png', 'webp'],
             },
           },
         ],
