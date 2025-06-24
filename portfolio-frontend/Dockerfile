@@ -1,15 +1,11 @@
-# Use Ubuntu LTS for best compatibility with native modules on ARM
-FROM node:18-jammy as builder
+# Use a standard Debian-based image which has great ARM64 support
+FROM node:18-bullseye as builder
 
-# Install a comprehensive list of dependencies for both `sharp` and `canvas`
+# Install a comprehensive list of dependencies needed to compile `canvas` for ARM64
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3 \
-    make \
-    g++ \
     build-essential \
-    libvips-dev \
     libcairo2-dev \
-    libjpeg-dev \
+    libjpeg62-turbo-dev \
     libpango1.0-dev \
     libgif-dev \
     librsvg2-dev
@@ -19,10 +15,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
+# Delete any existing node_modules that might have been copied (safety measure)
+RUN rm -rf node_modules
+
+# Install dependencies (will now compile canvas correctly for linux/arm64)
 RUN npm ci
 
-# Copy source files
+# Copy source files (excluding node_modules thanks to .dockerignore)
 COPY . .
 
 # Build static site

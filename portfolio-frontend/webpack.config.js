@@ -10,8 +10,6 @@ entries.push(path.resolve(__dirname, 'src/assets/styles/main.css'));
 // Include Bootstrap from node_modules
 entries.push(path.resolve(__dirname, 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js'));
 
-// Prism syntax highlighting removed as file doesn't exist
-
 let cssFileName = 'styles/[name].css';
 
 if (process.env.NODE_ENV === 'production') {
@@ -63,20 +61,7 @@ module.exports = {
               name: 'images/posts/[name].[ext]',
             },
           },
-          {
-            loader: 'sharp-loader',
-            options: {
-              processFunction: (sharp) => {
-                return sharp
-                  .resize({ width: 1920, withoutEnlargement: true })
-                  .jpeg({ quality: 85, progressive: true })
-                  .png({ quality: 85, compressionLevel: 9 })
-                  .webp({ quality: 85 }); // Optionally create WebP versions
-              },
-              // Optional: create multiple sizes
-              outputTypes: ['jpeg', 'png', 'webp'],
-            },
-          },
+          // All other loaders (image-webpack-loader, sharp-loader) have been removed.
         ],
       },
     ],
