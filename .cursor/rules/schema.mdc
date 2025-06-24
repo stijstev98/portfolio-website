@@ -1,6 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-To find out the structure of a Strapi post, look at schema.json in the Strapi directory

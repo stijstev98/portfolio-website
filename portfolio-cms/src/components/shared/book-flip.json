@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_shared_book_flips",
+  "info": {
+    "displayName": "Book Flip",
+    "icon": "book"
+  },
+  "options": {},
+  "attributes": {
+    "pdf_file": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "title": {
+      "type": "string"
+    }
+  }
+}

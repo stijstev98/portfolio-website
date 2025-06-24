@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_shared_video_embeds",
+  "info": {
+    "displayName": "Video Embed",
+    "icon": "video",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "provider_uid": {
+      "type": "string",
+      "required": true
+    },
+    "provider": {
+      "type": "enumeration",
+      "enum": [
+        "youtube",
+        "vimeo"
+      ],
+      "default": "youtube",
+      "required": true
+    },
+    "title": {
+      "type": "string"
+    },
+    "caption": {
+      "type": "string"
+    }
+  }
+}
