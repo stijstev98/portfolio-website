@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  strapi:
+    build: ./portfolio-cms
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+      - DATABASE_CLIENT=sqlite
+      - DATABASE_FILENAME=/data/strapi.db
+      - STRAPI_TELEMETRY_DISABLED=true
+    volumes:
+      - strapi-data:/data
+      - strapi-uploads:/app/public/uploads
+    ports:
+      - "1337:1337"
+    restart: unless-stopped
+
+  eleventy:
+    build: ./portfolio-frontend
+    environment:
+      - STRAPI_URL=http://strapi:1337
+    depends_on:
+      - strapi
+    volumes:
+      - strapi-uploads:/app/public/uploads:ro
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  strapi-data:
+  strapi-uploads:

@@ -1,9 +1,17 @@
-const fs = require('fs').promises;
+ const fs = require('fs').promises;
 const path = require('path');
 const crypto = require('crypto');
 const { createCanvas } = require('canvas');
-const pdfjsLib = require('pdfjs-dist/legacy/build/pdf.js');
 const fetch = require('node-fetch');
+
+// Dynamic import for PDF.js ES module
+let pdfjsLib = null;
+const loadPdfjs = async () => {
+  if (!pdfjsLib) {
+    pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  }
+  return pdfjsLib;
+};
 
 // Cache directory for processed PDFs
 const CACHE_DIR = path.join(process.cwd(), '.cache', 'pdf-images');
@@ -95,6 +103,9 @@ async function convertPdfToImages(pdfUrl, fileMetadata = {}) {
   console.log(`Converting PDF to images: ${pdfUrl}`);
   
   try {
+    // Load PDF.js dynamically
+    const pdfjs = await loadPdfjs();
+    
     // Fetch the PDF
     const response = await fetch(pdfUrl);
     if (!response.ok) {
@@ -104,7 +115,7 @@ async function convertPdfToImages(pdfUrl, fileMetadata = {}) {
     const pdfData = await response.arrayBuffer();
     
     // Load the PDF
-    const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+    const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
     const numPages = pdf.numPages;
     
     // Validate minimum pages

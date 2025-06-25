@@ -2,7 +2,6 @@ const fetch = require('node-fetch');
 const slugify = require('slugify');
 const renderRichText = require('./utils/renderRichText');
 // const { convertPdfToImages } = require("./utils/pdfProcessor"); // Temporarily disabled
-const { transformToLocalUrl, transformMediaObject, transformMediaArray } = require('./utils/urlTransform');
 const path = require('path');
 
 // Use consistent base URL for Strapi
@@ -41,35 +40,32 @@ function extractMediaDocumentIds(lexicalContent) {
 module.exports = async function() {
   console.log("Fetching posts from Strapi...");
   try {
-    // First, fetch all posts with basic population to get the list
-    const basicApiUrl = `${STRAPI_BASE_URL}/api/posts?populate=*&pagination[limit]=100`;
+    // Updated populate strategy for Strapi 5.13.0 to handle dynamic zone media properly
+    const populateParams = [
+      'post_header_image',
+      'post_preview_image', 
+      'post_images',
+      'rich_content',
+      'rich_content.file', // For shared.media components
+      'rich_content.pdf_file', // For shared.book-flip components
+      'rich_content.gallery_content', // For shared.scrolling-gallery components
+      'rich_content.masonry_images', // For shared.masonry-gallery components
+      'rich_content.media_files' // For shared.simple-media components
+    ];
     
-    console.log('Attempting to fetch from:', basicApiUrl);
+    const apiUrl = `${STRAPI_BASE_URL}/api/posts?${populateParams.map((param, index) => `populate[${index}]=${param}`).join('&')}&pagination[limit]=100`;
+    
+    console.log('Attempting to fetch from:', apiUrl);
     
     // Try to fetch from Strapi
     let response;
     try {
-      response = await fetch(basicApiUrl, { 
+      response = await fetch(apiUrl, { 
         timeout: 10000 
       });
     } catch (e) {
-      console.warn("⚠️  Connection failed to Strapi. Make sure Strapi is running on port 1337.");
-      console.warn("Building with fallback content...");
-      // Return fallback data immediately instead of throwing
-      return [
-        {
-          slug: 'strapi-unavailable',
-          data: {
-            title: 'Strapi CMS Unavailable',
-            description: 'The content management system is currently unavailable. Please check that Strapi is running.',
-            date: new Date().toISOString(),
-            richContent: [],
-            hasRichContent: false,
-            headerImage: null,
-            previewImage: null
-          }
-        }
-      ];
+      console.log("Connection failed to Strapi. Make sure Strapi is running on port 1337.");
+      throw e;
     }
     
     if (!response.ok) {
@@ -80,14 +76,14 @@ module.exports = async function() {
     }
     const data = await response.json();
     
+    // Log the raw data from Strapi for inspection
+    console.log("Raw data structure:", JSON.stringify(data.data[0], null, 2));
+
     if (!data.data || !Array.isArray(data.data)) {
       console.error("Strapi response data.data is not an array or is missing:", data.data);
       return [];
     }
     
-    console.log(`Found ${data.data.length} posts, checking for posts with rich content...`);
-    
-    // For posts that have rich_content, fetch them individually with deep population
     const postsData = await Promise.all(data.data.map(async (post, index) => {
       if (!post) {
         console.warn(`Skipping invalid post object at index ${index}:`, post);
@@ -96,74 +92,47 @@ module.exports = async function() {
 
       // Ensure post_title exists for slug generation, otherwise use a fallback
       const titleForSlug = post.post_title || `post-${post.id || index}`;
-      const slug = slugify(`${titleForSlug}-${post.id || index}`, { lower: true, strict: true });
+      const slug = slugify(titleForSlug, { lower: true, strict: true });
       
-      // Helper function to construct image URL using local transformation
+      // Helper function to construct image URL
       const constructImageUrl = (imageUrl) => {
         if (!imageUrl) return null;
-        // Use the transformToLocalUrl utility to convert Strapi URLs to local paths
-        return transformToLocalUrl(imageUrl);
+        return imageUrl.startsWith('http') ? imageUrl : `${STRAPI_BASE_URL}${imageUrl}`;
       };
       
-      let fullPost = post;
-      
-      // If this post has rich_content, fetch it individually with deep population
-      if (post.rich_content && Array.isArray(post.rich_content) && post.rich_content.length > 0) {
-        console.log(`Fetching detailed content for post "${post.post_title}" with ${post.rich_content.length} components...`);
-        
-        try {
-          const deepApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
-          const deepResponse = await fetch(deepApiUrl, { timeout: 10000 });
-          
-          if (deepResponse.ok) {
-            const deepData = await deepResponse.json();
-            // Merge the deeply populated rich_content with the original post data
-            fullPost = {
-              ...post,
-              rich_content: deepData.data.rich_content
-            };
-            console.log(`Successfully fetched deep rich_content for "${post.post_title}"`);
-          } else {
-            console.warn(`Failed to fetch deep data for "${post.post_title}": ${deepResponse.status}`);
-          }
-        } catch (error) {
-          console.warn(`Error fetching deep data for "${post.post_title}":`, error.message);
-        }
-      }
-      
       // Get image URLs from the correct structure with better error handling
-      const headerImageUrl = fullPost.post_header_image?.url 
-        ? constructImageUrl(fullPost.post_header_image.url)
+      const headerImageUrl = post.post_header_image?.url 
+        ? constructImageUrl(post.post_header_image.url)
         : null;
       
-      const previewImageUrl = fullPost.post_preview_image?.url
-        ? constructImageUrl(fullPost.post_preview_image.url)
+      const previewImageUrl = post.post_preview_image?.url
+        ? constructImageUrl(post.post_preview_image.url)
         : null; // Don't fall back to header image - keep them separate
       
       // For responsive images, optionally get medium and small formats
-      const headerImageMedium = fullPost.post_header_image?.formats?.medium?.url
-        ? constructImageUrl(fullPost.post_header_image.formats.medium.url)
+      const headerImageMedium = post.post_header_image?.formats?.medium?.url
+        ? constructImageUrl(post.post_header_image.formats.medium.url)
         : null;
       
-      const previewImageMedium = fullPost.post_preview_image?.formats?.medium?.url
-        ? constructImageUrl(fullPost.post_preview_image.formats.medium.url)
+      const previewImageMedium = post.post_preview_image?.formats?.medium?.url
+        ? constructImageUrl(post.post_preview_image.formats.medium.url)
         : null;
       
       // Extract image dimensions and mime types for video support
-      const headerImageWidth = fullPost.post_header_image?.width || 0;
-      const headerImageHeight = fullPost.post_header_image?.height || 0;
-      const headerImageMime = fullPost.post_header_image?.mime || null;
-      const headerImageCaption = fullPost.post_header_image?.caption || null;
+      const headerImageWidth = post.post_header_image?.width || 0;
+      const headerImageHeight = post.post_header_image?.height || 0;
+      const headerImageMime = post.post_header_image?.mime || null;
+      const headerImageCaption = post.post_header_image?.caption || null;
       
-      const previewImageWidth = fullPost.post_preview_image?.width || 0;
-      const previewImageHeight = fullPost.post_preview_image?.height || 0;
-      const previewImageMime = fullPost.post_preview_image?.mime || null;
-      const previewImageCaption = fullPost.post_preview_image?.caption || null;
+      const previewImageWidth = post.post_preview_image?.width || 0;
+      const previewImageHeight = post.post_preview_image?.height || 0;
+      const previewImageMime = post.post_preview_image?.mime || null;
+      const previewImageCaption = post.post_preview_image?.caption || null;
       
       // Build gallery from post_images (handle both array and nested data)
-      const gallerySource = Array.isArray(fullPost.post_images)
-        ? fullPost.post_images
-        : fullPost.post_images?.data || [];
+      const gallerySource = Array.isArray(post.post_images)
+        ? post.post_images
+        : post.post_images?.data || [];
       const galleryImages = gallerySource.map(img => {
         // Strapi v4 images may be under attributes or direct
         const src = img.attributes?.url || img.url || '';
@@ -182,11 +151,11 @@ module.exports = async function() {
       
       // Process rich_content dynamic zone if it exists
       let richContentComponents = [];
-      if (fullPost.rich_content && Array.isArray(fullPost.rich_content) && fullPost.rich_content.length > 0) {
-        console.log(`Processing ${fullPost.rich_content.length} rich_content components for post "${fullPost.post_title}"`);
+      if (post.rich_content && Array.isArray(post.rich_content) && post.rich_content.length > 0) {
+        console.log(`Processing ${post.rich_content.length} rich_content components for post "${post.post_title}"`);
         
-        richContentComponents = await Promise.all(fullPost.rich_content.map(async (component, index) => {
-          console.log(`Component ${index}:`, component.__component, component.id);
+        richContentComponents = await Promise.all(post.rich_content.map(async (component, index) => {
+          console.log(`Component ${index}:`, component.__component, component);
           
           // Each component has a __component field indicating its type
           switch (component.__component) {
@@ -349,8 +318,7 @@ module.exports = async function() {
                 };
                 
                 try {
-                  // PDF processing temporarily disabled
-                  const pdfData = { pages: [], aspectRatio: 1.0 };
+                  const pdfData = await convertPdfToImages(pdfUrl, fileMetadata);
                   
                   // Create page data for the book component
                   const bookPages = pdfData.pages.map((page, idx) => ({
@@ -439,11 +407,34 @@ module.exports = async function() {
                 responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.simple-media':
-              // Process simple media files (limit to 3, should be populated with the deep populate strategy)
-              const mediaFiles = component.media_files || [];
+              // Process simple media files (limit to 3)
+              let mediaFiles = component.media_files || [];
               
-              if (!mediaFiles || mediaFiles.length === 0) {
-                console.warn(`No media files found for simple-media component ${component.id}`);
+              console.log(`Debug: simple-media component data:`, JSON.stringify(component, null, 2));
+              
+              // If media_files is not populated or empty, fetch it separately
+              if ((!mediaFiles || mediaFiles.length === 0) && component.id) {
+                console.log(`Media files is empty or missing, attempting to fetch separately for component ${component.id}`);
+                try {
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
+                  
+                  if (componentResponse.ok) {
+                    const componentData = await componentResponse.json();
+                    const populatedComponent = componentData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.simple-media' && c.id === component.id
+                    );
+                    
+                    console.log(`Found populated component:`, JSON.stringify(populatedComponent, null, 2));
+                    
+                    if (populatedComponent?.media_files) {
+                      mediaFiles = populatedComponent.media_files;
+                      console.log(`Successfully fetched ${mediaFiles.length} media files`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn('Failed to fetch simple-media component details:', error.message);
+                }
               }
               
               // Limit to 3 media files and process them
@@ -481,9 +472,9 @@ module.exports = async function() {
       
       return {
         data: {
-          title: fullPost.post_title,
-          description: fullPost.post_description,
-          date: fullPost.publishedAt || fullPost.createdAt || new Date(),
+          title: post.post_title,
+          description: post.post_description,
+          date: post.publishedAt || post.createdAt || new Date(),
           richContent: richContentComponents,
           hasRichContent: richContentComponents.length > 0,
           headerImage: headerImageUrl,
@@ -502,7 +493,7 @@ module.exports = async function() {
         },
         url: `/posts/${slug}/`,
         slug: slug,
-        id: fullPost.id
+        id: post.id
       };
     }));
     
@@ -526,16 +517,14 @@ module.exports = async function() {
     // Provide fallback data so the site can still build
     return [
       {
+        id: 'fallback-1',
         slug: 'temporary-post',
-        data: {
-          title: 'Temporary Post',
-          description: 'This is a temporary post shown while waiting for Strapi to connect',
-          date: new Date().toISOString(),
-          richContent: [],
-          hasRichContent: false,
-          headerImage: null,
-          previewImage: null
-        }
+        title: 'Temporary Post',
+        description: 'This is a temporary post shown while waiting for Strapi to connect',
+        date: new Date().toISOString(),
+        content: 'The Strapi CMS connection is currently unavailable. Please make sure Strapi is running properly.',
+        headerImageUrl: null,
+        previewImageUrl: null
       }
     ];
   }

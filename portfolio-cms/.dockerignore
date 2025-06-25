@@ -1,4 +1,17 @@
+node_modules
+npm-debug.log
+.DS_Store
+.env
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
 postcss.config.js
 webpack.config.js
 .prettierrc
 .eslintrc
+*.md
+.cache
+coverage
+.nyc_output
