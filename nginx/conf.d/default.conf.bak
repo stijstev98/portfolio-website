@@ -13,7 +13,7 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name stijnstevens.be;
 
     ssl_certificate /etc/letsencrypt/live/stijnstevens.be/fullchain.pem;
@@ -23,11 +23,30 @@ server {
     ssl_ciphers ECDHE-RSA-AES256-GCM-SHA512:DHE-RSA-AES256-GCM-SHA512:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384;
     ssl_prefer_server_ciphers off;
 
-    root /usr/share/nginx/html;
-    index index.html;
-
     location / {
-        try_files $uri $uri/ =404;
+        # Handle eleventy being down gracefully
+        proxy_pass http://eleventy:80;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Fallback if eleventy is down
+        error_page 502 503 504 = @fallback;
+    }
+
+    location @fallback {
+        return 200 "Site is starting up. Eleventy container is initializing...";
+        add_header Content-Type text/plain;
+    }
+
+    # Webhook endpoints
+    location /webhook/ {
+        proxy_pass http://webhook:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 
@@ -46,7 +65,7 @@ server {
 }
 
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     server_name admin.stijnstevens.be;
 
     ssl_certificate /etc/letsencrypt/live/admin.stijnstevens.be/fullchain.pem;

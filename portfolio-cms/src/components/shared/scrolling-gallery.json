@@ -19,6 +19,16 @@
     "gallery_height": {
       "type": "string",
       "default": "300px"
+    },
+    "responsive_display": {
+      "type": "enumeration",
+      "enum": [
+        "default",
+        "desktop-only",
+        "mobile-only"
+      ],
+      "default": "default",
+      "required": false
     }
   }
-} 
+}

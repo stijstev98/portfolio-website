@@ -10,9 +10,7 @@ services:
       - DATABASE_FILENAME=/data/strapi.db
       - STRAPI_TELEMETRY_DISABLED=true
     volumes:
-      # Mount your real SQLite database directory
       - ./strapi-data:/data
-      # Mount your real uploads folder
       - ./portfolio-cms/public/uploads:/app/public/uploads
     restart: unless-stopped
 
@@ -20,11 +18,12 @@ services:
     build: ./portfolio-frontend
     environment:
       - STRAPI_URL=http://strapi:1337
+    volumes:
+      - ./site-build:/app/_site
+      - ./portfolio-cms/public/uploads:/app/public/uploads:ro
+    command: ["/bin/sh", "-c", "npm install && npm run build:eleventy && npm run build:webpack && cp -r /app/public/uploads /app/_site/ && echo 'Build finished.'"]
     depends_on:
       - strapi
-    volumes:
-      - ./portfolio-cms/public/uploads:/app/public/uploads:ro
-    restart: unless-stopped
 
   webhook:
     build: ./webhook
@@ -33,6 +32,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - .:/workspace
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   nginx:
     image: nginx:alpine
@@ -40,16 +44,14 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ./site-build:/usr/share/nginx/html:ro
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/certbot/conf:/etc/letsencrypt:ro
       - ./nginx/certbot/www:/var/www/certbot:ro
     depends_on:
       - eleventy
-      - strapi
-      - webhook
     restart: unless-stopped
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
 
   certbot:
     image: certbot/certbot

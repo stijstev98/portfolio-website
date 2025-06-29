@@ -9,16 +9,16 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(syntaxHighlight);
 
   // Copy assets
-  eleventyConfig.addPassthroughCopy("src/assets/images");
-  eleventyConfig.addPassthroughCopy("src/assets/js");
-  eleventyConfig.addPassthroughCopy("src/assets/styles");
-  
+  eleventyConfig.addPassthroughCopy('src/assets/images');
+  eleventyConfig.addPassthroughCopy('src/assets/js');
+  eleventyConfig.addPassthroughCopy('src/assets/styles');
+
   // Copy uploads from Strapi to serve media files locally
-  eleventyConfig.addPassthroughCopy("public/uploads");
+  eleventyConfig.addPassthroughCopy({ 'public/uploads': 'uploads' });
 
   // Serve PDF cache directory
   eleventyConfig.addPassthroughCopy({
-  // [CACHE_DIR]: "pdf-cache"
+    // [CACHE_DIR]: "pdf-cache"
   });
 
   // Add helper filter for rendering Strapi Rich Text content (can be kept for other template languages)

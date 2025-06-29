@@ -25,6 +25,16 @@
       ],
       "default": "large",
       "required": true
+    },
+    "responsive_display": {
+      "type": "enumeration",
+      "enum": [
+        "default",
+        "desktop-only",
+        "mobile-only"
+      ],
+      "default": "default",
+      "required": false
     }
   }
 }

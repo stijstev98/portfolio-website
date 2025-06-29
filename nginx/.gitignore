@@ -1,0 +1,29 @@
+# SSL certificates and keys
+ssl/
+*.pem
+*.key
+*.crt
+*.csr
+
+# Certbot files and certificates
+certbot/conf/*
+certbot/www/*
+!certbot/conf/.gitkeep
+!certbot/www/.gitkeep
+
+# Let's Encrypt
+*.cert
+*.chain
+
+# Nginx logs (if any)
+*.log
+access.log
+error.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+._*

@@ -1,2 +1,68 @@
+# Environment files
 .env
-node_modules
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build outputs and generated files
+site-build/
+dist/
+build/
+
+# Database files (keep structure, ignore data)
+*.db
+*.sqlite
+*.sqlite3
+strapi-data/*.db
+
+# SSL certificates and keys
+ssl/
+*.pem
+*.key
+*.crt
+
+# Docker volumes and data
+strapi-data/
+nginx/certbot/
+
+# Backup files
+*.bak
+*.backup
+
+# Logs
+*.log
+logs/
+
+# Cache directories
+.cache/
+.tmp/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock

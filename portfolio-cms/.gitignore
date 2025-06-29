@@ -129,3 +129,33 @@ dist
 build
 .strapi-updater.json
 .strapi-cloud.json
+
+############################
+# Additional Strapi/Node.js
+############################
+
+# TypeScript build info
+.tsbuildinfo
+
+# Package manager lock files (keep for consistency)
+# package-lock.json and yarn.lock should be committed
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Database files (data, not structure)
+data.db
+*.sqlite
+*.sqlite3
