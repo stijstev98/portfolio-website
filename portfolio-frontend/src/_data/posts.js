@@ -1,12 +1,12 @@
 const fetch = require('node-fetch');
 const slugify = require('slugify');
 const renderRichText = require('./utils/renderRichText');
-// const { convertPdfToImages } = require("./utils/pdfProcessor"); // Temporarily disabled
+const { convertPdfToImages } = require("./utils/pdfProcessor");
 const { transformToLocalUrl, transformMediaObject, transformMediaArray } = require('./utils/urlTransform');
 const path = require('path');
 
 // Use consistent base URL for Strapi
-const STRAPI_BASE_URL = process.env.STRAPI_URL || 'http://127.0.0.1:1337';
+const STRAPI_BASE_URL = process.env.STRAPI_URL || 'https://admin.stijnstevens.be';
 
 /**
  * Extract media documentIds from Lexical content
@@ -316,77 +316,31 @@ module.exports = async function() {
                 responsiveDisplay: component.responsive_display || 'default'
               };
             case 'shared.book-flip':
-              // If pdf_file is not populated, fetch it separately
-              if (!component.pdf_file && component.id) {
+            case 'book-flip':
+              // Process book-flip component and return standardized data for template
+              let pages = [];
+              let aspectRatio = null;
+              if (component.pdf_file?.url) {
                 try {
-                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
-                  const componentResponse = await fetch(componentApiUrl, { timeout: 5000 });
-                  
-                  if (componentResponse.ok) {
-                    const componentData = await componentResponse.json();
-                    const populatedComponent = componentData.data.rich_content?.find(
-                      (c) => c.__component === 'shared.book-flip' && c.id === component.id
-                    );
-                    
-                    if (populatedComponent?.pdf_file) {
-                      component = populatedComponent; // Replace with populated component
-                    }
+                  const pdfUrl = new URL(component.pdf_file.url, STRAPI_BASE_URL).href;
+                  console.log(`Processing PDF for book-flip from URL: ${pdfUrl}`);
+                  pages = await convertPdfToImages(pdfUrl, component.pdf_file.updatedAt);
+                  if (pages.length > 0) {
+                    // Optionally calculate aspect ratio from first image if needed
+                    // aspectRatio = width/height from metadata if available
                   }
                 } catch (error) {
-                  console.warn('Failed to fetch book-flip component details:', error.message);
-                }
-              }
-              
-              // Handle PDF file
-              if (component.pdf_file?.url) {
-                const pdfUrl = constructImageUrl(component.pdf_file.url);
-                
-                // Extract file metadata including update date
-                const fileMetadata = {
-                  updatedAt: component.pdf_file.updatedAt || component.pdf_file.updated_at || null,
-                  name: component.pdf_file.name || null,
-                  size: component.pdf_file.size || null
-                };
-                
-                try {
-                  // PDF processing temporarily disabled
-                  const pdfData = { pages: [], aspectRatio: 1.0 };
-                  
-                  // Create page data for the book component
-                  const bookPages = pdfData.pages.map((page, idx) => ({
-                    url: `/pdf-cache/${path.basename(path.dirname(page.path))}/${page.filename}`,
-                    pageNumber: page.pageNumber,
-                    width: page.width,
-                    height: page.height,
-                    name: `Page ${page.pageNumber}`,
-                    alt: `Page ${page.pageNumber}`
-                  }));
-                  
-                  return {
-                    type: 'shared.book-flip',
-                    pages: bookPages,
-                    totalPages: bookPages.length,
-                    aspectRatio: pdfData.aspectRatio,
-                    title: component.title || 'Book',
-                    responsiveDisplay: component.responsive_display || 'default'
-                  };
-                } catch (error) {
-                  console.error('Error processing PDF for book-flip:', error);
-                  return {
-                    type: 'shared.book-flip',
-                    error: error.message,
-                    pages: [],
-                    totalPages: 0
-                  };
+                  console.error(`Error processing PDF for book-flip:`, error);
                 }
               }
               
               return {
-                type: 'shared.book-flip',
-                pages: [],
-                totalPages: 0,
-                error: 'No PDF file provided',
-                responsiveDisplay: component.responsive_display || 'default'
+                type: 'book-flip',
+                pages: pages,
+                aspectRatio: aspectRatio,
+                title: component.title || 'Book Flip',
+                responsiveDisplay: component.responsive_display,
+                error: pages.length === 0 ? 'No pages processed' : null
               };
             case 'shared.masonry-gallery':
               // Process masonry gallery media
@@ -470,6 +424,7 @@ module.exports = async function() {
                 responsiveDisplay: component.responsive_display || 'default'
               };
             default:
+              console.warn(`Unknown component type: ${component.__component}`);
               return {
                 type: 'unknown',
                 component: component.__component,

@@ -5,26 +5,32 @@
             <% 
             // Process pages to ensure proper front/back pairing
             for (let i = 0; i < pages.length; i += 2) { 
-                const frontPage = pages[i];
-                const backPage = pages[i + 1];
+                const frontPageUrl = pages[i];
+                const backPageUrl = pages[i + 1];
+                const frontPageNumber = i + 1;
+                const backPageNumber = i + 2;
             %>
             <div class="page">
                 <div class="front">
-                    <img src="<%= frontPage.url %>" 
-                         alt="<%= frontPage.alt || frontPage.name || 'Page ' + frontPage.pageNumber %>" 
+                    <img src="<%= frontPageUrl %>" 
+                         alt="Page <%= frontPageNumber %>" 
                          style="width: 100%; height: 100%; object-fit: cover;"
                          onerror="this.onerror=null; this.src='/images/posts/error.png';"
                          loading="lazy"
-                         draggable="false">
+                         draggable="false"
+                         data-src="<%= frontPageUrl %>"
+                         class="lazyload">
                 </div>
                 <div class="back">
-                    <% if (backPage) { %>
-                        <img src="<%= backPage.url %>" 
-                             alt="<%= backPage.alt || backPage.name || 'Page ' + backPage.pageNumber %>" 
+                    <% if (backPageUrl) { %>
+                        <img src="<%= backPageUrl %>" 
+                             alt="Page <%= backPageNumber %>" 
                              style="width: 100%; height: 100%; object-fit: cover;"
                              onerror="this.onerror=null; this.src='/images/posts/error.png';"
                              loading="lazy"
-                             draggable="false">
+                             draggable="false"
+                             data-src="<%= backPageUrl %>"
+                             class="lazyload">
                     <% } %>
                 </div>
             </div>

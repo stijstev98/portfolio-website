@@ -1,6 +1,6 @@
 FROM node:18-bullseye as base
 
-# Install build requirements for canvas
+# Install build requirements for canvas and poppler-utils for PDF processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libcairo2-dev \
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango1.0-dev \
     libgif-dev \
     librsvg2-dev \
+    poppler-utils \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -24,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
     libgif7 \
     librsvg2-2 \
+    poppler-utils \
  && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
