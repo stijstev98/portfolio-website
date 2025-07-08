@@ -1,7 +1,4 @@
 #!/bin/sh
-set -e
-
-echo "Restarting Eleventy container to rebuild with fresh data..."
-# Restart the Eleventy service to rebuild with latest Strapi data
-docker-compose restart eleventy
-echo "Eleventy container restarted successfully!"
+echo "Restarting Eleventy container to trigger rebuild..."
+docker restart portfolio-website-eleventy-1
+echo "Eleventy restart completed"

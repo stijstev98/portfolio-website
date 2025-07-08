@@ -161,6 +161,38 @@ docker-compose logs eleventy | grep -i error
 docker-compose restart eleventy
 ```
 
+### Content changes not showing on live site
+
+If you make changes in Strapi and trigger a rebuild, but the changes don't appear on the live website:
+
+1. **Verify the rebuild completed successfully:**
+   ```bash
+   docker-compose logs eleventy
+   ```
+   You should see "Build finished" at the end.
+
+2. **Check if files were updated:**
+   ```bash
+   ls -la site-build/
+   # Look for recent timestamps
+   ```
+
+3. **Verify Nginx is serving fresh content:**
+   ```bash
+   docker exec portfolio-website-nginx-1 stat /usr/share/nginx/html/index.html
+   ```
+
+4. **Clear browser cache:**
+   - Force refresh with Ctrl+F5 (Windows/Linux) or Cmd+Shift+R (Mac)
+   - Or open the site in an incognito/private window
+   - The Nginx configuration now includes proper cache-control headers to prevent aggressive browser caching
+
+5. **Check cache headers:**
+   ```bash
+   curl -I https://stijnstevens.be/
+   ```
+   You should see `Cache-Control: no-cache, no-store, must-revalidate` for HTML files.
+
 ### Complete cleanup and restart
 ```bash
 # Stop all containers
