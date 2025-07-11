@@ -8,8 +8,7 @@
   "options": {},
   "attributes": {
     "body": {
-      "type": "customField",
-      "customField": "plugin::lexical.lexical"
+      "type": "blocks"
     },
     "responsive_display": {
       "type": "enumeration",

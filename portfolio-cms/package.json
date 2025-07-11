@@ -23,7 +23,6 @@
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.0.0",
     "sharp": "^0.34.2",
-    "strapi-plugin-lexical": "^0.3.0",
     "styled-components": "^6.0.0"
   },
   "devDependencies": {
@@ -31,6 +30,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.21",
+    "sqlite3": "^5.1.7",
     "typescript": "^5",
     "vite-plugin-prismjs": "^0.0.11"
   },

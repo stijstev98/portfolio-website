@@ -8,8 +8,8 @@ WORKDIR /app
 # Copy package files first for better caching
 COPY package*.json ./
 
-# Install dependencies (including dev for build)
-RUN npm ci
+# Install dependencies, clearing cache and node_modules first
+RUN rm -rf node_modules package-lock.json && npm cache clean --force && npm install
 
 # Copy application files
 COPY . .

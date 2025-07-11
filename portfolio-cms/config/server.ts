@@ -3,7 +3,7 @@ export default ({ env }) => ({
   port: env.int('PORT', 1337),
   url: env('PUBLIC_URL', 'https://admin.stijnstevens.be'),
   app: {
-    keys: env.array('APP_KEYS'),
+    keys: env.array('APP_KEYS', ['keyA', 'keyB']),
   },
   webhooks: {
     populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),

@@ -7,9 +7,4 @@ export default ({ env }) => ({
       },
     },
   },
-  // Enable Lexical rich-text plugin
-  lexical: {
-    enabled: true,
-    config: {}
-  }
 });
