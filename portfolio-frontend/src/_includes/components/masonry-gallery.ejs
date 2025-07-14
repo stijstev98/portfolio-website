@@ -115,6 +115,23 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // ABSOLUTELY prevent hover infobox on touch devices
+  const isTouchDevice = ('ontouchstart' in window) || 
+                       (navigator.maxTouchPoints > 0) || 
+                       (navigator.msMaxTouchPoints > 0) ||
+                       (window.matchMedia && window.matchMedia('(hover: none)').matches) ||
+                       (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+                       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Force hide all hover infoboxes on touch devices
+  if (isTouchDevice) {
+    const allInfoboxes = document.querySelectorAll('.hover-infobox');
+    allInfoboxes.forEach(box => {
+      box.style.display = 'none !important';
+      box.style.visibility = 'hidden !important';
+    });
+  }
+  
   const infobox = document.getElementById('hover-infobox-masonry');
   const lightbox = document.getElementById('masonry-lightbox');
   
@@ -410,26 +427,29 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  document.addEventListener('mousemove', function(e) {
-    if (infobox.style.display !== 'none') {
-      const infoboxContent = infobox.querySelector('.infobox-content');
-      
-      if (infoboxContent) {
-        // The cursor should be at the top-left of the content box.
-        // We calculate the content box's offset relative to the main infobox container
-        // and subtract it from the cursor's position.
-        const offsetX = infoboxContent.offsetLeft;
-        const offsetY = infoboxContent.offsetTop;
+  // Mouse move for infobox positioning - only on non-touch devices
+  if (!isTouchDevice) {
+    document.addEventListener('mousemove', function(e) {
+      if (infobox.style.display !== 'none') {
+        const infoboxContent = infobox.querySelector('.infobox-content');
+        
+        if (infoboxContent) {
+          // The cursor should be at the top-left of the content box.
+          // We calculate the content box's offset relative to the main infobox container
+          // and subtract it from the cursor's position.
+          const offsetX = infoboxContent.offsetLeft;
+          const offsetY = infoboxContent.offsetTop;
 
-        infobox.style.left = (e.clientX - offsetX) + 'px';
-        infobox.style.top = (e.clientY - offsetY) + 'px';
-      } else {
-        // Fallback to original behavior
-        infobox.style.left = e.clientX + 'px';
-        infobox.style.top = e.clientY + 'px';
+          infobox.style.left = (e.clientX - offsetX) + 'px';
+          infobox.style.top = (e.clientY - offsetY) + 'px';
+        } else {
+          // Fallback to original behavior
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+        }
       }
-    }
-  });
+    });
+  }
 
   const masonryItems = document.querySelectorAll('.masonry-item');
   masonryItems.forEach(item => {
@@ -456,24 +476,26 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
 
-    item.addEventListener('mouseenter', function(e) {
-      // Configure infobox for this specific gallery type
-      if (infobox) {
-        infobox.dataset.iconType = 'font-awesome';
-        const iconElement = infobox.querySelector('.infobox-go-button i');
-        if (iconElement) {
-          const hasRichContent = item.dataset.hasRichContent === 'true';
-          if (hasRichContent) {
-            iconElement.className = 'fas fa-arrow-right'; // Arrow for posts with rich content
-          } else {
-            iconElement.className = 'fas fa-expand'; // Expand icon for lightbox posts
+    // Only add hover listeners on non-touch devices
+    if (!isTouchDevice) {
+      item.addEventListener('mouseenter', function(e) {
+        // Configure infobox for this specific gallery type
+        if (infobox) {
+          infobox.dataset.iconType = 'font-awesome';
+          const iconElement = infobox.querySelector('.infobox-go-button i');
+          if (iconElement) {
+            const hasRichContent = item.dataset.hasRichContent === 'true';
+            if (hasRichContent) {
+              iconElement.className = 'fas fa-arrow-right'; // Arrow for posts with rich content
+            } else {
+              iconElement.className = 'fas fa-expand'; // Expand icon for lightbox posts
+            }
+          }
+          const contentBox = infobox.querySelector('.infobox-content');
+          if (contentBox) {
+            contentBox.classList.remove('no-title'); // Ensure no-title styling is removed
           }
         }
-        const contentBox = infobox.querySelector('.infobox-content');
-        if (contentBox) {
-          contentBox.classList.remove('no-title'); // Ensure no-title styling is removed
-        }
-      }
 
       const dataDiv = this.querySelector('.masonry-item-data');
       if (!dataDiv) return;
@@ -547,24 +569,25 @@ document.addEventListener('DOMContentLoaded', function() {
       
       startImageCycling();
       
-      this.classList.add('is-hovered');
-      if (masonryGallery) masonryGallery.classList.add('has-hovered-item');
-    });
+        this.classList.add('is-hovered');
+        if (masonryGallery) masonryGallery.classList.add('has-hovered-item');
+      });
 
-    item.addEventListener('mouseleave', function() {
-      stopImageCycling();
-      if (infobox) {
-        infobox.style.display = 'none';
-        infobox.classList.remove('animate-in');
-      }
-      this.classList.remove('is-hovered');
-      if (masonryGallery && document.querySelectorAll('.masonry-item.is-hovered').length === 0) {
-        masonryGallery.classList.remove('has-hovered-item');
-      }
-    });
+      item.addEventListener('mouseleave', function() {
+        stopImageCycling();
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+        this.classList.remove('is-hovered');
+        if (masonryGallery && document.querySelectorAll('.masonry-item.is-hovered').length === 0) {
+          masonryGallery.classList.remove('has-hovered-item');
+        }
+      });
+    }
   });
   
-  if (masonryGallery) {
+  if (masonryGallery && !isTouchDevice) {
     masonryGallery.addEventListener('mouseleave', function(e) {
       // Check if the mouse is leaving the gallery and not entering a child or the infobox itself
       if (e.relatedTarget && !e.relatedTarget.closest('.masonry-item') && e.relatedTarget !== infobox && !infobox.contains(e.relatedTarget)) {

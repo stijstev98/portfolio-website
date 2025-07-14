@@ -129,6 +129,25 @@ body.dark-theme .post-header-content {
   background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
 }
 
+/* Dark theme multiplied gradient overrides */
+body.dark-theme .post-header-content::before {
+  background: linear-gradient(to top, 
+    rgba(0, 0, 0, 0.6) 0%, 
+    rgba(0, 0, 0, 0.4) 25%, 
+    rgba(0, 0, 0, 0.2) 50%,
+    rgba(0, 0, 0, 0) 100%);
+  mix-blend-mode: multiply;
+}
+
+body.dark-theme .post-header-content::after {
+  background: linear-gradient(to top, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(0, 0, 0, 0.2) 30%, 
+    rgba(0, 0, 0, 0.1) 60%,
+    rgba(0, 0, 0, 0) 100%);
+  mix-blend-mode: multiply;
+}
+
 body.dark-theme .header-nav a {
   text-shadow: 0 0px 30px rgba(0, 0, 0, 0.65);
 }

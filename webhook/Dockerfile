@@ -14,7 +14,7 @@ COPY . .
 
 # Create a non-root user for security
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nextjs -u 1001
+    adduser -S nodejs -u 1001
 
 # Ensure the user can access docker socket (will be handled by volume mount)
 USER nodejs

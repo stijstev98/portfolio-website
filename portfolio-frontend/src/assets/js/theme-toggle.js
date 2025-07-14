@@ -9,8 +9,8 @@ class ThemeToggle {
   }
 
   init() {
-    // Check for saved theme preference or default to light theme
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    // Check for saved theme preference or default to dark theme
+    const savedTheme = localStorage.getItem('theme') || 'dark';
     this.setTheme(savedTheme);
     
     // Create the toggle button

@@ -1,4 +1,5 @@
-/* Hover Infobox Styles */
+/* Hover Infobox Styles - Updated for Touch Device Prevention */
+/* Cache buster: 2024-12-28 */
 .hover-infobox {
   position: fixed;
   pointer-events: none; /* Allow mouse interactions with elements underneath */
@@ -451,4 +452,45 @@
 
 .hover-infobox[data-max-width="large"] .infobox-content {
   width: 80% !important;
+}
+
+/* ABSOLUTELY prevent hover infobox on touch devices */
+@media (hover: none) {
+  .hover-infobox {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Additional protection for touch devices */
+@media (pointer: coarse) {
+  .hover-infobox {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Mobile device protection */
+@media (max-width: 768px) {
+  .hover-infobox {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}
+
+/* Nuclear option - hide on any small screen or touch-like device */
+@media (max-width: 1024px), (hover: none), (pointer: coarse) {
+  .hover-infobox {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: scale(0) !important;
+  }
 }

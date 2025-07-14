@@ -73,6 +73,24 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+  // ABSOLUTELY prevent hover infobox on touch devices
+  const isTouchDevice = ('ontouchstart' in window) || 
+                       (navigator.maxTouchPoints > 0) || 
+                       (navigator.msMaxTouchPoints > 0) ||
+                       (window.matchMedia && window.matchMedia('(hover: none)').matches) ||
+                       (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+                       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Force hide all hover infoboxes on touch devices
+  if (isTouchDevice) {
+    const allInfoboxes = document.querySelectorAll('.hover-infobox');
+    allInfoboxes.forEach(box => {
+      box.style.display = 'none !important';
+      box.style.visibility = 'hidden !important';
+    });
+    return; // Exit early - no hover functionality on touch devices
+  }
+  
   // Check if this is the user's first visit
   const hasVisitedBefore = localStorage.getItem('bookFlipTutorialShown');
   
