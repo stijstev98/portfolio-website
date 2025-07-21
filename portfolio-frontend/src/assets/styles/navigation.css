@@ -302,7 +302,7 @@ body.scrolled .homepage > .header-underlay {
 
   /* Adjust logo bar for mobile - position closer to left edge */
   .content-page .logo-bar {
-    left: 0.5rem;
+    left: 0.8rem; /* Match homepage positioning */
     top: 0;
     width: 40px;
     height: 8vh; /* Match desktop height for consistency */
@@ -419,7 +419,7 @@ body.scrolled .homepage > .header-underlay {
 /* Responsive breakpoints */
 @media (max-width: 576px) {
   .content-page .logo-bar {
-    left: 0.25rem;
+    left: 0.5rem; /* Match homepage positioning */
     width: 35px;
     height: 8vh; /* Match desktop height for consistency */
     align-items: flex-end; /* Position logo towards bottom */

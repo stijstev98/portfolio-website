@@ -218,12 +218,14 @@ body.hero-menu-open .hero-section {
   /* Force higher specificity for button outline in mobile nav */
   body .mobile-nav .btn-outline {
     border: 2px solid var(--primary-color) !important;
-    color: var(--primary-color) !important;
+    background-color: var(--primary-color) !important;
+    color: #fff !important;
   }
   
   body .mobile-nav .btn-outline:hover {
-    background-color: var(--primary-color) !important;
-    color: #fff !important;
+    background-color: transparent !important;
+    border: 2px solid var(--text-color) !important;
+    color: var(--text-color) !important;
   }
 }
 

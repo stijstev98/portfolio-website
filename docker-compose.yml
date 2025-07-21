@@ -21,7 +21,7 @@ services:
     volumes:
       - ./site-build:/app/_site
       - ./portfolio-cms/public/uploads:/app/public/uploads:ro
-    command: ["/bin/sh", "-c", "rm -rf /app/_site/* && npm install && npm run build:eleventy && npm run build:webpack && cp -r /app/public/uploads /app/_site/ && echo 'Build finished.'"]
+    command: ["/bin/sh", "-c", "rm -rf /app/_site/* && npm install && npm run build:webpack && npm run build:eleventy && cp -r /app/public/uploads /app/_site/ && echo 'Build finished.'"]
     depends_on:
       - strapi
 

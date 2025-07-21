@@ -242,4 +242,10 @@ body.dark-theme .header-nav .btn-outline,
 body.dark-theme .hero-nav-wrapper .header-nav .btn-outline,
 body.dark-theme .mobile-nav .btn-outline {
   color: white !important;
+}
+
+/* Light theme button text overrides - ensure white text in mobile nav buttons */
+body:not(.dark-theme) .mobile-nav .btn-outline {
+  color: white !important;
+  background-color: var(--primary-color) !important;
 } 
