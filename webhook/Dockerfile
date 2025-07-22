@@ -12,12 +12,8 @@ RUN npm ci --only=production
 # Copy application code
 COPY . .
 
-# Create a non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
-
-# Ensure the user can access docker socket (will be handled by volume mount)
-USER nodejs
+# Run as root to access Docker socket
+# In production, this should be secured with proper Docker socket permissions
 
 EXPOSE 3000
 

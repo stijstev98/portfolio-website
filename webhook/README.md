@@ -4,7 +4,7 @@ A lightweight Node.js service that handles webhooks from Strapi CMS to automatic
 
 ## Features
 
-- Receives webhooks from Strapi when projects are added, updated, or deleted
+- Receives webhooks from Strapi when posts are added, updated, or deleted
 - Triggers automatic rebuild of the Eleventy-based portfolio site
 - Secure token-based authentication
 - Docker-based container management
@@ -24,7 +24,7 @@ Response format:
 ```json
 {
   "success": true,
-  "message": "Site rebuild triggered successfully"
+  "message": "Site rebuild completed successfully"
 }
 ```
 
@@ -47,8 +47,8 @@ Service information endpoint.
 
 1. Strapi sends a webhook when content changes
 2. The webhook handler verifies the authentication token
-3. If valid, it stops and removes the current Eleventy container
-4. Starts a new Eleventy container that rebuilds the site with fresh data
+3. If valid, it executes `docker-compose up eleventy --no-deps` to rebuild the site
+4. The Eleventy container rebuilds the site with fresh data from Strapi
 5. The rebuilt site is served by nginx
 
 ## Docker Setup
@@ -58,5 +58,5 @@ The service runs in a Docker container with access to the Docker socket to manag
 ## Security
 
 - Token-based authentication for webhook verification
-- Runs as non-root user in container
+- Runs with Docker socket access to manage containers
 - Only exposes necessary ports and volumes

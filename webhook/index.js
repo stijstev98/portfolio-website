@@ -18,18 +18,18 @@ app.use((req, res, next) => {
   next();
 });
 
-function runDockerCommand(command) {
+function runCommand(command) {
   return new Promise((resolve, reject) => {
-    console.log(`Running Docker command: ${command}`);
+    console.log(`Running command: ${command}`);
     exec(command, { cwd: workspacePath }, (err, stdout, stderr) => {
       if (err) {
-        console.error(`Docker command error:`, err);
+        console.error(`Command error:`, err);
         console.error(`stderr:`, stderr);
         return reject(err);
       }
-      console.log(`Docker command stdout:`, stdout);
+      console.log(`Command stdout:`, stdout);
       if (stderr) {
-        console.log(`Docker command stderr:`, stderr);
+        console.log(`Command stderr:`, stderr);
       }
       resolve(stdout);
     });
@@ -49,27 +49,26 @@ app.post('/strapi', async (req, res) => {
   }
 
   try {
-    console.log('Starting site rebuild process...');
+    console.log('Starting site rebuild...');
     
-    // Stop the current eleventy container if running
-    console.log('Stopping Eleventy container...');
-    await runDockerCommand('docker-compose stop eleventy');
+    // Use docker directly to restart the eleventy container
+    // This will trigger a rebuild since the container's CMD includes the build commands
+    const containerName = 'portfolio-website-eleventy-1';
     
-    // Remove the old container to ensure fresh build
-    console.log('Removing old Eleventy container...');
-    await runDockerCommand('docker-compose rm -f eleventy');
+    console.log(`Restarting ${containerName} to trigger rebuild...`);
+    await runCommand(`docker restart ${containerName}`);
     
-    // Start a new eleventy container which will rebuild the site
-    console.log('Starting new Eleventy container to rebuild site...');
-    await runDockerCommand('docker-compose up eleventy --no-deps');
-    
-    console.log('Site rebuild completed successfully');
-    res.json({ success: true, message: 'Site rebuild triggered successfully' });
+    console.log('Site rebuild triggered successfully');
+    res.json({ 
+      success: true, 
+      message: 'Site rebuild triggered successfully',
+      timestamp: new Date().toISOString()
+    });
     
   } catch (error) {
     console.error('Error during site rebuild:', error);
     res.status(500).json({ 
-      error: 'Site rebuild failed', 
+      error: 'Failed to rebuild site', 
       details: error.message 
     });
   }

@@ -1,4 +1,5 @@
-#!/bin/sh
-echo "Restarting Eleventy container to trigger rebuild..."
-docker restart portfolio-website-eleventy-1
-echo "Eleventy restart completed"
+#!/bin/bash
+echo "Triggering Eleventy rebuild..."
+cd /workspace
+docker-compose up eleventy --no-deps
+echo "Eleventy build completed"
