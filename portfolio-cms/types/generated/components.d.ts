@@ -73,12 +73,7 @@ export interface SharedRichText extends Struct.ComponentSchema {
     icon: 'align-justify';
   };
   attributes: {
-    body: Schema.Attribute.JSON &
-      Schema.Attribute.SetPluginOptions<{
-        i18n: {
-          localized: false;
-        };
-      }>;
+    body: Schema.Attribute.Blocks;
     responsive_display: Schema.Attribute.Enumeration<
       ['default', 'desktop-only', 'mobile-only']
     > &

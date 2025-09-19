@@ -51,25 +51,26 @@ app.post('/strapi', async (req, res) => {
   try {
     console.log('Starting site rebuild...');
     
-    // Use docker directly to restart the eleventy container
-    // This will trigger a rebuild since the container's CMD includes the build commands
-    const containerName = 'portfolio-website-eleventy-1';
+    // Use the new webhook script instead of Docker
+    const webhookScript = `${workspacePath}/scripts/webhook-prod.sh`;
     
-    console.log(`Restarting ${containerName} to trigger rebuild...`);
-    await runCommand(`docker restart ${containerName}`);
+    console.log(`Running webhook script: ${webhookScript}`);
+    await runCommand(`${webhookScript} webhook`);
     
     console.log('Site rebuild triggered successfully');
     res.json({ 
       success: true, 
       message: 'Site rebuild triggered successfully',
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      method: 'script-based'
     });
     
   } catch (error) {
     console.error('Error during site rebuild:', error);
     res.status(500).json({ 
       error: 'Failed to rebuild site', 
-      details: error.message 
+      details: error.message,
+      method: 'script-based'
     });
   }
 });

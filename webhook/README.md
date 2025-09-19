@@ -47,16 +47,16 @@ Service information endpoint.
 
 1. Strapi sends a webhook when content changes
 2. The webhook handler verifies the authentication token
-3. If valid, it executes `docker-compose up eleventy --no-deps` to rebuild the site
-4. The Eleventy container rebuilds the site with fresh data from Strapi
+3. If valid, it executes the webhook script to rebuild the site
+4. The webhook script triggers a rebuild of the Eleventy site with fresh data from Strapi
 5. The rebuilt site is served by nginx
 
-## Docker Setup
+## Script-Based Setup
 
-The service runs in a Docker container with access to the Docker socket to manage other containers. It's configured in the main `docker-compose.yml` file.
+The service runs as a native Node.js process and is managed by the portfolio management scripts. Use `./scripts/portfolio.sh` to manage the webhook service along with other components.
 
 ## Security
 
 - Token-based authentication for webhook verification
-- Runs with Docker socket access to manage containers
-- Only exposes necessary ports and volumes
+- Runs as a system process without elevated privileges
+- Only exposes necessary ports for webhook handling
