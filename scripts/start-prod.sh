@@ -90,6 +90,10 @@ build_production_assets() {
     log_info "Building Eleventy site..."
     npm run build:eleventy
     
+    # Copy built site to site-build directory for nginx
+    log_info "Copying built site to site-build directory..."
+    mkdir -p "$PROJECT_ROOT/site-build"
+    cp -r _site/* "$PROJECT_ROOT/site-build/"    
     # Copy uploads
     log_info "Copying uploads..."
     if [ -d "$PROJECT_ROOT/portfolio-cms/public/uploads" ]; then
