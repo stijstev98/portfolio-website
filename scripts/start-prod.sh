@@ -109,7 +109,7 @@ start_strapi_temp() {
     
     export NODE_ENV=production
     export DATABASE_CLIENT=sqlite
-    export DATABASE_FILENAME="$DATABASE_FILENAME"
+    # DATABASE_FILENAME is set in .env file
     export STRAPI_TELEMETRY_DISABLED=true
     
     # Start Strapi in background
@@ -207,7 +207,7 @@ start_manual_services() {
     
     export NODE_ENV=production
     export DATABASE_CLIENT=sqlite
-    export DATABASE_FILENAME="$DATABASE_FILENAME"
+    # DATABASE_FILENAME is set in .env file
     export STRAPI_TELEMETRY_DISABLED=true
     
     nohup npm run start > "$PROJECT_ROOT/logs/strapi-prod.log" 2>&1 &
