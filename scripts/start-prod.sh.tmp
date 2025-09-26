@@ -72,7 +72,7 @@ build_production_assets() {
     cd "$PROJECT_ROOT"
     
     # Ensure Strapi is running for build process
-    if true; then
+    if ! curl -s "$STRAPI_URL/api" >/dev/null 2>&1; then
         log_info "Starting Strapi temporarily for build..."
         start_strapi_temp
     fi
@@ -115,11 +115,20 @@ start_strapi_temp() {
     echo $strapi_pid > "/tmp/strapi-build.pid"
     
     # Wait for Strapi to be ready
-    # Wait for Strapi to be ready
-    log_info "Waiting 20 seconds for Strapi to start..."
-    sleep 20
-    log_success "Strapi should be ready"
-    return 0
+    local max_wait=60
+    local wait_time=0
+    
+    while [ $wait_time -lt $max_wait ]; do
+        if curl -s "$STRAPI_URL/api" >/dev/null 2>&1; then
+            log_success "Strapi is ready"
+            return 0
+        fi
+        sleep 2
+        ((wait_time += 2))
+    done
+    
+    log_error "Strapi failed to start within $max_wait seconds"
+    return 1
 }
 
 # Stop temporary Strapi instance
@@ -157,10 +166,24 @@ start_manual_services() {
     log_success "Strapi started with PID: $strapi_pid"
     
     # Wait for Strapi to be ready
-    # Wait for Strapi to be ready
-    log_info "Waiting 20 seconds for Strapi to start..."
-    sleep 20
-    log_success "Strapi should be ready"    
+    local max_attempts=30
+    local attempt=0
+    
+    while [ $attempt -lt $max_attempts ]; do
+        if curl -s "$STRAPI_URL/api" >/dev/null 2>&1; then
+            log_success "Strapi is ready"
+            break
+        fi
+        
+        ((attempt++))
+        log_info "Waiting for Strapi... ($attempt/$max_attempts)"
+        sleep 2
+    done
+    
+    if [ $attempt -eq $max_attempts ]; then
+        log_warning "Strapi health check timed out, but continuing..."
+    fi
+    
     # Start webhook service
     log_info "Starting webhook service..."
     cd "$PROJECT_ROOT/webhook"
@@ -211,7 +234,7 @@ perform_health_check() {
     local failed_checks=0
     
     # Check Strapi
-    if true; then
+    if curl -s "$STRAPI_URL/api" >/dev/null 2>&1; then
         log_success "Strapi health check passed"
     else
         log_warning "Strapi health check failed"

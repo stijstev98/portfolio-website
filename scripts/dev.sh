@@ -150,10 +150,10 @@ start_strapi() {
     # Set environment variables for Strapi
     export NODE_ENV=development
     export DATABASE_CLIENT=sqlite
-    export DATABASE_FILENAME="$DATABASE_FILENAME"
+    # DATABASE_FILENAME is set in .env file
     export STRAPI_TELEMETRY_DISABLED=true
     
-    log_strapi "Database configuration: CLIENT=$DATABASE_CLIENT, FILENAME=$DATABASE_FILENAME"
+    log_strapi "Database configuration: CLIENT=$DATABASE_CLIENT"
     
     # Start Strapi and capture PID
     nohup npm run develop > "$PROJECT_ROOT/logs/strapi-dev.log" 2>&1 &

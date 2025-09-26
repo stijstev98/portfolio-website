@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Portfolio Website Stop Script
-# Stops all running development servers
+# Stops all running development and production servers
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
@@ -24,44 +24,64 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# PID files
-STRAPI_PID_FILE="$PROJECT_ROOT/.pids/strapi.pid"
-ELEVENTY_PID_FILE="$PROJECT_ROOT/.pids/eleventy.pid"
-
 log_info "Stopping portfolio website servers..."
 
 stopped_count=0
 
-# Stop Strapi
-if [ -f "$STRAPI_PID_FILE" ]; then
-    strapi_pid=$(cat "$STRAPI_PID_FILE")
-    if kill -0 "$strapi_pid" 2>/dev/null; then
-        log_info "Stopping Strapi (PID: $strapi_pid)"
-        kill "$strapi_pid" 2>/dev/null || true
-        ((stopped_count++))
-    fi
-    rm -f "$STRAPI_PID_FILE"
+# Stop services based on PID files
+if [ -d "$PROJECT_ROOT/.pids" ]; then
+    for pidfile in "$PROJECT_ROOT/.pids"/*.pid; do
+        if [ -f "$pidfile" ]; then
+            service_name=$(basename "$pidfile" .pid)
+            pid=$(cat "$pidfile")
+            
+            if kill -0 "$pid" 2>/dev/null; then
+                log_info "Stopping $service_name (PID: $pid)"
+                kill "$pid" 2>/dev/null || true
+                ((stopped_count++))
+            fi
+            rm -f "$pidfile"
+        fi
+    done
 fi
 
-# Stop Eleventy
-if [ -f "$ELEVENTY_PID_FILE" ]; then
-    eleventy_pid=$(cat "$ELEVENTY_PID_FILE")
-    if kill -0 "$eleventy_pid" 2>/dev/null; then
-        log_info "Stopping Eleventy (PID: $eleventy_pid)"
-        kill "$eleventy_pid" 2>/dev/null || true
+# Clean up temporary build PIDs
+if [ -f "/tmp/strapi-build.pid" ]; then
+    build_pid=$(cat "/tmp/strapi-build.pid")
+    if kill -0 "$build_pid" 2>/dev/null; then
+        log_info "Stopping temporary Strapi build process (PID: $build_pid)"
+        kill "$build_pid" 2>/dev/null || true
         ((stopped_count++))
     fi
-    rm -f "$ELEVENTY_PID_FILE"
+    rm -f "/tmp/strapi-build.pid"
 fi
 
-# Kill any remaining processes related to this project
+# Kill any remaining Node.js processes related to this project
 project_name=$(basename "$PROJECT_ROOT")
-if pkill -f "$project_name" 2>/dev/null; then
+if pgrep -f "$project_name" >/dev/null 2>&1; then
+    log_info "Stopping remaining processes for $project_name"
+    pkill -f "$project_name" 2>/dev/null || true
     ((stopped_count++))
 fi
 
+# Stop specific processes by name
+for process_name in "strapi" "eleventy" "webpack"; do
+    if pgrep -f "$process_name.*$project_name" >/dev/null 2>&1; then
+        log_info "Stopping $process_name processes"
+        pkill -f "$process_name.*$project_name" 2>/dev/null || true
+        ((stopped_count++))
+    fi
+done
+
 if [ $stopped_count -gt 0 ]; then
-    log_success "Stopped $stopped_count server(s)"
+    log_success "Stopped $stopped_count server(s)/process(es)"
 else
     log_info "No servers were running"
 fi
+
+# Clean up .pids directory if empty
+if [ -d "$PROJECT_ROOT/.pids" ] && [ ! "$(ls -A "$PROJECT_ROOT/.pids")" ]; then
+    rmdir "$PROJECT_ROOT/.pids"
+fi
+
+log_success "Portfolio website servers stopped"
