@@ -65,6 +65,20 @@ export interface SharedMedia extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedPhotoGroup extends Struct.ComponentSchema {
+  collectionName: 'components_shared_photo_groups';
+  info: {
+    description: '';
+    displayName: 'Photo group';
+    icon: 'landscape';
+  };
+  attributes: {
+    group_description: Schema.Attribute.Text;
+    group_title: Schema.Attribute.String;
+    photos: Schema.Attribute.Component<'shared.single-photo', true>;
+  };
+}
+
 export interface SharedRichText extends Struct.ComponentSchema {
   collectionName: 'components_shared_rich_texts';
   info: {
@@ -122,6 +136,36 @@ export interface SharedSimpleMedia extends Struct.ComponentSchema {
   };
 }
 
+export interface SharedSinglePhoto extends Struct.ComponentSchema {
+  collectionName: 'components_shared_single_photos';
+  info: {
+    displayName: 'Single photo';
+    icon: 'image';
+  };
+  attributes: {
+    camera: Schema.Attribute.Enumeration<
+      [
+        'Canon A1',
+        'Canon AE-1',
+        'Nikon F3',
+        'Nikon FM2',
+        'Pentax K1000',
+        'Minolta X-700',
+        'Olympus OM-1',
+        'Leica M6',
+        'Hasselblad 500C',
+        'Mamiya RB67',
+        'Other',
+      ]
+    >;
+    country: Schema.Attribute.String;
+    filmstock: Schema.Attribute.String;
+    photo: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    place: Schema.Attribute.String;
+    year: Schema.Attribute.String;
+  };
+}
+
 export interface SharedVideoEmbed extends Struct.ComponentSchema {
   collectionName: 'components_shared_video_embeds';
   info: {
@@ -150,9 +194,11 @@ declare module '@strapi/strapi' {
       'shared.book-flip': SharedBookFlip;
       'shared.masonry-gallery': SharedMasonryGallery;
       'shared.media': SharedMedia;
+      'shared.photo-group': SharedPhotoGroup;
       'shared.rich-text': SharedRichText;
       'shared.scrolling-gallery': SharedScrollingGallery;
       'shared.simple-media': SharedSimpleMedia;
+      'shared.single-photo': SharedSinglePhoto;
       'shared.video-embed': SharedVideoEmbed;
     }
   }

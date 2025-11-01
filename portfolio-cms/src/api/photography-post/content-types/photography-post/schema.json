@@ -1,0 +1,68 @@
+{
+  "kind": "collectionType",
+  "collectionName": "photography_posts",
+  "info": {
+    "singularName": "photography-post",
+    "pluralName": "photography-posts",
+    "displayName": "Photography Post",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "post_title": {
+      "type": "string"
+    },
+    "post_description": {
+      "type": "text"
+    },
+    "post_header_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "post_preview_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ]
+    },
+    "post_images": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "short_description": {
+      "type": "string"
+    },
+    "rich_content": {
+      "type": "dynamiczone",
+      "components": [
+        "shared.video-embed",
+        "shared.rich-text",
+        "shared.book-flip",
+        "shared.masonry-gallery",
+        "shared.simple-media",
+        "shared.photo-group",
+        "shared.single-photo"
+      ]
+    }
+  }
+}

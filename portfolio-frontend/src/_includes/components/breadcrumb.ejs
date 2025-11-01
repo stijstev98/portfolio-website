@@ -21,10 +21,13 @@
     // If it's the last part (current page)
     const isLastItem = i === parts.length - 1;
     
-    // Special handling for "posts" - redirect to works section on front page
+    // Special handling for "posts" and "photography"
     let breadcrumbUrl = currentPath;
     if (part === 'posts' && !isLastItem) {
       breadcrumbUrl = '/#works';
+    } else if (part === 'photography' && !isLastItem) {
+      breadcrumbUrl = '/photography';
+      text = 'PHOTOGRAPHY';
     } else if (isLastItem) {
       breadcrumbUrl = '';
     }

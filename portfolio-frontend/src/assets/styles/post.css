@@ -108,7 +108,7 @@ body.content-page {
 }
 
 .post-short-description {
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   font-weight: 400;
   color: white;
   margin-bottom: var(--spacing-sm);
@@ -128,6 +128,14 @@ body.content-page {
   position: relative;
   z-index: 30;
   background-color: var(--bg-color);
+}
+
+/* Post Body Container - for photography posts only, matches header content inner positioning */
+.photography-post-content-section .post-body {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 2rem;
 }
 
 .post-hero-content h1 {
@@ -326,7 +334,8 @@ body.content-page {
 /* Media Queries */
 /* Large tablets and small desktops */
 @media (max-width: 1200px) {
-  .post-header-content-inner {
+  .post-header-content-inner,
+  .photography-post-content-section .post-body {
     padding: 0 2rem;
   }
   
@@ -341,7 +350,8 @@ body.content-page {
     font-size: 3.5rem;
   }
   
-  .post-header-content-inner {
+  .post-header-content-inner,
+  .photography-post-content-section .post-body {
     padding: 0 2rem;
   }
   
@@ -385,7 +395,8 @@ body.content-page {
     line-height: 1.4;
   }
   
-  .post-header-content-inner {
+  .post-header-content-inner,
+  .photography-post-content-section .post-body {
     padding: 0 1.5rem;
   }
   
@@ -430,7 +441,8 @@ body.content-page {
     height: 65vh;
   }
   
-  .post-header-content-inner {
+  .post-header-content-inner,
+  .photography-post-content-section .post-body {
     padding: 0 1rem;
   }
   
@@ -455,5 +467,39 @@ body.content-page {
   .rich-content h3,
   .rich-text-component h3 {
     font-size: 1.15rem;
+  }
+}
+
+/* Photography Post Content Section - specific styling for photography posts */
+.photography-post-content-section {
+  /* Inherit all base post-content-section styles */
+  padding: 2rem 0 var(--spacing-lg) 0;
+  position: relative;
+  z-index: 30;
+  background-color: var(--bg-color);
+  
+  /* Custom top margin: photography header height + 5rem extra spacing */
+  /* Photography header has 8rem top + 4rem bottom padding + ~5rem content = ~17rem */
+  margin-top: calc(17rem + 5rem);
+}
+
+/* Responsive adjustments for photography post content */
+@media (max-width: 992px) {
+  .photography-post-content-section {
+    margin-top: calc(15rem + 4rem);
+  }
+}
+
+@media (max-width: 768px) {
+  .photography-post-content-section {
+    margin-top: calc(13rem + 3rem);
+    padding: 1.5rem 0 var(--spacing-lg) 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .photography-post-content-section {
+    margin-top: calc(12rem + 2rem);
+    padding: 1rem 0 var(--spacing-md) 0;
   }
 }

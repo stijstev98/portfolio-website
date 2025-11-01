@@ -264,7 +264,10 @@ document.addEventListener('DOMContentLoaded', function() {
           if (infoboxTitle) infoboxTitle.textContent = mediaAlt;
           if (infoboxDescription) infoboxDescription.textContent = mediaCaption;
           
-          // Position and show infobox
+          // Position and show infobox (calculate before showing to prevent jump)
+          infobox.style.visibility = 'hidden';
+          infobox.style.display = 'block';
+          
           const infoboxContent = infobox.querySelector('.infobox-content');
           if (infoboxContent) {
             const offsetX = infoboxContent.offsetLeft;
@@ -275,7 +278,8 @@ document.addEventListener('DOMContentLoaded', function() {
             infobox.style.left = e.clientX + 'px';
             infobox.style.top = e.clientY + 'px';
           }
-          infobox.style.display = 'block';
+          
+          infobox.style.visibility = 'visible';
           
           setTimeout(() => infobox.classList.add('animate-in'), 10);
         }

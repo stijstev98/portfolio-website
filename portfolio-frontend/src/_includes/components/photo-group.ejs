@@ -1,0 +1,43 @@
+<!-- Photo Group Component -->
+<!-- Displays a group of single photos with a title and description -->
+<% 
+// Generate unique component ID for this instance
+const componentId = 'photo-group-' + Math.random().toString(36).substr(2, 9);
+%>
+
+<div class="photo-group-component" data-component-id="<%= componentId %>">
+  <!-- Group Title - styled like rich-text h1 -->
+  <% if (locals.group_title) { %>
+    <h1 class="photo-group-title">
+      <%= group_title %>
+    </h1>
+  <% } %>
+  
+  <!-- Group Description - styled like rich-text body text -->
+  <% if (locals.group_description) { %>
+    <div class="photo-group-description">
+      <%= group_description %>
+    </div>
+  <% } %>
+  
+  <!-- Photos Container -->
+  <% if (locals.photos && photos.length > 0) { %>
+    <div class="photo-group-photos">
+      <% photos.forEach((photoData, index) => { %>
+        <div class="photo-group-photo-wrapper">
+          <%- include('../components/single-photo', {
+            photo: photoData.photo,
+            place: photoData.place,
+            country: photoData.country,
+            year: photoData.year,
+            filmstock: photoData.filmstock,
+            camera: photoData.camera
+          }) %>
+        </div>
+      <% }); %>
+    </div>
+  <% } else { %>
+    <div class="photo-group-empty">No photos in this group</div>
+  <% } %>
+</div>
+

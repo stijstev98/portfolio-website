@@ -15,7 +15,7 @@ module.exports = {
     },
     {
       text: "Photography",
-      url: "https://www.instagram.com/stanalog_/",
+      url: "/photography",
       emphasis: false,
       scrollTarget: null
     },

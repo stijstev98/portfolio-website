@@ -62,10 +62,10 @@ function extractMediaDocumentIds(lexicalContent) {
 }
 
 module.exports = async function() {
-  console.log("Fetching posts from Strapi...");
+  console.log("Fetching photography posts from Strapi...");
   try {
-    // First, fetch all posts with basic population to get the list
-    const basicApiUrl = `${STRAPI_BASE_URL}/api/posts?populate=*&pagination[limit]=100`;
+    // First, fetch all photography posts with basic population to get the list
+    const basicApiUrl = `${STRAPI_BASE_URL}/api/photography-posts?populate=*&pagination[limit]=100`;
     
     console.log('Attempting to fetch from:', basicApiUrl);
     
@@ -108,7 +108,7 @@ module.exports = async function() {
       return [];
     }
     
-    console.log(`Found ${data.data.length} posts, checking for posts with rich content...`);
+    console.log(`Found ${data.data.length} photography posts, checking for posts with rich content...`);
     
     // For posts that have rich_content, fetch them individually with deep population
     const postsData = await Promise.all(data.data.map(async (post, index) => {
@@ -118,7 +118,7 @@ module.exports = async function() {
       }
 
       // Ensure post_title exists for slug generation, otherwise use a fallback
-      const titleForSlug = post.post_title || `post-${post.id || index}`;
+      const titleForSlug = post.post_title || `photography-${post.id || index}`;
       const slug = slugify(`${titleForSlug}-${post.id || index}`, { lower: true, strict: true });
       
       // Helper function to construct image URL using local transformation
@@ -132,10 +132,10 @@ module.exports = async function() {
       
       // If this post has rich_content, fetch it individually with deep population
       if (post.rich_content && Array.isArray(post.rich_content) && post.rich_content.length > 0) {
-        console.log(`Fetching detailed content for post "${post.post_title}" with ${post.rich_content.length} components...`);
+        console.log(`Fetching detailed content for photography post "${post.post_title}" with ${post.rich_content.length} components...`);
         
         try {
-          const deepApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+          const deepApiUrl = `${STRAPI_BASE_URL}/api/photography-posts/${post.documentId}?populate[rich_content][populate]=*`;
           const deepResponse = await cachedFetch(deepApiUrl, { timeout: 10000 });
           
           if (deepResponse.ok) {
@@ -206,7 +206,7 @@ module.exports = async function() {
       // Process rich_content dynamic zone if it exists
       let richContentComponents = [];
       if (fullPost.rich_content && Array.isArray(fullPost.rich_content) && fullPost.rich_content.length > 0) {
-        console.log(`Processing ${fullPost.rich_content.length} rich_content components for post "${fullPost.post_title}"`);
+        console.log(`Processing ${fullPost.rich_content.length} rich_content components for photography post "${fullPost.post_title}"`);
         
         richContentComponents = await Promise.all(fullPost.rich_content.map(async (component, index) => {
           console.log(`Component ${index}:`, component.__component, component.id);
@@ -298,7 +298,7 @@ module.exports = async function() {
               if ((!galleryContent || galleryContent.length === 0) && component.id) {
                 console.log(`Gallery content is empty or missing, attempting to fetch separately for component ${component.id}`);
                 try {
-                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/photography-posts/${post.documentId}?populate[rich_content][populate]=*`;
                   const componentResponse = await cachedFetch(componentApiUrl, { timeout: 5000 });
                   
                   if (componentResponse.ok) {
@@ -382,7 +382,7 @@ module.exports = async function() {
               if ((!masonryImages || masonryImages.length === 0) && component.id) {
                 console.log(`Masonry images is empty or missing, attempting to fetch separately for component ${component.id}`);
                 try {
-                  const componentApiUrl = `${STRAPI_BASE_URL}/api/posts/${post.documentId}?populate[rich_content][populate]=*`;
+                  const componentApiUrl = `${STRAPI_BASE_URL}/api/photography-posts/${post.documentId}?populate[rich_content][populate]=*`;
                   const componentResponse = await cachedFetch(componentApiUrl, { timeout: 5000 });
                   
                   if (componentResponse.ok) {
@@ -453,6 +453,113 @@ module.exports = async function() {
                 show_infobox: component.show_infobox || false,
                 responsiveDisplay: component.responsive_display || 'default'
               };
+            case 'shared.single-photo':
+              // Process single photo component
+              const photo = component.photo;
+              
+              if (!photo || !photo.url) {
+                console.warn(`No photo found for single-photo component ${component.id}`);
+                return {
+                  type: 'single-photo',
+                  photo: null,
+                  place: component.place || null,
+                  country: component.country || null,
+                  year: component.year || null,
+                  filmstock: component.filmstock || null,
+                  camera: component.camera || null
+                };
+              }
+              
+              return {
+                type: 'single-photo',
+                photo: {
+                  id: photo.id,
+                  url: constructImageUrl(photo.url),
+                  name: photo.name || '',
+                  alternativeText: photo.alternativeText || '',
+                  caption: photo.caption || '',
+                  mime: photo.mime || '',
+                  width: photo.width || 0,
+                  height: photo.height || 0
+                },
+                place: component.place || null,
+                country: component.country || null,
+                year: component.year || null,
+                filmstock: component.filmstock || null,
+                camera: component.camera || null
+              };
+            case 'shared.photo-group':
+              // Process photo group component
+              let photoGroupPhotos = component.photos || [];
+              
+              console.log(`Processing photo-group component: "${component.group_title || 'Untitled'}"`);
+              console.log(`  Initial photos array length: ${photoGroupPhotos.length}`);
+              
+              // Check if photos have the photo field populated
+              const needsPhotoPopulation = photoGroupPhotos.length > 0 && 
+                                          photoGroupPhotos.some(p => !p.photo || !p.photo.url);
+              
+              // If photos are not fully populated, fetch with specific photo population
+              if (needsPhotoPopulation && component.id) {
+                console.log(`  Photos not fully populated, fetching with photo media...`);
+                try {
+                  const photoGroupApiUrl = `${STRAPI_BASE_URL}/api/photography-posts/${post.documentId}?populate[rich_content][on][shared.photo-group][populate][photos][populate]=photo`;
+                  const photoGroupResponse = await cachedFetch(photoGroupApiUrl, { timeout: 5000 });
+                  
+                  if (photoGroupResponse.ok) {
+                    const photoGroupData = await photoGroupResponse.json();
+                    const populatedPhotoGroup = photoGroupData.data.rich_content?.find(
+                      (c) => c.__component === 'shared.photo-group' && c.id === component.id
+                    );
+                    
+                    if (populatedPhotoGroup?.photos) {
+                      photoGroupPhotos = populatedPhotoGroup.photos;
+                      console.log(`  Successfully fetched ${photoGroupPhotos.length} photos with media`);
+                    }
+                  }
+                } catch (error) {
+                  console.warn(`  Failed to fetch photo group photos: ${error.message}`);
+                }
+              }
+              
+              // Process all photos in the group
+              const processedPhotos = photoGroupPhotos.map(photoComponent => {
+                const photoMedia = photoComponent.photo;
+                
+                if (!photoMedia || !photoMedia.url) {
+                  console.warn(`  Photo in group has no media, ID: ${photoComponent.id}`);
+                  return null;
+                }
+                
+                return {
+                  id: photoComponent.id,
+                  photo: {
+                    id: photoMedia.id,
+                    url: constructImageUrl(photoMedia.url),
+                    name: photoMedia.name || '',
+                    alternativeText: photoMedia.alternativeText || '',
+                    caption: photoMedia.caption || '',
+                    mime: photoMedia.mime || '',
+                    width: photoMedia.width || 0,
+                    height: photoMedia.height || 0
+                  },
+                  place: photoComponent.place || null,
+                  country: photoComponent.country || null,
+                  year: photoComponent.year || null,
+                  filmstock: photoComponent.filmstock || null,
+                  camera: photoComponent.camera || null
+                };
+              }).filter(p => p !== null);
+              
+              console.log(`  Processed ${processedPhotos.length} photos for photo group`);
+              
+              return {
+                type: 'photo-group',
+                group_title: component.group_title || null,
+                group_description: component.group_description || null,
+                photos: processedPhotos,
+                responsiveDisplay: component.responsive_display || 'default'
+              };
             default:
               console.warn(`Unknown component type: ${component.__component}`);
               return {
@@ -468,6 +575,7 @@ module.exports = async function() {
         data: {
           title: fullPost.post_title,
           description: fullPost.post_description,
+          shortDescription: fullPost.short_description,
           date: fullPost.publishedAt || fullPost.createdAt || new Date(),
           richContent: richContentComponents,
           hasRichContent: richContentComponents.length > 0,
@@ -485,35 +593,35 @@ module.exports = async function() {
           previewImageCaption: previewImageCaption,
           images: galleryImages
         },
-        url: `/posts/${slug}/`,
+        url: `/photography/${slug}/`,
         slug: slug,
         id: fullPost.id
       };
     }));
     
     // Apply the filter to the resolved promises result
-    const posts = postsData.filter(post => post !== null && post.data.title);
+    const photographyPosts = postsData.filter(post => post !== null && post.data.title);
 
-    const postsWithRichContent = posts.filter(post => post.data.hasRichContent);
-    console.log(`Fetched and processed ${posts.length} posts from Strapi.`);
-    console.log(`Found ${postsWithRichContent.length} posts with rich_content dynamic zone data.`);
+    const postsWithRichContent = photographyPosts.filter(post => post.data.hasRichContent);
+    console.log(`Fetched and processed ${photographyPosts.length} photography posts from Strapi.`);
+    console.log(`Found ${postsWithRichContent.length} photography posts with rich_content dynamic zone data.`);
     
     if (postsWithRichContent.length > 0) {
-      console.log('Posts with rich_content:');
+      console.log('Photography posts with rich_content:');
       postsWithRichContent.forEach(post => {
         console.log(`- "${post.data.title}" has ${post.data.richContent.length} components`);
       });
     }
     
-    return posts;
+    return photographyPosts;
   } catch (error) {
-    console.error("Error fetching posts from Strapi:", error);
+    console.error("Error fetching photography posts from Strapi:", error);
     // Provide fallback data so the site can still build
     return [
       {
-        slug: 'temporary-post',
+        slug: 'temporary-photography-post',
         data: {
-          title: 'Temporary Post',
+          title: 'Temporary Photography Post',
           description: 'This is a temporary post shown while waiting for Strapi to connect',
           date: new Date().toISOString(),
           richContent: [],
@@ -525,3 +633,4 @@ module.exports = async function() {
     ];
   }
 };
+

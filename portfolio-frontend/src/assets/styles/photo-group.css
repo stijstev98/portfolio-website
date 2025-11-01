@@ -1,0 +1,70 @@
+/* Photo Group Component Styles */
+
+.photo-group-component {
+  margin-bottom: var(--spacing-md);
+  width: 100%;
+}
+
+/* Photo Group Title - matches rich-text h1 styling */
+.photo-group-title {
+  font-size: var(--title-medium-size);
+  font-weight: 900;
+  color: var(--text-color);
+  font-family: var(--title-font);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+/* Photo Group Description - matches rich-text body styling */
+.photo-group-description {
+  font-size: var(--text-size);
+  font-family: var(--body-font);
+  color: var(--text-color);
+  line-height: 1.7;
+  margin-bottom: var(--spacing-md);
+  white-space: pre-wrap; /* Preserve line breaks from Strapi */
+}
+
+/* Desktop styling with blue border - matches .rich-text-component p */
+@media (min-width: 769px) {
+  .photo-group-description {
+    max-width: 90ch;
+    word-break: keep-all;
+    padding-left: 2rem;
+    border-left: 2px solid var(--primary-color);
+  }
+}
+
+/* Photos Container */
+.photo-group-photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  margin-top: var(--spacing-md);
+}
+
+/* Individual Photo Wrapper */
+.photo-group-photo-wrapper {
+  width: 100%;
+}
+
+/* Empty State */
+.photo-group-empty {
+  padding: var(--spacing-md);
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .photo-group-title {
+    font-size: var(--title-small-size);
+  }
+  
+  .photo-group-photos {
+    gap: var(--spacing-md);
+  }
+}
+

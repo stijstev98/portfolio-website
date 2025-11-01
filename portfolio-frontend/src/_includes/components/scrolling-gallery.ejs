@@ -218,7 +218,10 @@ document.addEventListener('DOMContentLoaded', function() {
           if (infoboxTitle) infoboxTitle.textContent = mediaAlt || mediaName; // Use Alt text as title
           if (infoboxDescription) infoboxDescription.textContent = mediaCaption; // Use caption as description
 
-          // Position infobox at cursor coordinates
+          // Position infobox at cursor coordinates (calculate before showing to prevent jump)
+          infobox.style.visibility = 'hidden';
+          infobox.style.display = 'block';
+          
           const infoboxContent = infobox.querySelector('.infobox-content');
           if (infoboxContent) {
             const offsetX = infoboxContent.offsetLeft;
@@ -229,7 +232,8 @@ document.addEventListener('DOMContentLoaded', function() {
             infobox.style.left = e.clientX + 'px';
             infobox.style.top = e.clientY + 'px';
           }
-          infobox.style.display = 'block';
+          
+          infobox.style.visibility = 'visible';
           
           // Add bouncy animation
           infobox.classList.remove('animate-in');

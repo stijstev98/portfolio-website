@@ -1,0 +1,47 @@
+{
+  "collectionName": "components_shared_single_photos",
+  "info": {
+    "displayName": "Single photo",
+    "icon": "image"
+  },
+  "options": {},
+  "attributes": {
+    "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "place": {
+      "type": "string"
+    },
+    "country": {
+      "type": "string"
+    },
+    "year": {
+      "type": "string"
+    },
+    "filmstock": {
+      "type": "string"
+    },
+    "camera": {
+      "type": "enumeration",
+      "enum": [
+        "Canon A1",
+        "Canon AE-1",
+        "Nikon F3",
+        "Nikon FM2",
+        "Pentax K1000",
+        "Minolta X-700",
+        "Olympus OM-1",
+        "Leica M6",
+        "Hasselblad 500C",
+        "Mamiya RB67",
+        "Other"
+      ]
+    }
+  }
+}
+

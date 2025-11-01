@@ -1,0 +1,125 @@
+<!-- Single Photo Component -->
+<% 
+// Generate unique component ID for this instance
+const componentId = 'single-photo-' + Math.random().toString(36).substr(2, 9);
+
+// Helper function to build metadata string with bullets
+function buildMetadataString(values) {
+  return values.filter(v => v && v.trim()).join(' • ');
+}
+
+// Build location string (place • country • year)
+const locationParts = [
+  locals.place,
+  locals.country,
+  locals.year
+];
+const locationString = buildMetadataString(locationParts);
+
+// Build equipment string (camera • filmstock)
+const equipmentParts = [
+  locals.camera,
+  locals.filmstock
+];
+const equipmentString = buildMetadataString(equipmentParts);
+%>
+
+<div class="single-photo-component" data-component-id="<%= componentId %>">
+  <% if (locals.photo && locals.photo.url) { %>
+    <div class="single-photo-container">
+      <!-- Image wrapper -->
+      <div class="single-photo-image-wrapper">
+        <img 
+          src="<%= photo.url %>" 
+          alt="<%= photo.alternativeText || photo.name || 'Photography' %>"
+          data-width="<%= photo.width %>"
+          data-height="<%= photo.height %>"
+          loading="lazy"
+          class="single-photo-image">
+      </div>
+      
+      <!-- Metadata section -->
+      <% if (locationString || equipmentString) { %>
+        <div class="single-photo-metadata">
+          <% if (locationString) { %>
+            <div class="single-photo-metadata-left">
+              <%= locationString.toUpperCase() %>
+            </div>
+          <% } %>
+          
+          <% if (equipmentString) { %>
+            <div class="single-photo-metadata-right">
+              <%= equipmentString.toUpperCase() %>
+            </div>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  <% } else { %>
+    <div class="single-photo-empty">No photo available</div>
+  <% } %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const componentId = '<%= componentId %>';
+  const singlePhotoComponent = document.querySelector(`[data-component-id="${componentId}"]`);
+  if (!singlePhotoComponent) return;
+  
+  const imageElement = singlePhotoComponent.querySelector('.single-photo-image');
+  const metadataElement = singlePhotoComponent.querySelector('.single-photo-metadata');
+  if (!imageElement) return;
+  
+  // Function to determine image orientation and apply appropriate sizing
+  function setSinglePhotoSize() {
+    const width = parseInt(imageElement.dataset.width) || imageElement.naturalWidth;
+    const height = parseInt(imageElement.dataset.height) || imageElement.naturalHeight;
+    
+    if (!width || !height) return;
+    
+    const aspectRatio = width / height;
+    let orientation = 'square';
+    
+    // Determine orientation (using 0.95-1.05 range for square to account for slight variations)
+    if (aspectRatio > 1.05) {
+      orientation = 'landscape';
+    } else if (aspectRatio < 0.95) {
+      orientation = 'portrait';
+    }
+    
+    console.log(`Single Photo: ${width}x${height}, aspect ratio: ${aspectRatio.toFixed(2)}, orientation: ${orientation}`);
+    
+    // Apply orientation class to wrapper for CSS targeting
+    const wrapper = singlePhotoComponent.querySelector('.single-photo-image-wrapper');
+    if (wrapper) {
+      wrapper.classList.remove('orientation-square', 'orientation-portrait', 'orientation-landscape');
+      wrapper.classList.add(`orientation-${orientation}`);
+    }
+    
+    // Set metadata width to match the actual rendered image width
+    // Wait a bit for the image to render with the correct size
+    setTimeout(() => {
+      if (metadataElement && imageElement.offsetWidth > 0) {
+        const imageRenderedWidth = imageElement.offsetWidth;
+        metadataElement.style.width = imageRenderedWidth + 'px';
+        console.log(`Single Photo: Setting metadata width to ${imageRenderedWidth}px to match image`);
+      }
+    }, 50);
+  }
+  
+  // Set size once image is loaded
+  if (imageElement.complete && imageElement.naturalWidth > 0) {
+    setSinglePhotoSize();
+  } else {
+    imageElement.addEventListener('load', setSinglePhotoSize);
+  }
+  
+  // Recalculate on window resize
+  let resizeTimeout;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(setSinglePhotoSize, 150);
+  });
+});
+</script>
+

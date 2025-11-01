@@ -1,0 +1,30 @@
+---
+layout: layouts/base.ejs
+---
+
+<!-- Photography post header section without image - light theme -->
+<section class="post-header-section photography-header-section">
+  <div class="post-header-content-text">
+    <div class="post-header-content-inner">
+      <h1 class="post-title">
+        <%= photographyPost.data.title %>
+      </h1>
+      
+      <% if (photographyPost.data.description) { %>
+        <p class="post-short-description">
+          <%= photographyPost.data.description %>
+        </p>
+      <% } %>
+      
+      <%- include('../components/breadcrumb') %>
+    </div>
+  </div>
+</section>
+
+<!-- Post content -->
+<section class="post-content-section photography-post-content-section">
+  <div class="post-body">
+    <%- content %>
+  </div>
+</section>
+

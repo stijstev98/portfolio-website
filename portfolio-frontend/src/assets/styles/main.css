@@ -28,6 +28,9 @@
 @import 'background-loop.css';
 @import 'book-flip.css';
 @import 'simple-media.css';
+@import 'single-photo.css';
+@import 'photo-group.css';
 @import 'masonry-gallery-rich.css';
 @import 'lightbox.css';
-@import 'theme-toggle.css';
+@import 'default-theme.css';
+@import 'light-theme.css';

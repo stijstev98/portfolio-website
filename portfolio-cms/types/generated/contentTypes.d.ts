@@ -373,6 +373,57 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiPhotographyPostPhotographyPost
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'photography_posts';
+  info: {
+    description: '';
+    displayName: 'Photography Post';
+    pluralName: 'photography-posts';
+    singularName: 'photography-post';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::photography-post.photography-post'
+    > &
+      Schema.Attribute.Private;
+    post_description: Schema.Attribute.Text;
+    post_header_image: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios'
+    >;
+    post_images: Schema.Attribute.Media<
+      'images' | 'files' | 'videos' | 'audios',
+      true
+    >;
+    post_preview_image: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
+    post_title: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    rich_content: Schema.Attribute.DynamicZone<
+      [
+        'shared.video-embed',
+        'shared.rich-text',
+        'shared.book-flip',
+        'shared.masonry-gallery',
+        'shared.simple-media',
+        'shared.photo-group',
+        'shared.single-photo',
+      ]
+    >;
+    short_description: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiPostPost extends Struct.CollectionTypeSchema {
   collectionName: 'posts';
   info: {
@@ -929,6 +980,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::photography-post.photography-post': ApiPhotographyPostPhotographyPost;
       'api::post.post': ApiPostPost;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;

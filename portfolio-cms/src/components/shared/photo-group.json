@@ -1,0 +1,22 @@
+{
+  "collectionName": "components_shared_photo_groups",
+  "info": {
+    "displayName": "Photo group",
+    "icon": "landscape",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "group_title": {
+      "type": "string"
+    },
+    "group_description": {
+      "type": "text"
+    },
+    "photos": {
+      "type": "component",
+      "repeatable": true,
+      "component": "shared.single-photo"
+    }
+  }
+}

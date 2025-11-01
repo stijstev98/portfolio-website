@@ -1,5 +1,5 @@
 /* Hover Infobox Styles - Updated for Touch Device Prevention */
-/* Cache buster: 2024-12-28 */
+/* Cache buster: 2025-10-20 - Smooth positioning fix */
 .hover-infobox {
   position: fixed;
   pointer-events: none; /* Allow mouse interactions with elements underneath */
@@ -11,6 +11,8 @@
   display: none; /* Hidden by default */
   /* Remove the default positioning - we'll use transforms instead */
   transform-origin: top left;
+  /* Performance optimization for smooth positioning */
+  will-change: transform, left, top;
 }
 
 /* Bouncy pop animation for when infobox appears */

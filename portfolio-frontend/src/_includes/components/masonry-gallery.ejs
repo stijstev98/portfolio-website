@@ -558,10 +558,24 @@ document.addEventListener('DOMContentLoaded', function() {
       infoboxTitle.textContent = title || '';
       infoboxDescription.textContent = description || '';
       
-      // Position infobox at cursor coordinates
-      infobox.style.left = e.clientX + 'px';
-      infobox.style.top = e.clientY + 'px';
+      // Calculate position before showing (prevents jump)
+      // Make visible but hidden to get accurate measurements
+      infobox.style.visibility = 'hidden';
       infobox.style.display = 'block';
+      
+      const infoboxContent = infobox.querySelector('.infobox-content');
+      if (infoboxContent) {
+        const offsetX = infoboxContent.offsetLeft;
+        const offsetY = infoboxContent.offsetTop;
+        infobox.style.left = (e.clientX - offsetX) + 'px';
+        infobox.style.top = (e.clientY - offsetY) + 'px';
+      } else {
+        infobox.style.left = e.clientX + 'px';
+        infobox.style.top = e.clientY + 'px';
+      }
+      
+      // Now make it visible
+      infobox.style.visibility = 'visible';
       
       // Add bouncy animation
       infobox.classList.remove('animate-in');

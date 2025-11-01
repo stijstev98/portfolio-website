@@ -83,7 +83,7 @@
 	<script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/c1b0981ae42abfb9abf269d9/script.js"></script>
 	<!-- End cookieyes banner -->
 
-  <body<% if (page.url === "/") { %> class="homepage"<% } else { %> class="content-page"<% } %>>
+  <body<% if (page.url === "/") { %> class="homepage"<% } else if (locals.bodyClass) { %> class="content-page <%= bodyClass %>"<% } else { %> class="content-page"<% } %>>
   <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WXRDKG82"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -108,6 +108,5 @@
     
     <!-- Scripts -->
     <script src="/assets/js/animation.js"></script>
-    <script src="/assets/js/theme-toggle.js"></script>
   </body>
 </html>

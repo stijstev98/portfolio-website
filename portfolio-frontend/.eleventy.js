@@ -6,6 +6,9 @@ const renderRichText = require('./src/_data/utils/renderRichText');
 const { CACHE_DIR } = require('./src/_data/utils/pdfProcessor');
 
 module.exports = function (eleventyConfig) {
+  // Check if we're in development mode
+  const isDev = process.env.ELEVENTY_ENV === 'development';
+
   eleventyConfig.addPlugin(syntaxHighlight);
 
   // Copy assets
@@ -14,7 +17,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/assets/styles');
 
   // Copy uploads from Strapi to serve media files locally
-  eleventyConfig.addPassthroughCopy({ 'public/uploads': 'uploads' });
+  eleventyConfig.addPassthroughCopy({ '../portfolio-cms/public/uploads': 'uploads' });
 
   // Serve PDF cache directory
   eleventyConfig.addPassthroughCopy({
@@ -27,16 +30,19 @@ module.exports = function (eleventyConfig) {
   // Add JavaScript function to be available in templates
   eleventyConfig.addJavaScriptFunction('renderRichText', renderRichText);
 
-  eleventyConfig.addPlugin(lazyImagesPlugin, {
-    transformImgPath: (imgPath) => {
-      if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
-        // Handle remote file
-        return imgPath;
-      } else {
-        return `./src/${imgPath}`;
-      }
-    },
-  });
+  // Only enable lazy images plugin in production for better dev performance
+  if (!isDev) {
+    eleventyConfig.addPlugin(lazyImagesPlugin, {
+      transformImgPath: (imgPath) => {
+        if (imgPath.startsWith('http://') || imgPath.startsWith('https://')) {
+          // Handle remote file
+          return imgPath;
+        } else {
+          return `./src/${imgPath}`;
+        }
+      },
+    });
+  }
 
   eleventyConfig.setEjsOptions({
     rmWhitespace: true,
@@ -50,19 +56,22 @@ module.exports = function (eleventyConfig) {
     files: './_site/assets/styles/main.css',
   });
 
-  eleventyConfig.addTransform('htmlmin', (content, outputPath) => {
-    if (outputPath.endsWith('.html')) {
-      const minified = htmlmin.minify(content, {
-        useShortDoctype: true,
-        removeComments: true,
-        collapseWhitespace: true,
-        minifyJS: true,
-      });
-      return minified;
-    }
+  // Only minify HTML in production mode for faster dev builds
+  if (!isDev) {
+    eleventyConfig.addTransform('htmlmin', (content, outputPath) => {
+      if (outputPath.endsWith('.html')) {
+        const minified = htmlmin.minify(content, {
+          useShortDoctype: true,
+          removeComments: true,
+          collapseWhitespace: true,
+          minifyJS: true,
+        });
+        return minified;
+      }
 
-    return content;
-  });
+      return content;
+    });
+  }
 
   return {
     dir: { input: 'src', output: '_site', data: '_data' },
