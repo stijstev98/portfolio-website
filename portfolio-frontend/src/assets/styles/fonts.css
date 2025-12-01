@@ -1,5 +1,11 @@
 /* Custom Font Loading - Sans Soucis 2.7.6 */
 
+/* Override Adobe Fonts default styles that force font-weight: 300 on p, span */
+/* TypeKit adds: p, span { font-weight: 300 !important; } which breaks our Pressio headings */
+p, span {
+  font-weight: inherit !important;
+}
+
 /* Light - 300 */
 @font-face {
   font-family: 'Sans Soucis';
