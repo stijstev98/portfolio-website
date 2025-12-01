@@ -1,0 +1,37 @@
+/* Custom Font Loading - Sans Soucis 2.7.6 */
+
+/* Light - 300 */
+@font-face {
+  font-family: 'Sans Soucis';
+  src: url('../fonts/SansSoucis2.7.6-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Regular - 400 */
+@font-face {
+  font-family: 'Sans Soucis';
+  src: url('../fonts/SansSoucis2.7.6-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Bold - 700 */
+@font-face {
+  font-family: 'Sans Soucis';
+  src: url('../fonts/SansSoucis2.7.6-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ExtraBold - 800 */
+@font-face {
+  font-family: 'Sans Soucis';
+  src: url('../fonts/SansSoucis2.7.6-ExtraBold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}

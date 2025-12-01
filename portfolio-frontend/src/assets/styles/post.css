@@ -98,7 +98,7 @@ body.content-page {
 .post-title {
   font-family: var(--title-font-narrow);
   font-size: var(--title-jumbo-size);
-  font-weight: 900;
+  font-weight: 700; /* Max available weight for Pressio Compressed */
   line-height: 0.9;
   margin-bottom: var(--spacing-sm);
   padding: 0;
@@ -229,7 +229,7 @@ body.content-page {
 .post-content h1 {
   /* Large titles: bold, medium size, white */
   font-size: var(--title-medium-size);
-  font-weight: 900;
+  font-weight: 700; /* Max available weight for Pressio Condensed */
   color: var(--text-color);
   font-family: var(--title-font);
   text-transform: uppercase;

@@ -32,7 +32,7 @@
   z-index: 9980;
   position: relative;
   margin-left: auto;
-  top: 0.3rem; /* Added to shift menu down slightly */
+  top: 0.5rem; /* Shifted down slightly more */
 }
 
 .hamburger-line {

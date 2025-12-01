@@ -146,51 +146,9 @@
   margin-bottom: 0.5rem;
   font-family: var(--title-font-narrow);
   font-size: var(--title-jumbo-size);
-  font-weight: 900;
+  font-weight: 700; /* Max available weight for Pressio Compressed */
   line-height: 0.9;
   letter-spacing: 0.02em;
-}
-
-/* Override breadcrumb styles for contact page */
-.contact-header-section .breadcrumb-nav {
-  margin-top: 0.5rem;
-  display: inline-block;
-}
-
-.contact-header-section .breadcrumb {
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-}
-
-.contact-header-section .breadcrumb-item {
-  font-size: var(--body-text-small);
-  color: rgba(255, 255, 255, 0.4);
-  margin: 0;
-  font-weight: 300;
-  display: inline-flex;
-  align-items: center;
-}
-
-.contact-header-section .breadcrumb-item.active {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.contact-header-section .breadcrumb-item + .breadcrumb-item::before {
-  content: "›";
-  color: rgba(255, 255, 255, 0.3);
-  margin: 0 var(--spacing-xs);
-}
-
-.contact-header-section .breadcrumb-item a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.contact-header-section .breadcrumb-item a:hover {
-  text-decoration: underline;
 }
 
 /* Override post content positioning */
@@ -420,6 +378,44 @@ button.form-submit-btn {
 }
 
 /* Responsive Adjustments */
+
+/* Large tablets and small desktops */
+@media (max-width: 1200px) {
+  .contact-header-section .post-header-content-inner,
+  .contact-content-section .post-body {
+    padding: 0 2rem;
+  }
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+  .contact-header-section .post-title {
+    font-size: 5rem;
+  }
+  
+  .contact-header-section .post-header-content-inner,
+  .contact-content-section .post-body {
+    padding: 0 2rem;
+  }
+  
+  .contact-intro p {
+    font-size: 1.1rem;
+  }
+  
+  .contact-details {
+    gap: var(--spacing-sm);
+  }
+  
+  .contact-social-links {
+    gap: 1.25rem;
+  }
+  
+  .contact-social-links a {
+    font-size: 1.4rem;
+  }
+}
+
+/* Small tablets */
 @media (max-width: 768px) {
   .contact-header-section .post-title {
     font-size: 3.5rem;
@@ -432,34 +428,169 @@ button.form-submit-btn {
 
   .contact-form-section {
     padding: 0;
+    margin-bottom: var(--spacing-xl);
   }
   
   .contact-details {
     flex-direction: column;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .contact-detail-item {
+    font-size: 0.95rem;
+  }
+  
+  .contact-icon {
+    font-size: 0.95rem;
+    width: 1.1rem;
+  }
+  
+  .contact-social-links {
+    gap: 1rem;
+    margin-top: 0.75rem;
+  }
+  
+  .contact-social-links a {
+    font-size: 1.3rem;
+  }
+  
+  .contact-intro {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .contact-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  .form-label {
+    font-size: 0.85rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    font-size: 0.95rem;
+    padding: var(--spacing-sm);
+  }
+  
+  .form-textarea {
+    min-height: 120px;
   }
   
   .marker-pin i {
     font-size: 38px;
   }
+  
+  /* About Me adjustments */
+  .contact-content-section .about-me {
+    margin-top: var(--spacing-xl);
+  }
 }
 
+/* Mobile */
 @media (max-width: 576px) {
+  /* Override container padding on mobile for contact page - only main content, not footer */
+  body.contact-page > main.container {
+    padding: 0;
+  }
+  
+  /* Also target .content wrapper padding */
+  body.contact-page > main.container > .content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
   .contact-content-section.post-content-section {
-    margin-top: calc(65vh + 2rem);
+    margin-top: calc(55vh + 1rem);
+    padding-top: 1.5rem;
   }
   
   .contact-map-container.post-header-image-container {
-    height: 65vh;
+    height: 55vh;
   }
   
   .contact-header-section .post-title {
     font-size: 2.8rem;
   }
   
-  .contact-header-section .post-header-content-inner,
+  .contact-header-section .post-header-content-inner {
+    padding: 0 1rem;
+  }
+  
   .contact-content-section .post-body {
     padding: 0 1rem;
+  }
+  
+  /* Contact intro */
+  .contact-intro {
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .contact-intro p {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  
+  /* Contact details stacked layout */
+  .contact-details {
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .contact-detail-item {
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+  
+  .contact-icon {
+    font-size: 0.9rem;
+    width: 1rem;
+  }
+  
+  /* Social links inline */
+  .contact-social-links {
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+    justify-content: flex-start;
+  }
+  
+  .contact-social-links a {
+    font-size: 1.25rem;
+  }
+  
+  /* Form adjustments */
+  .contact-form-section {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .contact-form {
+    gap: var(--spacing-sm);
+  }
+  
+  .form-group {
+    gap: var(--spacing-xs);
+  }
+  
+  .form-label {
+    font-size: 0.8rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    padding: 0.75rem;
+    border-radius: var(--small-radius);
+  }
+  
+  .form-textarea {
+    min-height: 100px;
+  }
+  
+  button.form-submit-btn {
+    margin-top: var(--spacing-xs);
+    font-size: 0.9rem;
+    padding: 0.75rem 1.5rem;
   }
   
   .marker-pin i {
@@ -473,5 +604,46 @@ button.form-submit-btn {
     height: 26px;
     line-height: 26px;
     font-size: 16px;
+  }
+  
+  /* About Me section on mobile */
+  .contact-content-section .about-me {
+    margin-top: var(--spacing-lg);
+  }
+  
+  /* Toast notification mobile adjustment */
+  .contact-success-message {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    gap: 0.5rem;
+  }
+  
+  .contact-success-message i {
+    font-size: 1rem;
+  }
+}
+
+/* Extra small mobile */
+@media (max-width: 400px) {
+  .contact-header-section .post-title {
+    font-size: 2.4rem;
+  }
+  
+  .contact-header-section .post-header-content-inner,
+  .contact-content-section .post-body {
+    padding: 0 0.75rem;
+  }
+  
+  .contact-detail-item {
+    font-size: 0.85rem;
+  }
+  
+  .contact-social-links a {
+    font-size: 1.15rem;
+  }
+  
+  .form-input,
+  .form-textarea {
+    padding: 0.65rem;
   }
 }

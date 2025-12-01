@@ -8,7 +8,7 @@
 /* Photo Group Title - matches rich-text h1 styling */
 .photo-group-title {
   font-size: var(--title-medium-size);
-  font-weight: 900;
+  font-weight: 700; /* Max available weight for Pressio Condensed */
   color: var(--text-color);
   font-family: var(--title-font);
   text-transform: uppercase;

@@ -26,6 +26,8 @@
 
 .about-me__text p {
   margin-bottom: 1.5rem;
+  font-size: 1rem; /* Match post body text size */
+  line-height: 1.7;
 }
 
 .about-me__text strong {

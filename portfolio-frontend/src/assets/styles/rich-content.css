@@ -12,7 +12,7 @@
 .rich-text-component h1 {
   /* Large titles: bold, medium size, white */
   font-size: var(--title-medium-size);
-  font-weight: 900;
+  font-weight: 700; /* Max available weight for Pressio Condensed */
   color: var(--text-color);
   font-family: var(--title-font);
   text-transform: uppercase;
@@ -23,7 +23,7 @@
 .rich-text-component h2 {
   /* Medium titles: bold, small size, white */
   font-size: var(--title-small-size);
-  font-weight: 800;
+  font-weight: 700; /* Max available weight for Pressio Condensed */
   color: var(--text-color);
   font-family: var(--title-font);
   text-transform: uppercase;

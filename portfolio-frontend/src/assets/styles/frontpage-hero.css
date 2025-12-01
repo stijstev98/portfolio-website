@@ -174,7 +174,7 @@ body.scrolled .hero {
 .hero__inner h1 {
   font-family: "pressio-compressed", sans-serif !important;
   font-size: 5rem !important;
-  font-weight: 900 !important;
+  font-weight: 700 !important; /* Max available weight for Pressio Compressed */
   line-height: 0.9 !important;
   text-align: right; /* Ensure hero title is right-aligned */
 }

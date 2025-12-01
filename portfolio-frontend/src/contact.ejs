@@ -2,6 +2,7 @@
 layout: layouts/base.ejs
 title: Let's Talk
 description: Get in touch with me.
+bodyClass: contact-page
 ---
 
 <!-- Leaflet CSS -->
@@ -18,13 +19,8 @@ description: Get in touch with me.
       <div class="post-header-content-inner">
         <h1 class="post-title">LET'S TALK</h1>
 
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="/">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Let's Talk</li>
-          </ol>
-        </nav>
+        <!-- Breadcrumb (same component as post pages) -->
+        <%- include('_includes/components/breadcrumb') %>
       </div>
     </div>
   </div>

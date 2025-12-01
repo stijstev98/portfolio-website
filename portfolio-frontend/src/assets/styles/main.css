@@ -4,6 +4,7 @@
 @import 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
 
 /* Import our modular CSS files */
+@import 'fonts.css'; /* Custom fonts - must be before variables.css */
 @import 'variables.css';
 @import 'typography.css'; /* Base typography styles that can be overridden */
 @import 'rich-content.css'; /* Rich content specific styles */

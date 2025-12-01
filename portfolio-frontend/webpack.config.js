@@ -64,6 +64,13 @@ module.exports = {
           // All other loaders (image-webpack-loader, sharp-loader) have been removed.
         ],
       },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'fonts/[name][ext]',
+        },
+      },
     ],
   },
 };
