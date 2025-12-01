@@ -1,5 +1,5 @@
 /* Header styling for homepage */
-.custom-header {
+.homepage .custom-header {
   position: sticky;
   top: 0;
   background-color: transparent;
@@ -12,7 +12,7 @@
 }
 
 /* When scrolled, shrink the header */
-body.scrolled .custom-header {
+body.scrolled .homepage .custom-header {
   height: 10vh;
 }
 

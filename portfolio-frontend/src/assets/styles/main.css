@@ -25,6 +25,7 @@
 @import 'nav-links.css';
 @import 'mobile-menu.css';
 @import 'about-me.css';
+@import 'contact.css';
 @import 'background-loop.css';
 @import 'book-flip.css';
 @import 'simple-media.css';
@@ -32,5 +33,6 @@
 @import 'photo-group.css';
 @import 'masonry-gallery-rich.css';
 @import 'lightbox.css';
+@import 'photography-album-list.css';
 @import 'default-theme.css';
 @import 'light-theme.css';

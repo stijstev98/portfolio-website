@@ -15,9 +15,7 @@ const componentId = 'photo-group-' + Math.random().toString(36).substr(2, 9);
   
   <!-- Group Description - styled like rich-text body text -->
   <% if (locals.group_description) { %>
-    <div class="photo-group-description">
-      <%= group_description %>
-    </div>
+    <div class="photo-group-description"><%= group_description %></div>
   <% } %>
   
   <!-- Photos Container -->

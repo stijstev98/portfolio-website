@@ -21,9 +21,9 @@ module.exports = {
     },
     {
       text: "Let's Talk",
-      url: "/lets-talk",
+      url: "/contact",
       emphasis: true,
-      scrollTarget: "site-footer"
+      scrollTarget: null
     }
   ]
 };

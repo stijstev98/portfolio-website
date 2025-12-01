@@ -18,7 +18,6 @@
 
 /* Photo Group Description - matches rich-text body styling */
 .photo-group-description {
-  font-size: var(--text-size);
   font-family: var(--body-font);
   color: var(--text-color);
   line-height: 1.7;
@@ -29,6 +28,7 @@
 /* Desktop styling with blue border - matches .rich-text-component p */
 @media (min-width: 769px) {
   .photo-group-description {
+    color: var(--text-color);
     max-width: 90ch;
     word-break: keep-all;
     padding-left: 2rem;

@@ -17,18 +17,14 @@ bodyClass: light-theme
   <section class="photography-header-section">
     <div class="post-header-content-text">
       <div class="post-header-content-inner">
-        <h1 class="post-title">Photography</h1>
-        <p class="post-short-description">Explore my photography collections and visual stories.</p>
       </div>
     </div>
   </section>
 
   <% if (photographyPosts && photographyPosts.length > 0) { %>
-  <div id="masonry-gallery">
-    <%- include('./_includes/components/masonry-gallery', { 
-      posts: photographyPosts, 
-      className: 'photography-gallery',
-      variedColumns: true 
+  <div id="photography-albums">
+    <%- include('./_includes/components/photography-album-list', { 
+      posts: photographyPosts
     }) %>
   </div>
   <% } else { %>

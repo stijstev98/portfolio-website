@@ -1,0 +1,552 @@
+<!-- Photography Album List Component -->
+<div class="photography-album-list">
+  <% if (locals.posts && posts.length > 0) { %>
+    <% posts.forEach(post => { %>
+      <% 
+        // Determine media type and URL for the cover image
+        let mediaType = 'image';
+        let mediaUrl = null;
+        let mediaMimeType = null;
+        let fallbackMediaUrl = null;
+        
+        // Priority: post_preview_image > post_header_image > first gallery item
+        if (post.data.previewImage) {
+          mediaUrl = post.data.previewImage || post.data.previewImageMedium;
+          fallbackMediaUrl = mediaUrl;
+          // Check if preview image is actually a video
+          if (post.data.previewImageMime && post.data.previewImageMime.startsWith('video/')) {
+            mediaType = 'video';
+            mediaMimeType = post.data.previewImageMime;
+          }
+        } else if (post.data.headerImage) {
+          // Fallback to header image when preview image is not available
+          mediaUrl = post.data.headerImage || post.data.headerImageMedium;
+          fallbackMediaUrl = mediaUrl;
+          // Check if header image is actually a video
+          if (post.data.headerImageMime && post.data.headerImageMime.startsWith('video/')) {
+            mediaType = 'video';
+            mediaMimeType = post.data.headerImageMime;
+          }
+        } else if (post.data.images && post.data.images.length > 0) {
+          // Final fallback to first gallery item
+          const firstImage = post.data.images[0];
+          mediaUrl = firstImage.url || firstImage.medium;
+          fallbackMediaUrl = mediaUrl;
+          // Check if first gallery item is a video
+          if (firstImage.mime && firstImage.mime.startsWith('video/')) {
+            mediaType = 'video';
+            mediaMimeType = firstImage.mime;
+          }
+        }
+      %>
+      
+      <article class="album-item" 
+               data-post-id="<%= post.id %>"
+               data-has-rich-content="<%= post.data.hasRichContent || false %>"
+               data-lightbox-image="<%= fallbackMediaUrl || '' %>"
+               data-lightbox-title="<%= post.data.title || '' %>"
+               data-lightbox-description="<%= post.data.description || '' %>"
+               data-lightbox-image-caption="<%= post.data.previewImageCaption || post.data.headerImageCaption || '' %>"
+               data-lightbox-mime="<%= post.data.previewImageMime || post.data.headerImageMime || '' %>">
+        <a href="<%= post.url %>" class="album-item-link" data-post-url="<%= post.url %>">
+          <% if (mediaUrl) { %>
+            <div class="album-cover">
+              <% if (mediaType === 'video') { %>
+                <video muted loop autoplay playsinline preload="metadata" loading="lazy">
+                  <source src="<%= mediaUrl %>" type="<%= mediaMimeType %>">
+                  <!-- Fallback for unsupported video -->
+                  <img src="/images/video-placeholder.jpg" alt="<%= post.data.title %>" loading="lazy"/>
+                </video>
+              <% } else { %>
+                <img src="<%= mediaUrl %>" alt="<%= post.data.title %>" loading="lazy"/>
+              <% } %>
+              
+              <!-- Title overlay with gradient -->
+              <div class="album-cover-overlay">
+                <h2 class="album-cover-title"><%= post.data.title %></h2>
+              </div>
+            </div>
+          <% } %>
+        </a>
+        
+        <!-- Hidden data for hover infobox -->
+        <div class="album-item-data" style="display: none;">
+          <div class="post-image"><%= fallbackMediaUrl || '' %></div>
+          <div class="post-title"><%= post.data.title %></div>
+          <div class="post-description"><%= post.data.description || '' %></div>
+          <div class="post-url"><%= post.url %></div>
+          <div class="post-all-images" data-images='<%= JSON.stringify((post.data.images || []).map(img => ({ url: img.url || img.medium, mime: img.mime })).filter(item => item.url)) %>'></div>
+        </div>
+      </article>
+    <% }); %>
+  <% } else { %>
+    <div class="album-list-empty">No photography collections available to display</div>
+  <% } %>
+</div>
+
+<!-- Render the hover infobox once outside the loop -->
+<%- include('./hover_infobox', { 
+  id: 'hover-infobox-albums',
+  image: '',
+  title: '',
+  description: '',
+  url: '#',
+  showImage: true,
+  iconType: 'font-awesome',
+  iconClass: 'fas fa-arrow-right',
+  maxWidth: 'large'
+}) %>
+
+<!-- Include lightbox for posts without rich content -->
+<%- include('./lightbox', { id: 'albums-lightbox' }) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // ABSOLUTELY prevent hover infobox on touch devices
+  const isTouchDevice = ('ontouchstart' in window) || 
+                       (navigator.maxTouchPoints > 0) || 
+                       (navigator.msMaxTouchPoints > 0) ||
+                       (window.matchMedia && window.matchMedia('(hover: none)').matches) ||
+                       (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) ||
+                       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  
+  // Force hide all hover infoboxes on touch devices
+  if (isTouchDevice) {
+    const allInfoboxes = document.querySelectorAll('.hover-infobox');
+    allInfoboxes.forEach(box => {
+      box.style.display = 'none !important';
+      box.style.visibility = 'hidden !important';
+    });
+  }
+  
+  const infobox = document.getElementById('hover-infobox-albums');
+  const lightbox = document.getElementById('albums-lightbox');
+  
+  if (!infobox) return; 
+
+  const infoboxImage = infobox.querySelector('.infobox-image img');
+  const infoboxTitle = infobox.querySelector('.infobox-title');
+  const infoboxDescription = infobox.querySelector('.infobox-description');
+  const infoboxButton = infobox.querySelector('.infobox-go-button');
+  const albumList = document.querySelector('.photography-album-list');
+  
+  if (!infoboxImage || !infoboxTitle || !infoboxDescription || !infoboxButton || !albumList) {
+    console.error('One or more critical infobox or list elements not found');
+    return;
+  }
+  
+  infobox.style.display = 'none';
+  
+  let currentImageIndex = 0;
+  let allPostImages = []; 
+  let imageInterval = null;
+  const cycleDelay = 900;
+
+  function startImageCycling() {
+    if (imageInterval) {
+      clearInterval(imageInterval);
+      imageInterval = null;
+    }
+    
+    if (allPostImages && allPostImages.length > 0) {
+      currentImageIndex = 0;
+      setCurrentMediaInInfobox(currentImageIndex);
+
+      if (allPostImages.length > 1) { 
+        imageInterval = setInterval(() => {
+          currentImageIndex = (currentImageIndex + 1) % allPostImages.length;
+          setCurrentMediaInInfobox(currentImageIndex);
+        }, cycleDelay);
+      }
+    }
+  }
+  
+  function setCurrentMediaInInfobox(index) {
+    if (!infoboxImage || !allPostImages[index]) return;
+    
+    const mediaItem = allPostImages[index];
+    
+    // Show the image container since we have media to display
+    const imageContainer = infobox.querySelector('.infobox-image');
+    if (imageContainer) {
+      imageContainer.style.display = 'block';
+    }
+    
+    // Remove any existing video elements
+    const existingVideo = infobox.querySelector('.infobox-image video');
+    if (existingVideo) {
+      existingVideo.remove();
+    }
+    
+    if (mediaItem.type === 'video') {
+      // Create video element for infobox
+      const video = document.createElement('video');
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      video.style.cssText = 'width: 100%; height: 100%; object-fit: cover;';
+      
+      const source = document.createElement('source');
+      source.src = mediaItem.url;
+      source.type = mediaItem.mime || 'video/mp4';
+      video.appendChild(source);
+      
+      // Add error handling for videos
+      video.addEventListener('error', function() {
+        console.warn('Video failed to load in infobox:', mediaItem.url);
+        skipToNextValidMedia();
+      });
+      
+      // Hide the img and show video
+      infoboxImage.style.display = 'none';
+      infoboxImage.parentNode.appendChild(video);
+    } else {
+      // Show image
+      infoboxImage.style.display = 'block';
+      
+      // Add error handling for images
+      infoboxImage.onerror = function() {
+        console.warn('Image failed to load in infobox:', mediaItem.url);
+        skipToNextValidMedia();
+      };
+      
+      infoboxImage.src = mediaItem.url || '';
+    }
+  }
+  
+  function skipToNextValidMedia() {
+    if (allPostImages.length <= 1) {
+      // No more images to try, hide the image container
+      const imageContainer = infobox.querySelector('.infobox-image');
+      if (imageContainer) {
+        imageContainer.style.display = 'none';
+      }
+      return;
+    }
+    
+    // Remove the current broken image from the array
+    allPostImages.splice(currentImageIndex, 1);
+    
+    // Adjust current index if needed
+    if (currentImageIndex >= allPostImages.length) {
+      currentImageIndex = 0;
+    }
+    
+    // Try the next image
+    if (allPostImages.length > 0) {
+      setCurrentMediaInInfobox(currentImageIndex);
+    } else {
+      // No valid images left, hide the image container
+      const imageContainer = infobox.querySelector('.infobox-image');
+      if (imageContainer) {
+        imageContainer.style.display = 'none';
+      }
+    }
+  }
+
+  function stopImageCycling() {
+    if (imageInterval) {
+      clearInterval(imageInterval);
+      imageInterval = null;
+    }
+    
+    // Clean up video elements
+    const existingVideo = infobox.querySelector('.infobox-image video');
+    if (existingVideo) {
+      existingVideo.remove();
+    }
+    infoboxImage.style.display = 'block';
+  }
+
+  // Lightbox functionality
+  function openLightbox(imageUrl, title, description, imageCaption, mimeType) {
+    if (!lightbox) return;
+    
+    const mediaContainer = lightbox.querySelector('.lightbox-media-container');
+    const caption = lightbox.querySelector('.lightbox-caption');
+    
+    if (!mediaContainer || !caption) return;
+    
+    // Clear existing content
+    mediaContainer.innerHTML = '';
+    
+    const isVideo = mimeType && mimeType.startsWith('video/');
+    
+    if (isVideo) {
+      // Create video element
+      const video = document.createElement('video');
+      video.src = imageUrl;
+      video.className = 'lightbox-video';
+      video.alt = title;
+      video.muted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.preload = 'metadata';
+      
+      mediaContainer.appendChild(video);
+    } else {
+      // Create image element
+      const img = document.createElement('img');
+      img.src = imageUrl;
+      img.className = 'lightbox-image';
+      img.alt = title;
+      
+      mediaContainer.appendChild(img);
+    }
+    
+    // Build caption content
+    let captionHtml = '';
+    if (title) {
+      captionHtml += `<h4 style="margin: 0 0 0.5rem 0; font-family: var(--title-font); font-size: 1.3rem; font-weight: 600;">${title}</h4>`;
+    }
+    if (description) {
+      captionHtml += `<p style="margin: 0 0 0.5rem 0; font-size: 1rem; opacity: 0.9;">${description}</p>`;
+    }
+    if (imageCaption) {
+      captionHtml += `<p style="margin: 0; font-size: 0.8rem; opacity: 0.7; font-style: italic;">${imageCaption}</p>`;
+    }
+    
+    caption.innerHTML = captionHtml;
+    
+    // Lock scrolling
+    document.body.classList.add('lightbox-active');
+    
+    // Show lightbox
+    lightbox.style.display = 'flex';
+    setTimeout(() => lightbox.classList.add('show'), 10);
+  }
+  
+  function closeLightbox() {
+    if (!lightbox) return;
+    
+    lightbox.classList.remove('show');
+    setTimeout(() => {
+      lightbox.style.display = 'none';
+      // Unlock scrolling
+      document.body.classList.remove('lightbox-active');
+    }, 300);
+  }
+  
+  // Lightbox event listeners
+  if (lightbox) {
+    const overlay = lightbox.querySelector('.lightbox-overlay');
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    
+    if (overlay) {
+      overlay.addEventListener('click', closeLightbox);
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeLightbox);
+    }
+    
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && lightbox.classList.contains('show')) {
+        closeLightbox();
+      }
+    });
+  }
+
+  // Mouse move for infobox positioning - only on non-touch devices
+  if (!isTouchDevice) {
+    document.addEventListener('mousemove', function(e) {
+      if (infobox.style.display !== 'none') {
+        const infoboxContent = infobox.querySelector('.infobox-content');
+        
+        if (infoboxContent) {
+          const offsetX = infoboxContent.offsetLeft;
+          const offsetY = infoboxContent.offsetTop;
+
+          infobox.style.left = (e.clientX - offsetX) + 'px';
+          infobox.style.top = (e.clientY - offsetY) + 'px';
+        } else {
+          infobox.style.left = e.clientX + 'px';
+          infobox.style.top = e.clientY + 'px';
+        }
+      }
+    });
+  }
+
+  const albumItems = document.querySelectorAll('.album-item');
+  albumItems.forEach(item => {
+    // Handle clicks for posts without rich content
+    const link = item.querySelector('.album-item-link');
+    if (link) {
+      link.addEventListener('click', function(e) {
+        const hasRichContent = item.dataset.hasRichContent === 'true';
+        
+        if (!hasRichContent) {
+          e.preventDefault(); // Prevent navigation
+          
+          const imageUrl = item.dataset.lightboxImage;
+          const title = item.dataset.lightboxTitle;
+          const description = item.dataset.lightboxDescription;
+          const imageCaption = item.dataset.lightboxImageCaption;
+          const mimeType = item.dataset.lightboxMime;
+          
+          if (imageUrl) {
+            openLightbox(imageUrl, title, description, imageCaption, mimeType);
+          }
+        }
+        // If hasRichContent is true, let the default navigation happen
+      });
+    }
+
+    // Only add hover listeners on non-touch devices
+    if (!isTouchDevice) {
+      item.addEventListener('mouseenter', function(e) {
+        // Configure infobox for this specific gallery type
+        if (infobox) {
+          infobox.dataset.iconType = 'font-awesome';
+          const iconElement = infobox.querySelector('.infobox-go-button i');
+          if (iconElement) {
+            const hasRichContent = item.dataset.hasRichContent === 'true';
+            if (hasRichContent) {
+              iconElement.className = 'fas fa-arrow-right'; // Arrow for posts with rich content
+            } else {
+              iconElement.className = 'fas fa-expand'; // Expand icon for lightbox posts
+            }
+          }
+          const contentBox = infobox.querySelector('.infobox-content');
+          if (contentBox) {
+            contentBox.classList.remove('no-title');
+          }
+        }
+
+      const dataDiv = this.querySelector('.album-item-data');
+      if (!dataDiv) return;
+      
+      const fallbackImageDiv = dataDiv.querySelector('.post-image');
+      const titleDiv = dataDiv.querySelector('.post-title');
+      const descriptionDiv = dataDiv.querySelector('.post-description');
+      const urlDiv = dataDiv.querySelector('.post-url');
+      const allImagesDiv = dataDiv.querySelector('.post-all-images');
+      
+      if (!titleDiv || !descriptionDiv || !urlDiv) return;
+      
+      const title = titleDiv.textContent;
+      const description = descriptionDiv.textContent;
+      const url = urlDiv.textContent;
+      const fallbackImage = fallbackImageDiv ? fallbackImageDiv.textContent : '';
+
+      // Start with header/preview image as first in cycle
+      allPostImages = []; 
+      if (fallbackImage) {
+        allPostImages.push({ url: fallbackImage, type: 'image' });
+      }
+
+      // Then add all gallery images/videos
+      if (allImagesDiv && allImagesDiv.dataset.images) {
+        try {
+          const imagesData = JSON.parse(allImagesDiv.dataset.images);
+          const galleryItems = imagesData.map(item => {
+            if (typeof item === 'string') {
+              return { url: item, type: 'image' };
+            } else if (item && typeof item === 'object') {
+              return {
+                url: item.url,
+                type: item.mime && item.mime.startsWith('video/') ? 'video' : 'image',
+                mime: item.mime
+              };
+            }
+            return null;
+          }).filter(Boolean);
+          
+          allPostImages = [...allPostImages, ...galleryItems];
+        } catch (parseError) {
+          console.warn('Failed to parse post_images for cycling:', parseError);
+        }
+      }
+      
+      if (allPostImages.length > 0) {
+        setCurrentMediaInInfobox(0);
+      } else if (infoboxImage) {
+        infoboxImage.src = ''; 
+        const imageContainer = infobox.querySelector('.infobox-image');
+        if (imageContainer) {
+          imageContainer.style.display = 'none';
+        }
+      }
+      
+      infoboxTitle.textContent = title || '';
+      infoboxDescription.textContent = description || '';
+      
+      // Calculate position before showing
+      infobox.style.visibility = 'hidden';
+      infobox.style.display = 'block';
+      
+      const infoboxContent = infobox.querySelector('.infobox-content');
+      if (infoboxContent) {
+        const offsetX = infoboxContent.offsetLeft;
+        const offsetY = infoboxContent.offsetTop;
+        infobox.style.left = (e.clientX - offsetX) + 'px';
+        infobox.style.top = (e.clientY - offsetY) + 'px';
+      } else {
+        infobox.style.left = e.clientX + 'px';
+        infobox.style.top = e.clientY + 'px';
+      }
+      
+      // Now make it visible
+      infobox.style.visibility = 'visible';
+      
+      // Add bouncy animation
+      infobox.classList.remove('animate-in');
+      setTimeout(() => infobox.classList.add('animate-in'), 10);
+      
+      startImageCycling();
+      
+        this.classList.add('is-hovered');
+        if (albumList) albumList.classList.add('has-hovered-item');
+      });
+
+      item.addEventListener('mouseleave', function() {
+        stopImageCycling();
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+        this.classList.remove('is-hovered');
+        if (albumList && document.querySelectorAll('.album-item.is-hovered').length === 0) {
+          albumList.classList.remove('has-hovered-item');
+        }
+      });
+    }
+  });
+  
+  if (albumList && !isTouchDevice) {
+    albumList.addEventListener('mouseleave', function(e) {
+      if (e.relatedTarget && !e.relatedTarget.closest('.album-item') && e.relatedTarget !== infobox && !infobox.contains(e.relatedTarget)) {
+        stopImageCycling();
+        if (infobox) {
+          infobox.style.display = 'none';
+          infobox.classList.remove('animate-in');
+        }
+        document.querySelectorAll('.album-item.is-hovered').forEach(item => item.classList.remove('is-hovered'));
+        albumList.classList.remove('has-hovered-item');
+      }
+    });
+  }
+  
+  // Initialize video elements for better performance
+  const videos = document.querySelectorAll('.album-item video');
+  videos.forEach(video => {
+    video.addEventListener('loadeddata', function() {
+      this.setAttribute('data-loaded', 'true');
+    });
+    
+    video.addEventListener('error', function() {
+      console.warn('Video failed to load:', this.src);
+      const placeholder = this.parentElement.querySelector('img');
+      if (placeholder) {
+        this.style.display = 'none';
+        placeholder.style.display = 'block';
+      }
+    });
+  });
+});
+</script>
+

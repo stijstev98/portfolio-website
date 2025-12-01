@@ -1,0 +1,132 @@
+/* Photography Album List Component Styles */
+
+.photography-album-list {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  width: 100%;
+}
+
+/* Individual Album Item */
+.album-item {
+  margin-bottom: 8rem; /* Increased spacing between posts */
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.album-item-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+
+/* Album Cover Image */
+.album-cover {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+  margin-bottom: var(--spacing-xl);
+  /* No box-shadow - as per requirements */
+}
+
+.album-cover img,
+.album-cover video {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform 0.4s ease, opacity 0.3s ease;
+}
+
+/* Hover effect on cover - subtle zoom */
+.album-item:hover .album-cover img,
+.album-item:hover .album-cover video {
+  transform: scale(1.02);
+}
+
+/* Album Cover Overlay - gradient at bottom with title */
+.album-cover-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  padding: 1.5rem 1rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.album-cover-title {
+  font-family: var(--title-font);
+  margin: 0;
+  font-size: 0.85em !important;
+  letter-spacing: 0.03rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  opacity: 1;
+  text-transform: unset;
+  font-weight: 400 !important;
+  max-width: 30ch;
+  word-break: keep-all;
+  color: white;
+}
+
+/* Empty state */
+.album-list-empty {
+  padding: var(--spacing-lg);
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 1.1rem;
+}
+
+/* Hover state adjustments for the whole list */
+.photography-album-list.has-hovered-item .album-item:not(.is-hovered) {
+  opacity: 0.5;
+}
+
+.photography-album-list .album-item.is-hovered {
+  opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .photography-album-list {
+    padding: 0 1.5rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .photography-album-list {
+    padding: 0 1rem;
+  }
+  
+  .album-item {
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .photography-album-list {
+    padding: 0 1rem;
+  }
+  
+  .album-item {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+@media (max-width: 576px) {
+  .photography-album-list {
+    padding: 0 1rem;
+  }
+  
+  .album-cover {
+    margin-bottom: var(--spacing-md);
+  }
+}
+
+/* Video-specific styling */
+.album-cover video {
+  object-fit: cover;
+}
+

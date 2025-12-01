@@ -1,0 +1,477 @@
+/* Contact page specific styles */
+
+/* Contact Header Section with Map */
+.contact-header-section.post-header-section {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  margin: 0 0 30vh 0;
+  z-index: 1;
+}
+
+.contact-map-container.post-header-image-container {
+  position: absolute;
+  width: 100%;
+  height: 55vh;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #1a1a1a;
+}
+
+/* Map Styling */
+.contact-map {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Override Leaflet default styles for dark theme */
+.contact-map .leaflet-control-zoom-in,
+.contact-map .leaflet-control-zoom-out {
+  background-color: rgba(26, 26, 26, 0.9);
+  color: white;
+  border: 1px solid white;
+  font-family: var(--body-font);
+  font-weight: bold;
+}
+
+.contact-map .leaflet-control-zoom-in:hover,
+.contact-map .leaflet-control-zoom-out:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.contact-map .leaflet-control-attribution {
+  background-color: rgba(26, 26, 26, 0.8);
+  color: rgba(255, 255, 255, 0.5);
+  font-family: var(--body-font);
+  font-size: 0.7rem;
+  border-top: 1px solid white;
+}
+
+.contact-map .leaflet-control-attribution a {
+  color: var(--primary-color);
+}
+
+/* Custom Animated Map Marker */
+.custom-map-marker {
+  background: transparent;
+  border: none;
+  pointer-events: none;
+}
+
+.marker-pin {
+  width: 30px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: markerBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.5));
+}
+
+.marker-pin i {
+  font-size: 42px;
+  color: var(--primary-color);
+  text-shadow: 0 0 12px rgba(49, 109, 123, 0.5);
+}
+
+/* Gentle bouncing animation */
+@keyframes markerBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Header Content Overlay */
+.contact-header-section .post-header-content {
+  position: absolute;
+  padding-bottom: 1rem;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 20;
+  text-shadow: none;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+}
+
+.contact-header-section .post-header-content::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 130%;
+  background: linear-gradient(to top, 
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(0, 0, 0, 0.3) 25%, 
+    rgba(0, 0, 0, 0.15) 50%,
+    rgba(0, 0, 0, 0) 100%);
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+.contact-header-section .post-header-content::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, 
+    rgba(0, 0, 0, 0.3) 0%, 
+    rgba(0, 0, 0, 0.15) 30%, 
+    rgba(0, 0, 0, 0.05) 60%,
+    rgba(0, 0, 0, 0) 100%);
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+.contact-header-section .post-header-content-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.contact-header-section .post-title {
+  color: white;
+  text-shadow: 0.5px 0.5px 1px rgba(0, 0, 0, 0.6);
+  margin-bottom: 0.5rem;
+  font-family: var(--title-font-narrow);
+  font-size: var(--title-jumbo-size);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+}
+
+/* Override breadcrumb styles for contact page */
+.contact-header-section .breadcrumb-nav {
+  margin-top: 0.5rem;
+  display: inline-block;
+}
+
+.contact-header-section .breadcrumb {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+}
+
+.contact-header-section .breadcrumb-item {
+  font-size: var(--body-text-small);
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0;
+  font-weight: 300;
+  display: inline-flex;
+  align-items: center;
+}
+
+.contact-header-section .breadcrumb-item.active {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.contact-header-section .breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0 var(--spacing-xs);
+}
+
+.contact-header-section .breadcrumb-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.contact-header-section .breadcrumb-item a:hover {
+  text-decoration: underline;
+}
+
+/* Override post content positioning */
+.contact-content-section.post-content-section {
+  margin-top: calc(55vh + 1rem);
+  padding-top: 2rem;
+  padding-bottom: var(--spacing-xl);
+  position: relative;
+  z-index: 30;
+  background-color: var(--bg-color);
+}
+
+.contact-content-section .post-body {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Contact Details Section */
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: var(--spacing-xl);
+}
+
+.contact-detail-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem; /* Smaller font size */
+  color: var(--text-color);
+}
+
+.contact-icon {
+  color: var(--primary-color);
+  font-size: 1rem; /* Smaller icon */
+  width: 1.2rem; /* Fixed width for alignment */
+  text-align: center;
+}
+
+.contact-detail-item a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-detail-item a:hover {
+  color: var(--text-color);
+  text-decoration: underline;
+}
+
+.contact-detail-item span {
+  color: var(--text-color);
+}
+
+/* Contact Social Links - Match footer style */
+.contact-social-links {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.contact-social-links a {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+.contact-social-links a:hover {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+/* Form Section */
+.contact-form-section {
+  padding: 0;
+  margin: 0 auto;
+  margin-bottom: var(--spacing-xxl); /* Add margin after form */
+  width: 100%; /* Full width of container */
+  max-width: 100%; /* Remove 800px limit */
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  width: 100%;
+}
+
+.form-label {
+  font-family: var(--title-font);
+  font-weight: 500;
+  color: var(--text-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-align: left;
+}
+
+.form-input,
+.form-textarea {
+  padding: var(--spacing-sm);
+  border: 1px solid var(--border-color);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-color);
+  font-family: var(--body-font);
+  font-size: 1rem;
+  border-radius: var(--small-radius);
+  transition: border-color 0.3s ease;
+  width: 100%; /* Full width */
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.form-textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+/* Form submit button - reset button defaults to match anchor styling */
+button.form-submit-btn {
+  margin-top: var(--spacing-sm);
+  align-self: flex-start;
+  /* Reset button element defaults to match anchor element behavior */
+  display: inline-flex;
+  line-height: 2; /* Match the anchor's natural line-height */
+}
+
+/* Mobile: make button full width */
+@media (max-width: 576px) {
+  button.form-submit-btn {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+/* About Me Section Overrides for Contact Page */
+.contact-content-section .about-me {
+  padding: 0;
+  background-color: transparent;
+  margin-top: var(--spacing-xxl);
+}
+
+.contact-content-section .about-me .container {
+  padding: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Hide the "Get in Touch" button only on contact page */
+.contact-content-section .about-me .about-me__cta {
+  display: none;
+}
+
+/* Toast notification - fixed bottom bar */
+.contact-success-message {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--primary-color);
+  color: var(--text-color);
+  padding: 1rem 2rem;
+  text-align: center;
+  z-index: 9999;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--body-font);
+  font-size: 1rem;
+}
+
+.contact-success-message i {
+  font-size: 1.2rem;
+}
+
+.contact-success-message.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.contact-success-message.hide {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.contact-intro {
+  margin-bottom: var(--spacing-lg);
+  text-align: left; /* Align text left */
+  max-width: 100%; /* Full width */
+}
+
+.contact-intro p {
+  font-size: var(--body-text-size);
+  color: var(--text-light);
+  line-height: var(--body-text-line-height);
+}
+
+.contact-intro a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.contact-intro a:hover {
+  border-bottom-color: var(--primary-color);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .contact-header-section .post-title {
+    font-size: 3.5rem;
+  }
+  
+  .contact-header-section .post-header-content-inner,
+  .contact-content-section .post-body {
+    padding: 0 1.5rem;
+  }
+
+  .contact-form-section {
+    padding: 0;
+  }
+  
+  .contact-details {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .marker-pin i {
+    font-size: 38px;
+  }
+}
+
+@media (max-width: 576px) {
+  .contact-content-section.post-content-section {
+    margin-top: calc(65vh + 2rem);
+  }
+  
+  .contact-map-container.post-header-image-container {
+    height: 65vh;
+  }
+  
+  .contact-header-section .post-title {
+    font-size: 2.8rem;
+  }
+  
+  .contact-header-section .post-header-content-inner,
+  .contact-content-section .post-body {
+    padding: 0 1rem;
+  }
+  
+  .marker-pin i {
+    font-size: 36px;
+  }
+  
+  /* Make zoom controls slightly smaller on mobile */
+  .contact-map .leaflet-control-zoom-in,
+  .contact-map .leaflet-control-zoom-out {
+    width: 26px;
+    height: 26px;
+    line-height: 26px;
+    font-size: 16px;
+  }
+}
