@@ -69,7 +69,7 @@ module.exports = {
         type: 'asset/resource',
         generator: {
           filename: 'fonts/[name][ext]',
-        },
+          publicPath: '/assets/',        },
       },
     ],
   },
